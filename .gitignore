@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# Environment / secrets
+.env
+.env.*
+
+# Generated media (input recordings + rendered outputs)
+audio/
+pdf/
+subtitles/
+transcripts/
+
+# Generated database + logs
+metadata/library.db
+metadata/*.db-journal
+*.log
+
+# Screenshots / scratch
+screenshots/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

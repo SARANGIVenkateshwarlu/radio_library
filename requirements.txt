@@ -1,0 +1,8 @@
+langgraph>=0.2
+langchain-core>=0.3
+langchain-openai>=0.2
+streamlit>=1.38
+reportlab>=4.0
+pycantonese>=3.4      # Jyutping (word-segmented, dictionary-based)
+faster-whisper>=1.1   # real Cantonese ASR (local model, WHISPER_MODEL=base|small|medium)
+numpy
