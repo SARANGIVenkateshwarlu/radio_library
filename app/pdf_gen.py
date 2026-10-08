@@ -123,6 +123,24 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
         ]))
         story.append(table)
 
+    qr = record.get("quality_review")
+    if isinstance(qr, dict) and qr.get("status") == "ok":
+        story.append(Spacer(1, 6 * mm))
+        story.append(Paragraph("<b>Quality review (LLM):</b>", TITLE.clone(
+            "qr_head", fontSize=13, leading=18)))
+        story.append(Spacer(1, 2 * mm))
+        story.append(Paragraph(
+            f"Accuracy score: {qr.get('accuracy_score', '?')}/100 — "
+            f"{qr.get('summary', '')}", META))
+        issues = qr.get("issues") or []
+        if issues:
+            for it in issues:
+                story.append(Paragraph(
+                    f"• #{it.get('segment', '?')}: {it.get('problem', '')} "
+                    f"→ {it.get('suggestion', '')}", ENG))
+        else:
+            story.append(Paragraph("No issues flagged.", ENG))
+
     doc.build(story)
     try:
         os.replace(tmp_path, out_path)

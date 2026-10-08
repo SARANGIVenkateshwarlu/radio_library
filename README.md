@@ -118,12 +118,45 @@ Without a key the pipeline runs in **mock mode** (rough-gloss translations, not
 real English); the UI shows a yellow warning and the PDF prints a mock-mode
 note.
 
+### Radio Time Table
+
+The 🗓️ **Radio Time Table** tab shows today's RTHK schedule for Radio 1–5,
+fetched live from the RTHK schedule page (cached 30 min). Each channel has an
+🔴 **On air now** marker; **talk programmes** (news, discussion, interview,
+speech, chit-chat) are **green + bold**, while music is greyed out.
+
 ### Recording
 
 The 🔴 Record tab captures the station's digital stream directly with ffmpeg —
 no microphone, so there is no room noise. Presets include RTHK Radio 1–5; any
 stream URL works. Output lands in `audio/YYYY-MM-DD_station_duration.mp3` at up
 to 320 kbps.
+
+### Processing
+
+The ⚙️ Process recording tab lists every MP3 in `audio/` (newest first).
+
+- **Clean audio first** — removes background music by isolating the vocal stem
+  with **Demucs** (ffmpeg denoise fallback). Great for noisy/musical sources;
+  slower, and the original file is never modified.
+- **LLM quality review** — at the end of the run the LLM re-checks the
+  transcript for accuracy (characters, Jyutping, English) and reports a score
+  with flagged segments. It annotates only, never rewrites.
+
+### VocabBank
+
+The 🗂️ **VocabBank** tab pools vocabulary from every processed session:
+
+- **Browse by session** — pick a recording from a dropdown and see its words
+  (word / Jyutping / meaning / context), with CSV export.
+- **Quick quiz** — Jyutping-only (no Chinese characters). 6–10 questions mixing
+  *Jyutping → meaning* and *meaning → Jyutping*, at ~70% reviewed + ~30% new,
+  one idea per question, plausible distractors. Immediate feedback includes the
+  correct answer, an **audio replay** of the phrase, and the word in context.
+  A 100/100 unlocks more unseen words.
+- **Quiz history** — all attempts and scores.
+
+Progress is stored locally in `metadata/` (git-ignored).
 
 ## Standard Task Procedure
 

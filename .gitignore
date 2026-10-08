@@ -23,6 +23,8 @@ transcripts/
 # Generated database + logs
 metadata/library.db
 metadata/*.db-journal
+metadata/*.json
+metadata/cleaned/
 *.log
 
 # Screenshots / scratch

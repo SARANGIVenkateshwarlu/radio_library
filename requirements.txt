@@ -28,5 +28,9 @@ pycantonese>=5.0.0
 # Cantonese ASR (local Whisper model; downloads on first run)
 faster-whisper>=1.2.1
 
+# Audio cleanup / voice isolation before ASR (removes background music).
+# Pulls in torch; the htdemucs model (~300MB) downloads on first use.
+demucs>=4.1.0
+
 # Numerics
 numpy>=2.4.4

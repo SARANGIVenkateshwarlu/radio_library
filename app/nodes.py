@@ -8,10 +8,10 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
-from . import asr, config, library, pdf_gen
+from . import asr, cleanup, config, library, pdf_gen
 from .grouping import assign_blocks
 from .jyutping_tool import to_jyutping
-from .llm import correct_chain, translate_chain, vocab_chain
+from .llm import correct_chain, review_chain, translate_chain, vocab_chain
 from .state import RadioState
 
 _FN_RE = re.compile(r"(?P<date>\d{4}-\d{2}-\d{2})_(?P<station>[^_]+)_(?P<dur>[^.]+)")
@@ -41,9 +41,19 @@ def load_audio(state: RadioState) -> dict:
     }
 
 
+def cleanup_audio(state: RadioState) -> dict:
+    """Isolate voice / denoise before ASR when requested."""
+    src = state["audio_path"]
+    if not state.get("clean_audio"):
+        return {"asr_audio_path": src, "cleanup_method": "off"}
+    path, method = cleanup.clean_audio(src)
+    return {"asr_audio_path": path, "cleanup_method": method}
+
+
 def transcribe(state: RadioState) -> dict:
     provider = asr.get_asr(mock=state.get("mock_asr", True))
-    return {"segments": provider.transcribe(state["audio_path"])}
+    audio = state.get("asr_audio_path") or state["audio_path"]
+    return {"segments": provider.transcribe(audio)}
 
 
 def _llm_workers() -> int:
@@ -105,6 +115,43 @@ def segment_blocks(state: RadioState) -> dict:
     return {"segments": assign_blocks(state["segments"])}
 
 
+def _extract_json(text: str) -> dict | None:
+    text = (text or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\n?", "", text)
+        text = re.sub(r"\n?```$", "", text)
+    start, end = text.find("{"), text.rfind("}")
+    if start == -1 or end == -1:
+        return None
+    try:
+        data = json.loads(text[start:end + 1])
+    except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def review_quality(state: RadioState) -> dict:
+    """LLM spot-check of transcription/jyutping/English. Annotates only."""
+    if not config.LLM_ENABLED:
+        return {"quality_review": {"status": "skipped", "reason": "no LLM configured"}}
+    lines = [
+        f"{i}. CANT: {s.get('corrected')} | JYUT: {s.get('jyutping')} | ENG: {s.get('english')}"
+        for i, s in enumerate(state["segments"], 1)
+    ]
+    try:
+        out = review_chain().invoke({"text": "\n".join(lines)}).content
+    except Exception as exc:  # network / provider error — keep the rest of the run
+        return {"quality_review": {"status": "error", "reason": str(exc)}}
+    data = _extract_json(out)
+    if data is None:
+        return {"quality_review": {"status": "unparsed", "raw": (out or "")[:500]}}
+    data["status"] = "ok"
+    update: dict = {"quality_review": data}
+    if data.get("flagged_segments"):
+        update["review_status"] = "partially_reviewed"
+    return update
+
+
 def _record(state: RadioState) -> dict:
     return {
         "recording_id": state["recording_id"],
@@ -115,6 +162,8 @@ def _record(state: RadioState) -> dict:
         "segments": state["segments"],
         "review_status": state.get("review_status", "unreviewed"),
         "translation_source": "llm" if config.LLM_ENABLED else "mock",
+        "cleanup_method": state.get("cleanup_method"),
+        "quality_review": state.get("quality_review"),
     }
 
 

@@ -62,10 +62,13 @@ radio_library/
 | Node          | Input            | Output                        | Implementation                |
 |---------------|------------------|-------------------------------|-------------------------------|
 | `load_audio`  | audio_path       | recording metadata            | filename convention parsing   |
+| `cleanup_audio` | audio file     | voice-isolated audio          | Demucs (ffmpeg denoise fallback) |
 | `transcribe`  | audio file       | Cantonese segments + ts       | ASR provider (mock/pluggable) |
 | `correct`     | raw transcript   | corrected Cantonese           | LangChain LLM chain           |
 | `jyutping`    | corrected text   | Jyutping per sentence         | pycantonese / dictionary      |
 | `translate`   | corrected text   | English translation           | LangChain LLM chain           |
+| `segment_blocks` | segments      | 3–6 sentence blocks           | LLM topic / pause grouping    |
+| `review_quality` | all text      | QA report + flags             | LangChain LLM chain           |
 | `generate_pdf`| all above        | PDF path                      | reportlab (CID font)          |
 | `save_to_library` | all above    | DB row + JSON + SRT           | SQLite                        |
 
@@ -218,11 +221,23 @@ python run_pipeline.py --audio "audio/2026-10-07_RTHK_5min.mp3" --mock-asr
 streamlit run streamlit_app.py
 ```
 
+### Radio Time Table (🗓️ tab)
+
+Today's RTHK schedule for the five FM channels (Radio 1–5), read live from the
+RTHK schedule page (`app/schedule.py`, cached 30 min). One section per channel
+with an **🔴 On air now** marker and a **🔄 Refresh** button. Programmes are
+classified as **talk** (news, discussion, interview, speech, chit-chat) or
+**music**; talk rows are shown **green + bold**, music rows grey. Classification
+is keyword-based (Chinese title + English slug), so music-heavy channels like
+Radio 4 correctly show little highlighting.
+
 ### Recording (🔴 Record radio tab)
 
 Direct stream capture with ffmpeg — the station's digital stream is recorded
 straight to disk, no microphone, so there is no room noise. Presets include
 RTHK Radio 1–5 (`https://stm1.rthk.hk/radio5`, etc.); any stream URL works.
+The **Start recording** / **Stop** buttons are enlarged and full-width for easy
+tapping on a touch screen.
 
 - Durations: 5 min / 10 min / 30 min / 1 h / custom.
 - Live ▶️ Play / ⏹️ Stop listening in the browser alongside recording.
@@ -231,6 +246,45 @@ RTHK Radio 1–5 (`https://stm1.rthk.hk/radio5`, etc.); any stream URL works.
 - Output lands in `audio/YYYY-MM-DD_station_duration.mp3`, ready for the
   ⚙️ Process recording tab.
 - Start/stop from the browser; ffmpeg auto-reconnects on stream drops.
+
+### Processing (⚙️ Process recording tab)
+
+Pick the recording from a dropdown of every MP3 in `audio/` (newest on top),
+leave "mock ASR" off, and run the pipeline. Results are saved to the library
+and shown inline.
+
+- **Clean audio first** — isolates the vocal stem with **Demucs** (`htdemucs`)
+  so background music is dropped before ASR; falls back to an ffmpeg
+  denoise/normalise chain (`highpass`/`lowpass`/`afftdn`/`loudnorm`) if Demucs
+  is unavailable. Cleaned audio is written to `metadata/cleaned/`; the original
+  MP3 is never modified. Slower (Demucs ≈ 0.7× realtime on CPU).
+- **LLM quality review** — after processing, the LLM re-checks the whole
+  transcript (character errors, Jyutping, English accuracy, omissions) and
+  writes a QA report: accuracy score, summary, per-segment issues. It only
+  annotates — it never rewrites your text — and sets `review_status` to
+  `partially_reviewed` when anything is flagged. The report is stored in the
+  transcript JSON and printed at the end of the PDF.
+
+### VocabBank (🗂️ tab)
+
+Vocabulary is pooled across every processed session (group = one recording),
+read from the SQLite library and transcript JSON files. Sections:
+
+- **Browse by session** — dropdown of groups (labelled by MP3 file name); a
+  table of word / Jyutping / meaning / in-context for the selected session,
+  with CSV export for one session or all.
+- **Quick quiz** — **character-free**, Jyutping-only (the learner cannot read
+  hanzi). Two mixed types: *Jyutping → meaning* and its reverse
+  *meaning → Jyutping*. 6–10 questions, **~70% reviewed words + ~30% new**, one
+  idea per question, plausibility-aware distractors (same session/topic first;
+  similar-sounding Jyutping for the reverse type). Immediate feedback shows the
+  correct answer, the **audio replay** (ffmpeg clip of the phrase) and the word
+  in context. A perfect 100/100 automatically surfaces more unseen words.
+- **Quiz history** — every attempt with score, correct/wrong counts and the
+  words asked; running attempts, best and average scores.
+
+Progress is stored locally under `metadata/` (`quiz_history.json`,
+`vocab_stats.json`, both git-ignored).
 
 ## 9. Quality Controls (from the source plan)
 

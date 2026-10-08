@@ -19,9 +19,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--audio", required=True, help="path to the MP3 (YYYY-MM-DD_station_duration.mp3)")
     ap.add_argument("--mock-asr", action="store_true", help="use the offline demo ASR")
+    ap.add_argument("--clean-audio", action="store_true",
+                    help="isolate vocals / denoise before ASR (Demucs, ffmpeg fallback)")
     args = ap.parse_args()
 
-    final = run(args.audio, mock_asr=args.mock_asr)
+    final = run(args.audio, mock_asr=args.mock_asr, clean_audio=args.clean_audio)
 
     print(f"\n=== Pipeline finished: {final['recording_id']} ===")
     for s in final["segments"]:

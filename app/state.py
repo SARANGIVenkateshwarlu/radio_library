@@ -19,6 +19,14 @@ class RadioState(TypedDict, total=False):
     # input
     audio_path: str
     mock_asr: bool
+    clean_audio: bool
+
+    # cleanup
+    asr_audio_path: str
+    cleanup_method: str
+
+    # quality review
+    quality_review: dict
 
     # load_audio
     recording_id: str
