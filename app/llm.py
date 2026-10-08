@@ -81,6 +81,13 @@ VOCAB_PROMPT = ChatPromptTemplate.from_template(
     "No other text.\n\n句子：{text}"
 )
 
+GROUP_PROMPT = ChatPromptTemplate.from_template(
+    "下面係一段電台節目嘅廣東話句子，每句前面有編號。請將佢哋分成若干段落，"
+    "每段 3 至 6 句，喺轉換話題或者有明顯停頓嘅位置分段。"
+    "只輸出一行，列出每段第一句嘅編號，用逗號分隔（例如：1,5,10）。唔好有其他文字。"
+    "\n\n{text}"
+)
+
 # Curated sentence-level translations for known transcripts (real English,
 # offline). Unknown sentences fall back to word-by-word glossing via lexicon.
 _SENTENCE_TRANSLATIONS = {
@@ -229,3 +236,7 @@ def translate_chain(llm: BaseChatModel | None = None):
 
 def vocab_chain(llm: BaseChatModel | None = None):
     return VOCAB_PROMPT | (llm or get_llm())
+
+
+def group_chain(llm: BaseChatModel | None = None):
+    return GROUP_PROMPT | (llm or get_llm())

@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import asr, config, library, pdf_gen
+from .grouping import assign_blocks
 from .jyutping_tool import to_jyutping
 from .llm import correct_chain, translate_chain, vocab_chain
 from .state import RadioState
@@ -97,6 +98,11 @@ def translate(state: RadioState) -> dict:
     with ThreadPoolExecutor(max_workers=_llm_workers()) as ex:
         segs = list(ex.map(_one, state["segments"]))
     return {"segments": segs}
+
+
+def segment_blocks(state: RadioState) -> dict:
+    """Group segments into 3-6 sentence blocks (topic change / pause)."""
+    return {"segments": assign_blocks(state["segments"])}
 
 
 def _record(state: RadioState) -> dict:

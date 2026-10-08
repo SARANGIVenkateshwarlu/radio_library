@@ -30,6 +30,7 @@ def regen(json_path: Path) -> str:
     state.update(nodes.correct(state))
     state.update(nodes.jyutping(state))
     state.update(nodes.translate(state))
+    state.update(nodes.segment_blocks(state))
     state.update(nodes.generate_pdf(state))
     state.update(nodes.save_to_library(state))
     return state["pdf_path"]

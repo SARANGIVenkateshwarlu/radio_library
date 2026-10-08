@@ -14,6 +14,7 @@ def build_graph():
     g.add_node("correct", nodes.correct)
     g.add_node("jyutping", nodes.jyutping)
     g.add_node("translate", nodes.translate)
+    g.add_node("segment_blocks", nodes.segment_blocks)
     g.add_node("generate_pdf", nodes.generate_pdf)
     g.add_node("save_to_library", nodes.save_to_library)
 
@@ -22,7 +23,8 @@ def build_graph():
     g.add_edge("transcribe", "correct")
     g.add_edge("correct", "jyutping")
     g.add_edge("jyutping", "translate")
-    g.add_edge("translate", "generate_pdf")
+    g.add_edge("translate", "segment_blocks")
+    g.add_edge("segment_blocks", "generate_pdf")
     g.add_edge("generate_pdf", "save_to_library")
     g.add_edge("save_to_library", END)
     return g.compile()

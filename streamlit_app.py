@@ -46,19 +46,43 @@ def fmt_ts(sec: float) -> str:
 
 
 def show_segments(segments):
+    if not segments:
+        return
+    blocks: dict[int, list] = {}
     for s in segments:
-        st.markdown(f"**[{fmt_ts(s['start'])} – {fmt_ts(s['end'])}]**")
-        st.markdown(f"**Cantonese:**\n\n🗣️ {s.get('corrected') or s.get('cantonese')}")
-        st.markdown(f"**Jyutping:** `{s.get('jyutping','')}`")
-        st.markdown(f"**English:** {s.get('english','')}")
-        vocab = s.get("vocabulary") or []
-        if vocab:
-            st.markdown("**Vocabulary:**")
-            for v in vocab:
-                st.markdown(f"- {v['word']} {v['jyutping']} — {v['meaning']}")
-        if s.get("uncertain"):
-            st.warning("Contains uncertain items 〔?〕 — please review.")
+        blocks.setdefault(s.get("block", 0), []).append(s)
+    for bi in sorted(blocks):
+        block = blocks[bi]
+        st.markdown(
+            f"**Block {bi + 1}** · "
+            f"[{fmt_ts(block[0].get('start', 0))} – {fmt_ts(block[-1].get('end', 0))}]"
+        )
+        st.markdown("**Cantonese:**")
+        for j, s in enumerate(block, 1):
+            text = s.get("corrected") or s.get("cantonese", "")
+            mark = " 〔?〕" if s.get("uncertain") and "〔?〕" not in text else ""
+            st.markdown(f"{j}. {text}{mark}")
+        st.markdown("**Jyutping:**")
+        for j, s in enumerate(block, 1):
+            st.markdown(f"{j}. `{s.get('jyutping','')}`")
+        st.markdown("**English:**")
+        for j, s in enumerate(block, 1):
+            st.markdown(f"{j}. {s.get('english','')}")
         st.divider()
+
+    seen, vocab = set(), []
+    for s in segments:
+        for v in s.get("vocabulary") or []:
+            if v.get("word") and v["word"] not in seen:
+                seen.add(v["word"])
+                vocab.append(v)
+    if vocab:
+        st.markdown("**Vocabulary (全篇詞彙)**")
+        st.table([
+            {"Word": v["word"], "Jyutping": v.get("jyutping", ""),
+             "Meaning": v.get("meaning", "")}
+            for v in vocab
+        ])
 
 
 with tab_record:

@@ -89,27 +89,35 @@ radio_library/
 
 ## 5a. Output Format Rules (mandatory, apply to every recording)
 
-**PDF / display block per segment — always all five parts:**
+**PDF / display layout — grouped blocks of 3–6 sentences.**
+
+Segments are grouped into blocks split on a **topic change or a pause**
+(LLM-proposed boundaries when an LLM is configured, otherwise audio gaps;
+sizes clamped to `BLOCK_MIN`..`BLOCK_MAX`, default 3–6). Each block prints all
+its Cantonese lines, then all its Jyutping lines, then all its English lines:
 
 ```
-[hh:mm:ss]
+Block 1   [hh:mm:ss – hh:mm:ss]
 
 Cantonese:
-<corrected Cantonese>
+1. <corrected Cantonese>
+2. ...
 
 Jyutping:
-<jyutping>
+1. <jyutping>
+2. ...
 
 English:
-<real English translation — never a placeholder>
+1. <real English translation — never a placeholder>
+2. ...
 
-Vocabulary:
-<word> <jyutping> — <meaning>   (up to 4 per segment, every segment must have entries)
+Block 2   [hh:mm:ss – hh:mm:ss]
+...
 ```
 
-**Plus, at the bottom of every PDF:** an aggregated
-`Vocabulary (全篇詞彙):` section — deduplicated master list of all words in
-the recording.
+**Plus, at the bottom of every PDF:** a deduplicated
+`Vocabulary (全篇詞彙):` **table** (Word | Jyutping | Meaning) listing every
+word across the recording.
 
 **Translation rule:** English must always be real. Priority order:
 1. An LLM is configured (`OPENAI_API_KEY` in `.env` / Streamlit secrets) →
@@ -152,8 +160,8 @@ Leave the "Use mock ASR" checkbox **OFF** for real recordings.
    `LEXICON` in `app/llm.py`.
 5. Regenerate without re-running ASR:
    `python regen_outputs.py transcripts/<id>.json` (or `--all`).
-6. Verify the PDF: every segment has Cantonese/Jyutping/English/Vocabulary,
-   and the aggregated vocabulary list appears at the bottom.
+6. Verify the PDF: blocks of 3–6 sentences, each block listing Cantonese then
+   Jyutping then English, and the vocabulary table at the bottom.
 7. Set review status in the 📚 Library tab: `partially_reviewed` → `verified`.
 
 ## 6. Filename Convention

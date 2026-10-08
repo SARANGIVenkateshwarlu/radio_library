@@ -137,9 +137,11 @@ to 320 kbps.
 
 ## Output Format Rules
 
-Each segment in the PDF always includes all five parts: timestamp, Cantonese,
-Jyutping, real English translation, and up to 4 vocabulary entries. An
-aggregated deduplicated vocabulary section appears at the bottom of every PDF.
+The PDF groups sentences into blocks of **3–6**, split on a topic change or
+pause. Each block prints all its **Cantonese** lines, then all its **Jyutping**
+lines, then all its **English** lines (numbered so the three sections line up).
+A deduplicated **vocabulary table** (Word | Jyutping | Meaning) closes the
+document.
 
 ## Quality Controls
 
