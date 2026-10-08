@@ -10,6 +10,9 @@ env/
 # Environment / secrets
 .env
 .env.*
+!.env.example
+.streamlit/secrets.toml
+!.streamlit/secrets.toml.example
 
 # Generated media (input recordings + rendered outputs)
 audio/

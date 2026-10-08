@@ -7,6 +7,8 @@ without network access.
 """
 from __future__ import annotations
 
+import sys
+
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -34,8 +36,12 @@ class MockLLM(BaseChatModel):
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=out))])
 
 
+_warned_mock = False
+
+
 def get_llm() -> BaseChatModel:
-    if config.OPENAI_API_KEY:
+    global _warned_mock
+    if config.LLM_ENABLED:
         from langchain_openai import ChatOpenAI
 
         return ChatOpenAI(
@@ -44,18 +50,29 @@ def get_llm() -> BaseChatModel:
             base_url=config.OPENAI_BASE_URL,
             temperature=0,
         )
+    if not _warned_mock:
+        print(
+            "WARNING: no LLM API key configured — using offline mock translations "
+            "(not real English). Add OPENAI_API_KEY (xai-...) to .env or "
+            ".streamlit/secrets.toml. See README.",
+            file=sys.stderr,
+        )
+        _warned_mock = True
     return MockLLM()
 
 
 # LangChain chains (prompt | llm) used by the graph nodes.
 CORRECT_PROMPT = ChatPromptTemplate.from_template(
     "你係一個廣東話編輯。修正以下電台語音轉寫嘅錯字同標點，"
-    "保留口語風格，唔好改寫意思。如不確定，用〔?〕標記。\n\n原文：{text}"
+    "保留口語風格，唔好改寫意思。如不確定，用〔?〕標記。"
+    "只輸出修正後嘅句子本身，唔好加任何標題、解釋、前言或引號。\n\n原文：{text}"
 )
 
 TRANSLATE_PROMPT = ChatPromptTemplate.from_template(
-    "Translate the following colloquial Cantonese radio sentence into natural English. "
-    "Keep names and numbers exact. Only output the translation.\n\nCantonese：{text}"
+    "Translate the following colloquial Cantonese radio sentence into natural, "
+    "idiomatic English. Convey the MEANING (not a word-for-word gloss). Keep "
+    "proper names and numbers exact. Output only the English translation, with "
+    "no notes or romanisation.\n\nCantonese：{text}"
 )
 
 VOCAB_PROMPT = ChatPromptTemplate.from_template(
@@ -181,7 +198,11 @@ def _mock_translate(sentence: str) -> str:
             rest = rest[len(hit):]
         else:
             rest = rest[1:]
-    return "[rough gloss] " + " ".join(out) if out else sentence
+    if out:
+        return "[rough gloss] " + " ".join(out)
+    # Never echo the Cantonese source as if it were English — that makes the
+    # PDF look like the translation is missing. Mark it explicitly instead.
+    return "[no translation — configure an LLM for real English]"
 
 
 def _mock_vocab(source_text: str) -> str:

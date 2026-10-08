@@ -1,8 +1,32 @@
-langgraph>=0.2
-langchain-core>=0.3
-langchain-openai>=0.2
-streamlit>=1.38
-reportlab>=4.0
-pycantonese>=3.4      # Jyutping (word-segmented, dictionary-based)
-faster-whisper>=1.1   # real Cantonese ASR (local model, WHISPER_MODEL=base|small|medium)
-numpy
+# Python dependencies for the HK Radio Cantonese Learning Library.
+#   Install:  pip install -r requirements.txt
+#
+# System dependency (NOT installable via pip) — required for recording and
+# for the real faster-whisper ASR audio decoding:
+#   Windows:  winget install Gyan.FFmpeg
+#   macOS:    brew install ffmpeg
+#   Linux:    sudo apt install ffmpeg
+#   (or set FFMPEG_BINARY to the full path of ffmpeg if it is not on PATH)
+
+# Pipeline / orchestration
+langgraph>=1.2.9
+langchain-core>=1.5.1
+langchain-openai>=1.2.1
+
+# Configuration / secrets loading (.env, Streamlit secrets)
+python-dotenv>=1.2.2
+
+# Web UI
+streamlit>=1.56.0
+
+# Bilingual PDF generation
+reportlab>=5.0.1
+
+# Cantonese Jyutping (dictionary-based, word-segmented)
+pycantonese>=5.0.0
+
+# Cantonese ASR (local Whisper model; downloads on first run)
+faster-whisper>=1.2.1
+
+# Numerics
+numpy>=2.4.4

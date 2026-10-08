@@ -13,8 +13,8 @@ broadcasts — do not redistribute or reuse commercially.
 ## Architecture
 
 The pipeline is orchestrated with **LangGraph** (state machine) and all LLM
-calls go through **LangChain** so providers are pluggable (OpenAI-compatible
-API, local LLM, or a built-in mock for offline testing).
+calls go through **LangChain** so providers are pluggable (xAI/Grok,
+OpenAI-compatible API, local LLM, or a built-in mock for offline testing).
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -38,9 +38,9 @@ radio_library/
 ├── regen_outputs.py          ← re-run text stages from saved JSON (no ASR)
 ├── streamlit_app.py          ← Streamlit library UI
 ├── app/
-│   ├── config.py             ← paths / env settings
+│   ├── config.py             ← paths / env settings (xAI, ffmpeg)
 │   ├── state.py              ← LangGraph state schema
-│   ├── asr.py                ← ASR providers (mock / pluggable)
+│   ├── asr.py                ← ASR providers (mock / faster-whisper)
 │   ├── llm.py                ← LangChain LLM factory (+ mock fallback)
 │   ├── jyutping_tool.py      ← pycantonese wrapper + fallback dictionary
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
@@ -57,26 +57,66 @@ radio_library/
 
 ## Quick Start
 
+**1. Install ffmpeg** (system dependency — required for recording and real ASR):
+
+```powershell
+# Windows
+winget install Gyan.FFmpeg
+```
+
+```bash
+# macOS
+brew install ffmpeg
+# Debian/Ubuntu
+sudo apt install ffmpeg
+```
+
+> Reopen your terminal afterwards so ffmpeg is on `PATH`. If you cannot add it
+> to `PATH`, set `FFMPEG_BINARY` to the full path of `ffmpeg.exe`.
+
+**2. Install the Python dependencies:**
+
 ```bash
 pip install -r requirements.txt
+```
 
-# CLI test (uses the bundled demo transcript in mock mode)
+**3. Configure your LLM** (see [LLM Configuration](#llm-configuration)) —
+otherwise the app runs in mock mode with rough-gloss translations.
+
+**4. Run:**
+
+```bash
+# CLI test (uses the bundled demo transcript in mock ASR mode)
 python run_pipeline.py --audio "audio/2026-10-07_RTHK_5min.mp3" --mock-asr
 
 # Streamlit library app
 streamlit run streamlit_app.py
 ```
 
-### LLM Configuration
+## LLM Configuration
 
-Set an OpenAI-compatible endpoint; otherwise the pipeline runs in **mock mode**
-so the whole system can be tested offline:
+Any OpenAI-compatible endpoint works. Copy `.env.example` → `.env` (used by the
+CLI) and/or `.streamlit/secrets.toml.example` → `.streamlit/secrets.toml`
+(used by the Streamlit app), then fill in your key. Both real files are
+git-ignored.
 
-```bash
-export OPENAI_API_KEY=sk-...
-export OPENAI_BASE_URL=https://api.openai.com/v1   # optional
-export LLM_MODEL=gpt-4o-mini                        # optional
+Example for **xAI / Grok**:
+
 ```
+OPENAI_BASE_URL=https://api.x.ai/v1
+OPENAI_API_KEY=xai-...
+LLM_MODEL=grok-4.20-0309-non-reasoning
+LLM_MAX_WORKERS=4        # parallel LLM requests per stage
+```
+
+Other providers (OpenAI, OpenRouter, Groq, DeepSeek, Ollama, LM Studio) just
+change the base URL and model. A key starting with `xai-` auto-selects the xAI
+endpoint. Prefer a **non-reasoning** model — reasoning models are much slower
+for this workload.
+
+Without a key the pipeline runs in **mock mode** (rough-gloss translations, not
+real English); the UI shows a yellow warning and the PDF prints a mock-mode
+note.
 
 ### Recording
 
@@ -89,13 +129,11 @@ to 320 kbps.
 
 1. Record (🔴 tab) or place the MP3 in `audio/` named
    `YYYY-MM-DD_station_duration.mp3`.
-2. Run `python run_pipeline.py --audio <file>` (omit `--mock-asr` for real
-   recordings).
+2. Run `python run_pipeline.py --audio <file>` (leave the mock-ASR box OFF for
+   real recordings).
 3. Review ASR errors (proper names, opera titles); fix the transcript JSON.
-4. Add any new sentences to `_SENTENCE_TRANSLATIONS` and new words to
-   `LEXICON` in `app/llm.py`.
-5. Regenerate without re-running ASR: `python regen_outputs.py --all`.
-6. Verify the PDF and set review status in the 📚 Library tab.
+4. Regenerate without re-running ASR: `python regen_outputs.py --all`.
+5. Verify the PDF and set review status in the 📚 Library tab.
 
 ## Output Format Rules
 

@@ -9,6 +9,11 @@ import sys
 
 from app.graph import run
 
+# Windows consoles default to cp1252, which cannot print Cantonese output.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()

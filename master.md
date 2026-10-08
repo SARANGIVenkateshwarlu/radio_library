@@ -112,10 +112,20 @@ Vocabulary:
 the recording.
 
 **Translation rule:** English must always be real. Priority order:
-1. `OPENAI_API_KEY` set → LangChain LLM chain translates.
+1. An LLM is configured (`OPENAI_API_KEY` in `.env` / Streamlit secrets) →
+   the LangChain LLM chain translates (prompted for natural meaning, not a
+   word-for-word gloss).
 2. Curated sentence table (`_SENTENCE_TRANSLATIONS` in `app/llm.py`) → exact,
    natural English. **Add every new recording's sentences here after review.**
-3. Fallback → word-by-word gloss from `LEXICON`, marked `[rough gloss]`.
+3. Offline mock fallback → word-by-word gloss from `LEXICON`, marked
+   `[rough gloss]`; sentences with no known words are marked
+   `[no translation — configure an LLM for real English]`.
+
+**Never** echo the Cantonese sentence as the English field — that makes the PDF
+look as though the translation is missing. When no LLM is configured the PDF
+prints a red **mock-mode** note and the record stores
+`"translation_source": "mock"`, so unreviewed output is never mistaken for
+real English.
 
 **Vocabulary rule:** extracted from `LEXICON` (55+ curated Cantonese words with
 Jyutping and meanings) or by the LLM when configured. Extend `LEXICON` whenever
@@ -126,6 +136,12 @@ a new word appears in a transcript.
 accuracy). Mock ASR is only for offline pipeline testing.
 
 ## 5b. Standard Task Procedure (do this every time)
+
+**Prerequisite (once):** configure your LLM in `.env` and
+`.streamlit/secrets.toml` (section 7). If you skip this, the run uses **mock
+mode**: the record is stored with `"translation_source": "mock"` and the PDF
+prints a mock-mode note — English will be a rough gloss, not a real translation.
+Leave the "Use mock ASR" checkbox **OFF** for real recordings.
 
 1. Record (🔴 tab) or place the MP3 in `audio/` named
    `YYYY-MM-DD_station_duration.mp3`.
@@ -149,14 +165,38 @@ e.g. 2026-10-07_RTHK_30min.mp3
 
 ## 7. LLM Configuration
 
-Set an OpenAI-compatible endpoint; otherwise the pipeline runs in **mock mode**
-so the whole system can be tested offline:
+Any OpenAI-compatible endpoint works (xAI/Grok, OpenAI, OpenRouter, Groq,
+DeepSeek, Ollama, LM Studio…). Copy the templates and fill in your key:
+
+- `.env.example` → `.env` — used by the CLI (`run_pipeline.py`,
+  `regen_outputs.py`).
+- `.streamlit/secrets.toml.example` → `.streamlit/secrets.toml` — used by the
+  Streamlit app.
+
+Both real files are git-ignored. Example for **xAI / Grok**:
+
+```
+OPENAI_BASE_URL=https://api.x.ai/v1
+OPENAI_API_KEY=xai-...
+LLM_MODEL=grok-4.20-0309-non-reasoning
+LLM_MAX_WORKERS=4        # parallel LLM requests per stage
+```
+
+Resolution order: OS environment variables → `.env` → Streamlit secrets.
+`XAI_API_KEY` / `XAI_BASE_URL` / `XAI_MODEL` are accepted as aliases, and a key
+starting with `xai-` auto-selects the xAI endpoint even without the base URL.
+
+Prefer a **non-reasoning** Grok model for speed (reasoning models are ~10x
+slower on this workload). List what your key can use:
 
 ```bash
-export OPENAI_API_KEY=sk-...
-export OPENAI_BASE_URL=https://api.openai.com/v1   # optional
-export LLM_MODEL=gpt-4o-mini                        # optional
+curl -s https://api.x.ai/v1/models -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
+
+Without a key the pipeline runs in **mock mode** (rough-gloss translations) for
+offline testing; the Streamlit UI shows a yellow warning and the PDF prints a
+mock-mode note. Mock output is not real translation — configure an LLM before
+review.
 
 ## 8. Quick Start
 

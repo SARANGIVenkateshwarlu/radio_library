@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
@@ -43,15 +45,25 @@ def transcribe(state: RadioState) -> dict:
     return {"segments": provider.transcribe(state["audio_path"])}
 
 
+def _llm_workers() -> int:
+    try:
+        return max(1, int(os.getenv("LLM_MAX_WORKERS", "4")))
+    except ValueError:
+        return 4
+
+
 def correct(state: RadioState) -> dict:
     chain = correct_chain()
-    segs = []
-    for s in state["segments"]:
+
+    def _one(s: dict) -> dict:
         s = dict(s)
         out = chain.invoke({"text": s["cantonese"]}).content.strip()
         s["corrected"] = out
         s["uncertain"] = "〔?〕" in out
-        segs.append(s)
+        return s
+
+    with ThreadPoolExecutor(max_workers=_llm_workers()) as ex:
+        segs = list(ex.map(_one, state["segments"]))
     return {"segments": segs}
 
 
@@ -69,8 +81,8 @@ def jyutping(state: RadioState) -> dict:
 def translate(state: RadioState) -> dict:
     t_chain = translate_chain()
     v_chain = vocab_chain()
-    segs = []
-    for s in state["segments"]:
+
+    def _one(s: dict) -> dict:
         s = dict(s)
         s["english"] = t_chain.invoke({"text": s["corrected"]}).content.strip()
         raw = v_chain.invoke({"text": s["corrected"]}).content.strip()
@@ -80,7 +92,10 @@ def translate(state: RadioState) -> dict:
             if len(parts) == 3:
                 vocab.append({"word": parts[0], "jyutping": parts[1], "meaning": parts[2]})
         s["vocabulary"] = vocab
-        segs.append(s)
+        return s
+
+    with ThreadPoolExecutor(max_workers=_llm_workers()) as ex:
+        segs = list(ex.map(_one, state["segments"]))
     return {"segments": segs}
 
 
@@ -93,6 +108,7 @@ def _record(state: RadioState) -> dict:
         "audio_file": state["audio_path"],
         "segments": state["segments"],
         "review_status": state.get("review_status", "unreviewed"),
+        "translation_source": "llm" if config.LLM_ENABLED else "mock",
     }
 
 

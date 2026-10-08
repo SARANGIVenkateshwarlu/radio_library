@@ -1,6 +1,7 @@
 """Bilingual PDF generation with reportlab (CID font for Cantonese)."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from reportlab.lib.pagesizes import A4
@@ -18,6 +19,8 @@ CANTO = ParagraphStyle("canto", fontName="STSong-Light", fontSize=12, leading=17
 JYUT = ParagraphStyle("jyut", fontName="STSong-Light", fontSize=10, leading=14, textColor="#2244aa")
 ENG = ParagraphStyle("eng", fontName="STSong-Light", fontSize=10.5, leading=14, textColor="#226622")
 TS = ParagraphStyle("ts", fontName="STSong-Light", fontSize=9, leading=12, textColor="#999999")
+WARN = ParagraphStyle("warn", fontName="STSong-Light", fontSize=9.5, leading=13,
+                      textColor="#aa2222")
 
 
 def _fmt_ts(sec: float) -> str:
@@ -28,8 +31,9 @@ def _fmt_ts(sec: float) -> str:
 
 def generate_pdf(record: dict, out_path: str | Path) -> str:
     out_path = str(out_path)
+    tmp_path = out_path + ".tmp"
     doc = SimpleDocTemplate(
-        out_path, pagesize=A4,
+        tmp_path, pagesize=A4,
         leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm, bottomMargin=18 * mm,
         title=record["recording_id"],
     )
@@ -46,6 +50,14 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
         ),
         Spacer(1, 6 * mm),
     ]
+    if record.get("translation_source") == "mock":
+        story.append(Paragraph(
+            "<b>Note:</b> offline mock mode — English below is a rough gloss "
+            "(or untranslated), not a real translation. Configure an LLM "
+            "(see README) then re-run to get proper English.",
+            WARN,
+        ))
+        story.append(Spacer(1, 4 * mm))
     for seg in record.get("segments", []):
         story.append(Paragraph(_fmt_ts(seg.get("start", 0)), TS))
         story.append(Spacer(1, 1 * mm))
@@ -81,4 +93,15 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
         for v in all_vocab:
             story.append(Paragraph(f"{v['word']} {v['jyutping']} — {v['meaning']}", ENG))
     doc.build(story)
+    try:
+        os.replace(tmp_path, out_path)
+    except PermissionError as exc:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise RuntimeError(
+            f"Could not write {out_path} — the file is open in another program "
+            "(e.g. a PDF viewer). Close it and run again."
+        ) from exc
     return out_path

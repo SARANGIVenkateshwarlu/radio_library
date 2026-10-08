@@ -57,6 +57,15 @@ def list_recordings(db_path: Path | None = None) -> list[dict]:
     return [dict(r) for r in rows]
 
 
+def update_review_status(recording_id: str, status: str, db_path: Path | None = None) -> None:
+    init_db(db_path)
+    with sqlite3.connect(db_path or config.DB_PATH) as con:
+        con.execute(
+            "UPDATE recordings SET review_status = ? WHERE recording_id = ?",
+            (status, recording_id),
+        )
+
+
 def get_recording(recording_id: str, db_path: Path | None = None) -> dict | None:
     init_db(db_path)
     with sqlite3.connect(db_path or config.DB_PATH) as con:

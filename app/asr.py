@@ -6,6 +6,7 @@ implementing the same `transcribe(audio_path) -> list[Segment]` interface.
 """
 from __future__ import annotations
 
+from . import config
 from .state import Segment
 
 DEMO_TRANSCRIPT: list[Segment] = [
@@ -51,7 +52,7 @@ class WhisperASR:
 
         # decode with ffmpeg (avoids PyAV version quirks): 16 kHz mono float32
         raw = subprocess.run(
-            ["ffmpeg", "-v", "quiet", "-i", audio_path,
+            [config.FFMPEG_BINARY, "-v", "quiet", "-i", audio_path,
              "-f", "f32le", "-ac", "1", "-ar", "16000", "-"],
             capture_output=True, check=True,
         ).stdout

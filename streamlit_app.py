@@ -17,9 +17,26 @@ from app.graph import run  # noqa: E402
 st.set_page_config(page_title="HK Radio Cantonese Library", page_icon="📻", layout="wide")
 st.title("📻 HK Radio → Cantonese Learning Library")
 
+if config.LLM_ENABLED:
+    st.caption(
+        f"LLM: **{config.LLM_PROVIDER}** · `{config.LLM_MODEL}` @ "
+        f"`{config.OPENAI_BASE_URL}`"
+    )
+else:
+    st.warning(
+        "No LLM API key configured — running in offline **mock mode** "
+        "(rough-gloss translations, not real English). Add your xAI key as "
+        "`OPENAI_API_KEY` (`xai-...`) to `.env` or `.streamlit/secrets.toml`, "
+        "then restart the app. See README."
+    )
+
 tab_record, tab_process, tab_library = st.tabs(
     ["🔴 Record radio", "⚙️ Process recording", "📚 Library"]
 )
+
+
+def set_review_status(recording_id: str) -> None:
+    library.update_review_status(recording_id, st.session_state[f"status_{recording_id}"])
 
 
 def fmt_ts(sec: float) -> str:
@@ -51,6 +68,14 @@ with tab_record:
         "MP3's highest standard quality is 320 kbps; recordings for personal study only."
     )
 
+    if not recorder.ffmpeg_available():
+        st.error(
+            "**ffmpeg is not installed** — recording is disabled. Install it and "
+            "restart the app:\n\n```\nwinget install Gyan.FFmpeg\n```\n"
+            "Then reopen this terminal (ffmpeg must be on PATH), or set "
+            "`FFMPEG_BINARY` to the full path of `ffmpeg.exe`."
+        )
+
     station = st.selectbox("Station", list(recorder.STATIONS.keys()),
                            index=list(recorder.STATIONS).index("RTHK Radio 5"))
     stream_url = st.text_input("Stream URL", value=recorder.STATIONS[station])
@@ -78,9 +103,13 @@ with tab_record:
 
     bc1, bc2 = st.columns(2)
     if bc1.button("🔴 Start recording", type="primary", disabled=bool(running)):
-        job = recorder.start_recording(station, stream_url, duration_s, bitrate)
-        st.session_state.rec_job = job["id"]
-        st.rerun()
+        try:
+            job = recorder.start_recording(station, stream_url, duration_s, bitrate)
+        except RuntimeError as exc:
+            st.error(str(exc))
+        else:
+            st.session_state.rec_job = job["id"]
+            st.rerun()
     if bc2.button("⏹️ Stop", disabled=not running):
         recorder.stop_recording(job_id)
         st.rerun()
@@ -99,6 +128,8 @@ with tab_record:
             st.session_state.rec_job = None
         elif stt["error"]:
             st.error("ffmpeg exited with an error — check the stream URL.")
+            if stt.get("error_tail"):
+                st.code(stt["error_tail"])
             st.session_state.rec_job = None
 
 with tab_process:
@@ -108,7 +139,10 @@ with tab_process:
         "Audio file path (YYYY-MM-DD_station_duration.mp3)",
         value=str(audio_files[0]) if audio_files else "audio/2026-10-07_RTHK_5min.mp3",
     )
-    mock = st.checkbox("Use mock ASR (offline demo transcript)", value=True)
+    mock = st.checkbox(
+        "Use mock ASR (offline demo transcript — leave OFF for real recordings)",
+        value=False,
+    )
 
     if st.button("▶️ Run pipeline", type="primary"):
         with st.status("Running LangGraph pipeline…", expanded=True) as status:
@@ -139,11 +173,13 @@ with tab_library:
                 c3.write(f"📄 `{rec['pdf_file']}`")
                 segs = json.loads(rec["transcript_json"] or "[]")
                 show_segments(segs)
-                new_status = st.selectbox(
+                st.selectbox(
                     "Review status",
                     ["unreviewed", "partially_reviewed", "verified"],
                     index=["unreviewed", "partially_reviewed", "verified"].index(rec["review_status"]),
                     key=f"status_{rec['recording_id']}",
+                    on_change=set_review_status,
+                    args=(rec["recording_id"],),
                 )
                 pdf = Path(rec["pdf_file"] or "")
                 if pdf.exists():
