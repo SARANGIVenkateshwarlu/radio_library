@@ -7,6 +7,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 
 import streamlit as st
 
@@ -94,8 +95,8 @@ with tab_sched:
         schedule.get_timetable(force=True)
         st.rerun()
     c2.caption(
-        "**Green + bold** = talk / discussion / speech / chit-chat "
-        "(good listening practice). Plain = music."
+        "**Green + bold** = talk / discussion / speech / chit-chat (good "
+        "listening practice) · **grey with (music)** = music · **red** = on air now."
     )
     try:
         timetable = schedule.get_timetable()
@@ -109,15 +110,21 @@ with tab_sched:
             with channel_tab:
                 rows = timetable.get(n, [])
                 live = schedule.on_air(rows, now)
-                if live:
-                    st.markdown(f"🔴 **On air now:** {live['title']} "
-                                f"({live['time']})")
                 if not rows:
                     st.info("No schedule available for this channel.")
                     continue
+                if live:
+                    st.markdown(f"🔴 **On air now:** {live['title']} "
+                                f"({live['time']})")
                 for r in rows:
                     line = f"{r['time']} · {r['title']}"
-                    if r["category"] == "talk":
+                    if r["category"] == "music":
+                        line += " (music)"
+                    if live is not None and r is live:
+                        st.markdown(
+                            f"<span style='color:#d32f2f;font-weight:800'>"
+                            f"{line}</span>", unsafe_allow_html=True)
+                    elif r["category"] == "talk":
                         st.markdown(
                             f"<span style='color:#1a7f37;font-weight:700'>"
                             f"{line}</span>", unsafe_allow_html=True)
@@ -380,6 +387,9 @@ def _render_quiz():
             st.error(f"❌ You chose: {choice}  \n\nCorrect: **{q['answer']}**")
         e = q["entry"]
         st.markdown(f"**Word:** {e['word']} ({e['jyutping']}) — {e['meaning']}")
+        st.markdown(
+            f"[🔗 Hear pronunciation & examples on words.hk]"
+            f"(https://words.hk/zidin/{quote(e['word'])})")
         if e["sentence"]:
             st.markdown(f"**In context:** {e['sentence']}")
         if e["english"]:
@@ -451,8 +461,17 @@ with tab_vocab:
             entries = by_group[chosen]
             st.dataframe(
                 [{"Word": e["word"], "Jyutping": e["jyutping"],
-                  "Meaning": e["meaning"], "In context": e["sentence"]}
+                  "Meaning": e["meaning"], "In context": e["sentence"],
+                  "words.hk": f"https://words.hk/zidin/{quote(e['word'])}"}
                  for e in entries],
+                column_config={
+                    "words.hk": st.column_config.LinkColumn(
+                        "Pronunciation & examples",
+                        display_text="🔗 words.hk",
+                        help="Open on words.hk to hear the pronunciation and "
+                             "see Cantonese usage examples",
+                    ),
+                },
                 width='stretch',
             )
             d1, d2 = st.columns(2)

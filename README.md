@@ -20,9 +20,9 @@ OpenAI-compatible API, local LLM, or a built-in mock for offline testing).
 ┌──────────────────────────────────────────────────────────────┐
 │                        LangGraph pipeline                     │
 │                                                              │
-│  load_audio → transcribe → correct → jyutping → translate    │
-│                                  │                           │
-│                        generate_pdf → save_to_library         │
+│  load_audio → cleanup_audio → transcribe → correct →         │
+│  jyutping → translate → segment_blocks → review_quality →    │
+│  generate_pdf → save_to_library                              │
 └──────────────────────────────────────────────────────────────┘
         │                                  │
    audio/*.mp3                    SQLite library.db + pdf/*.pdf
@@ -41,10 +41,14 @@ radio_library/
 │   ├── config.py             ← paths / env settings (xAI, ffmpeg)
 │   ├── state.py              ← LangGraph state schema
 │   ├── asr.py                ← ASR providers (mock / faster-whisper)
+│   ├── cleanup.py            ← Demucs vocal isolation (+ ffmpeg fallback)
 │   ├── llm.py                ← LangChain LLM factory (+ mock fallback)
 │   ├── jyutping_tool.py      ← pycantonese wrapper + fallback dictionary
+│   ├── grouping.py           ← topic/pause segmentation into 3–6 blocks
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
+│   ├── vocab.py              ← VocabBank: word banks + quiz builder
+│   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── recorder.py           ← ffmpeg stream recorder
 │   ├── nodes.py              ← LangGraph node functions
 │   └── graph.py              ← graph builder
@@ -121,9 +125,11 @@ note.
 ### Radio Time Table
 
 The 🗓️ **Radio Time Table** tab shows today's RTHK schedule for Radio 1–5,
-fetched live from the RTHK schedule page (cached 30 min). Each channel has an
-🔴 **On air now** marker; **talk programmes** (news, discussion, interview,
-speech, chit-chat) are **green + bold**, while music is greyed out.
+fetched live from the RTHK schedule page (cached 30 min). Same format on every
+channel — `00:00-06:00 · Night Music 長夜細聽 (music)`: the **current**
+programme is **red + bold**, **talk** (news, discussion, interview, speech,
+chit-chat) is **green + bold**, and **music** is greyed out and tagged
+`(music)` so it's easy to skip.
 
 ### Recording
 
@@ -148,7 +154,8 @@ The ⚙️ Process recording tab lists every MP3 in `audio/` (newest first).
 The 🗂️ **VocabBank** tab pools vocabulary from every processed session:
 
 - **Browse by session** — pick a recording from a dropdown and see its words
-  (word / Jyutping / meaning / context), with CSV export.
+  (word / Jyutping / meaning / context), each with a **words.hk** link
+  (`words.hk/zidin/<word>`) for pronunciation and example sentences; CSV export.
 - **Quick quiz** — Jyutping-only (no Chinese characters). 6–10 questions mixing
   *Jyutping → meaning* and *meaning → Jyutping*, at ~70% reviewed + ~30% new,
   one idea per question, plausible distractors. Immediate feedback includes the

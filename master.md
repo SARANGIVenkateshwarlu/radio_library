@@ -22,9 +22,9 @@ API, local LLM, or a built-in mock for offline testing).
 ┌──────────────────────────────────────────────────────────────┐
 │                        LangGraph pipeline                     │
 │                                                              │
-│  load_audio → transcribe → correct → jyutping → translate    │
-│                                  │                           │
-│                        generate_pdf → save_to_library        │
+│  load_audio → cleanup_audio → transcribe → correct →         │
+│  jyutping → translate → segment_blocks → review_quality →    │
+│  generate_pdf → save_to_library                              │
 └──────────────────────────────────────────────────────────────┘
         │                                  │
    audio/*.mp3                    SQLite library.db + pdf/*.pdf
@@ -44,10 +44,14 @@ radio_library/
 │   ├── config.py             ← paths / env settings
 │   ├── state.py              ← LangGraph state schema
 │   ├── asr.py                ← ASR providers (mock / pluggable)
+│   ├── cleanup.py            ← Demucs vocal isolation (+ ffmpeg fallback)
 │   ├── llm.py                ← LangChain LLM factory (+ mock fallback)
 │   ├── jyutping_tool.py      ← pycantonese wrapper + fallback dictionary
+│   ├── grouping.py           ← topic/pause segmentation (3–6 blocks)
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
+│   ├── vocab.py              ← VocabBank word bank + quiz builder
+│   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── nodes.py              ← LangGraph node functions
 │   └── graph.py              ← graph builder
 ├── audio/                    ← input MP3s (YYYY-MM-DD_station_duration.mp3)
@@ -225,11 +229,19 @@ streamlit run streamlit_app.py
 
 Today's RTHK schedule for the five FM channels (Radio 1–5), read live from the
 RTHK schedule page (`app/schedule.py`, cached 30 min). One section per channel
-with an **🔴 On air now** marker and a **🔄 Refresh** button. Programmes are
-classified as **talk** (news, discussion, interview, speech, chit-chat) or
-**music**; talk rows are shown **green + bold**, music rows grey. Classification
-is keyword-based (Chinese title + English slug), so music-heavy channels like
-Radio 4 correctly show little highlighting.
+with a **🔄 Refresh** button. Every row uses the same format:
+
+```
+00:00-06:00 · Night Music 長夜細聽 (music)
+```
+
+- **Red + bold** — the programme **currently on air** (plus an 🔴 On air now
+  marker).
+- **Green + bold** — talk (news, discussion, interview, speech, chit-chat):
+  good listening practice.
+- **Grey, suffixed `(music)`** — music programmes, so they are easy to skip.
+  Classification is keyword-based (Chinese title + English slug), so
+  music-heavy channels like Radio 4 correctly show little highlighting.
 
 ### Recording (🔴 Record radio tab)
 
@@ -272,7 +284,9 @@ read from the SQLite library and transcript JSON files. Sections:
 
 - **Browse by session** — dropdown of groups (labelled by MP3 file name); a
   table of word / Jyutping / meaning / in-context for the selected session,
-  with CSV export for one session or all.
+  plus a **words.hk** link per word (`https://words.hk/zidin/<word>`) to hear
+  the pronunciation and practice with Cantonese examples. CSV export for one
+  session or all.
 - **Quick quiz** — **character-free**, Jyutping-only (the learner cannot read
   hanzi). Two mixed types: *Jyutping → meaning* and its reverse
   *meaning → Jyutping*. 6–10 questions, **~70% reviewed words + ~30% new**, one
@@ -302,7 +316,7 @@ Progress is stored locally under `metadata/` (`quiz_history.json`,
 |------|--------|
 | Stream recorder → 60 s MP3 | ✅ `2026-10-07_rthk-radio-5_1min_2.mp3` — 60.03 s @ 320 kbps, no noise (direct stream) |
 | LangGraph pipeline on recording | ✅ JSON + SRT + bilingual PDF generated, saved to SQLite |
-| Streamlit app (3 tabs: record/play, process, library) | ✅ no exceptions; play toggle, record start/stop, library list working |
+| Streamlit app (5 tabs: Radio Time Table, record, process, library, VocabBank) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes working |
 | Live RTHK stream from sandbox | ⚠️ `stm1.rthk.hk` unreachable from this sandbox network; verified with local stream instead — works on a normal network |
 
 ## 11. Roadmap
