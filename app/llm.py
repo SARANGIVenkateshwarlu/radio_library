@@ -89,14 +89,28 @@ GROUP_PROMPT = ChatPromptTemplate.from_template(
 )
 
 REVIEW_PROMPT = ChatPromptTemplate.from_template(
-    "你係一個嚴謹嘅廣東話學習材料審稿人。下面係一段電台節目嘅逐句轉寫，"
-    "每行格式：編號. CANT: <廣東話> | JYUT: <粵拼> | ENG: <英文>。\n"
-    "請檢查：(a) 廣東話轉寫有冇錯字；(b) 粵拼拼音準唔準；(c) 英文翻譯準唔準確、地唔地道；"
-    "(d) 有冇明顯漏譯。只做評估，唔好改寫內容。\n"
-    "只輸出一個 JSON 物件（唔好有其他文字、唔好用 code fence），格式如下：\n"
-    '{{"accuracy_score": <0-100 嘅整數>, "summary": "<一句總結>", '
-    '"issues": [{{"segment": <編號>, "problem": "<問題>", "suggestion": "<建議>"}}], '
-    '"flagged_segments": [<有問題嘅編號>]}}\n\n轉寫內容：\n{text}'
+    "You are a strict reviewer of Cantonese learning materials. Below is a "
+    "line-by-line radio transcript, one per line in the form "
+    "N. CANT: <Cantonese> | JYUT: <Jyutping> | ENG: <English>.\n"
+    "Check: (a) Cantonese transcription typos; (b) Jyutping accuracy; "
+    "(c) English accuracy and naturalness; (d) missing translations. "
+    "Assess only — do not rewrite the content.\n"
+    "Write ALL output in ENGLISH.\n"
+    "Output ONLY a JSON object (no other text, no code fences):\n"
+    '{{"accuracy_score": <integer 0-100>, "summary": "<one-sentence English summary>", '
+    '"issues": [{{"segment": <n>, "problem": "<English>", "suggestion": "<English>"}}], '
+    '"flagged_segments": [<n>, ...]}}\n\nTranscript:\n{text}'
+)
+
+POLISH_PROMPT = ChatPromptTemplate.from_template(
+    "You are fixing a Cantonese radio transcript for learners. Using the "
+    "reviewer notes, correct ONLY the listed segments: fix Cantonese "
+    "transcription typos and/or improve the English translation. Keep the "
+    "meaning faithful and the English natural.\n"
+    "Output ONLY a JSON object (no other text, no code fences):\n"
+    '{{"fixes": [{{"segment": <n>, "cantonese": "<corrected Cantonese, or empty>", '
+    '"english": "<improved English, or empty>"}}]}}\n\n'
+    "Reviewer notes:\n{issues}\n\nSegments to fix:\n{text}"
 )
 
 # Curated sentence-level translations for known transcripts (real English,
@@ -255,3 +269,7 @@ def group_chain(llm: BaseChatModel | None = None):
 
 def review_chain(llm: BaseChatModel | None = None):
     return REVIEW_PROMPT | (llm or get_llm())
+
+
+def polish_chain(llm: BaseChatModel | None = None):
+    return POLISH_PROMPT | (llm or get_llm())

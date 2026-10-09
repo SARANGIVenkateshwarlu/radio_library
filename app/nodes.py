@@ -11,7 +11,13 @@ from pathlib import Path
 from . import asr, cleanup, config, library, pdf_gen
 from .grouping import assign_blocks
 from .jyutping_tool import to_jyutping
-from .llm import correct_chain, review_chain, translate_chain, vocab_chain
+from .llm import (
+    correct_chain,
+    polish_chain,
+    review_chain,
+    translate_chain,
+    vocab_chain,
+)
 from .state import RadioState
 
 _FN_RE = re.compile(r"(?P<date>\d{4}-\d{2}-\d{2})_(?P<station>[^_]+)_(?P<dur>[^.]+)")
@@ -130,24 +136,95 @@ def _extract_json(text: str) -> dict | None:
     return data if isinstance(data, dict) else None
 
 
-def review_quality(state: RadioState) -> dict:
-    """LLM spot-check of transcription/jyutping/English. Annotates only."""
-    if not config.LLM_ENABLED:
-        return {"quality_review": {"status": "skipped", "reason": "no LLM configured"}}
-    lines = [
+def _transcript_lines(segments: list[dict]) -> list[str]:
+    return [
         f"{i}. CANT: {s.get('corrected')} | JYUT: {s.get('jyutping')} | ENG: {s.get('english')}"
-        for i, s in enumerate(state["segments"], 1)
+        for i, s in enumerate(segments, 1)
     ]
+
+
+def _review(segments: list[dict]) -> tuple[int, dict]:
+    """Return (accuracy_score, review_dict). review_dict['status'] is set."""
     try:
-        out = review_chain().invoke({"text": "\n".join(lines)}).content
-    except Exception as exc:  # network / provider error — keep the rest of the run
-        return {"quality_review": {"status": "error", "reason": str(exc)}}
+        out = review_chain().invoke({"text": "\n".join(_transcript_lines(segments))}).content
+    except Exception as exc:  # network / provider error
+        return 0, {"status": "error", "reason": str(exc)}
     data = _extract_json(out)
     if data is None:
-        return {"quality_review": {"status": "unparsed", "raw": (out or "")[:500]}}
+        return 0, {"status": "unparsed", "raw": (out or "")[:500]}
+    try:
+        data["accuracy_score"] = int(data.get("accuracy_score") or 0)
+    except (TypeError, ValueError):
+        data["accuracy_score"] = 0
     data["status"] = "ok"
-    update: dict = {"quality_review": data}
-    if data.get("flagged_segments"):
+    return data["accuracy_score"], data
+
+
+def _polish(segments: list[dict], review: dict) -> list[dict] | None:
+    """Re-translate flagged segments using the reviewer notes; None if no-op."""
+    flagged = [n for n in (review.get("flagged_segments") or [])
+               if isinstance(n, int) and 1 <= n <= len(segments)]
+    if not flagged:
+        return None
+    notes = "\n".join(
+        f"#{it.get('segment')}: {it.get('problem')} -> {it.get('suggestion')}"
+        for it in (review.get("issues") or [])
+    ) or "(none)"
+    payload = "\n".join(
+        f"{n}. CANT: {segments[n - 1].get('corrected')} | ENG: {segments[n - 1].get('english')}"
+        for n in flagged
+    )
+    try:
+        out = polish_chain().invoke({"issues": notes, "text": payload}).content
+    except Exception:
+        return None
+    data = _extract_json(out) or {}
+    new = [dict(s) for s in segments]
+    changed = False
+    for fx in data.get("fixes") or []:
+        n = fx.get("segment")
+        if not (isinstance(n, int) and 1 <= n <= len(new)):
+            continue
+        cant = str(fx.get("cantonese") or "").strip()
+        eng = str(fx.get("english") or "").strip()
+        if cant:
+            new[n - 1]["corrected"] = cant
+            new[n - 1]["jyutping"] = to_jyutping(cant)
+            new[n - 1]["uncertain"] = "〔?〕" in new[n - 1]["jyutping"]
+            changed = True
+        if eng:
+            new[n - 1]["english"] = eng
+            changed = True
+    return new if changed else None
+
+
+def review_quality(state: RadioState) -> dict:
+    """LLM review; if below target, re-translate flagged lines and keep the
+    best-scoring run before the PDF is generated."""
+    if not config.LLM_ENABLED:
+        return {"quality_review": {"status": "skipped", "reason": "no LLM configured"}}
+
+    segments = [dict(s) for s in state["segments"]]
+    score, review = _review(segments)
+    attempts = 0
+    while (review.get("status") == "ok"
+           and score < config.QREVIEW_TARGET
+           and attempts < config.QREVIEW_MAX_ATTEMPTS):
+        improved = _polish(segments, review)
+        attempts += 1
+        if improved is None:
+            break
+        new_score, new_review = _review(improved)
+        if new_score >= score:  # keep the best-scoring run
+            segments, score, review = improved, new_score, new_review
+        if score >= config.QREVIEW_TARGET:
+            break
+    if review.get("status") == "ok":
+        review["attempts"] = attempts
+        review["target"] = config.QREVIEW_TARGET
+
+    update: dict = {"segments": segments, "quality_review": review}
+    if review.get("flagged_segments"):
         update["review_status"] = "partially_reviewed"
     return update
 

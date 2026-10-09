@@ -13,7 +13,15 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from app import cleanup, config, library, recorder, schedule, vocab  # noqa: E402
+from app import (  # noqa: E402
+    audio_util,
+    cleanup,
+    config,
+    library,
+    recorder,
+    schedule,
+    vocab,
+)
 from app.graph import run  # noqa: E402
 
 st.set_page_config(page_title="HK Radio Cantonese Library", page_icon="📻", layout="wide")
@@ -294,6 +302,20 @@ with tab_library:
                 c1.metric("Duration", f"{(rec['duration_seconds'] or 0)//60} min")
                 c2.write(f"🎧 `{rec['audio_file']}`")
                 c3.write(f"📄 `{rec['pdf_file']}`")
+
+                st.markdown("**🔊 Play recording**")
+                pc1, pc2 = st.columns([1, 3])
+                speed = pc1.selectbox(
+                    "Speed", [0.5, 0.75, 1.0, 1.5, 2.0], index=2,
+                    format_func=lambda x: f"{x:g}x",
+                    key=f"speed_{rec['recording_id']}",
+                )
+                audio_bytes = audio_util.speed_adjusted(rec["audio_file"], speed)
+                if audio_bytes:
+                    pc2.audio(audio_bytes, format="audio/mpeg")
+                else:
+                    pc2.caption("Audio file not found.")
+
                 segs = json.loads(rec["transcript_json"] or "[]")
                 show_segments(segs)
                 st.selectbox(

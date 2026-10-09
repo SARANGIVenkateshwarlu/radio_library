@@ -25,6 +25,7 @@ metadata/library.db
 metadata/*.db-journal
 metadata/*.json
 metadata/cleaned/
+metadata/speed/
 *.log
 
 # Screenshots / scratch

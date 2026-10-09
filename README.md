@@ -145,9 +145,11 @@ The ⚙️ Process recording tab lists every MP3 in `audio/` (newest first).
 - **Clean audio first** — removes background music by isolating the vocal stem
   with **Demucs** (ffmpeg denoise fallback). Great for noisy/musical sources;
   slower, and the original file is never modified.
-- **LLM quality review** — at the end of the run the LLM re-checks the
-  transcript for accuracy (characters, Jyutping, English) and reports a score
-  with flagged segments. It annotates only, never rewrites.
+- **LLM quality review + refine** — at the end of the run the LLM re-checks
+  the transcript and reports an **English** accuracy score, summary and issues.
+  If it scores below the target it re-translates the flagged segments and
+  reviews again, keeping the **best-scoring** version for the JSON/PDF
+  (`QREVIEW_TARGET`, `QREVIEW_MAX_ATTEMPTS`).
 
 ### VocabBank
 
@@ -164,6 +166,13 @@ The 🗂️ **VocabBank** tab pools vocabulary from every processed session:
 - **Quiz history** — all attempts and scores.
 
 Progress is stored locally in `metadata/` (git-ignored).
+
+### Library
+
+The 📚 **Library** tab lists saved recordings. Each one expands to the grouped
+transcript plus a **🔊 playback control with speed settings** (0.5x / 0.75x /
+1x / 1.5x / 2x — pitch-preserving, cached), a PDF download, and review-status
+editing.
 
 ## Standard Task Procedure
 

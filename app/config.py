@@ -89,6 +89,19 @@ LLM_MODEL = _setting("LLM_MODEL", "XAI_MODEL", default=_model_default)
 # ffmpeg binary (on PATH by default; override if it is not).
 FFMPEG_BINARY = _setting("FFMPEG_BINARY", default="ffmpeg")
 
+
+def _int_setting(name: str, default: int) -> int:
+    try:
+        return int(_setting(name, default=str(default)))
+    except (TypeError, ValueError):
+        return default
+
+
+# LLM quality review: re-translate flagged segments until the score reaches
+# the target (or the attempt budget is spent) and keep the best-scoring run.
+QREVIEW_TARGET = _int_setting("QREVIEW_TARGET", 90)
+QREVIEW_MAX_ATTEMPTS = _int_setting("QREVIEW_MAX_ATTEMPTS", 2)
+
 # True when a real LLM endpoint is configured; otherwise MockLLM is used.
 LLM_ENABLED = bool(OPENAI_API_KEY)
 LLM_PROVIDER = (

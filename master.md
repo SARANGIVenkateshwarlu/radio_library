@@ -270,12 +270,13 @@ and shown inline.
   denoise/normalise chain (`highpass`/`lowpass`/`afftdn`/`loudnorm`) if Demucs
   is unavailable. Cleaned audio is written to `metadata/cleaned/`; the original
   MP3 is never modified. Slower (Demucs ≈ 0.7× realtime on CPU).
-- **LLM quality review** — after processing, the LLM re-checks the whole
-  transcript (character errors, Jyutping, English accuracy, omissions) and
-  writes a QA report: accuracy score, summary, per-segment issues. It only
-  annotates — it never rewrites your text — and sets `review_status` to
-  `partially_reviewed` when anything is flagged. The report is stored in the
-  transcript JSON and printed at the end of the PDF.
+- **LLM quality review + refine** — after processing, the LLM re-checks the
+  whole transcript (Cantonese typos, Jyutping, English accuracy, omissions) and
+  reports an **accuracy score, English summary and per-segment issues in
+  English**. If the score is below `QREVIEW_TARGET` (default 90) it corrects the
+  flagged segments and reviews again, up to `QREVIEW_MAX_ATTEMPTS` (default 2),
+  keeping the **best-scoring** version — that is what gets written to the JSON
+  and PDF. Flagged runs set `review_status` to `partially_reviewed`.
 
 ### VocabBank (🗂️ tab)
 
@@ -299,6 +300,13 @@ read from the SQLite library and transcript JSON files. Sections:
 
 Progress is stored locally under `metadata/` (`quiz_history.json`,
 `vocab_stats.json`, both git-ignored).
+
+### Library (📚 tab)
+
+Saved recordings, each expandable to show the grouped transcript, a
+**🔊 playback control with speed settings** (0.5x / 0.75x / 1x / 1.5x / 2x —
+pitch-preserving ffmpeg `atempo`, cached under `metadata/speed/`), PDF download,
+and review-status editing.
 
 ## 9. Quality Controls (from the source plan)
 
