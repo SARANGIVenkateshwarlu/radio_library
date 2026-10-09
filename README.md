@@ -42,13 +42,16 @@ radio_library/
 │   ├── state.py              ← LangGraph state schema
 │   ├── asr.py                ← ASR providers (mock / faster-whisper)
 │   ├── cleanup.py            ← Demucs vocal isolation (+ ffmpeg fallback)
+│   ├── audio_util.py         ← pitch-preserving playback speed
 │   ├── llm.py                ← LangChain LLM factory (+ mock fallback)
 │   ├── jyutping_tool.py      ← pycantonese wrapper + fallback dictionary
+│   ├── jyutping_validate.py  ← LSHK Jyutping validator (no LLM)
 │   ├── grouping.py           ← topic/pause segmentation into 3–6 blocks
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank: word banks + quiz builder
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
+│   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── recorder.py           ← ffmpeg stream recorder
 │   ├── nodes.py              ← LangGraph node functions
 │   └── graph.py              ← graph builder
@@ -173,6 +176,18 @@ The 📚 **Library** tab lists saved recordings. Each one expands to the grouped
 transcript plus a **🔊 playback control with speed settings** (0.5x / 0.75x /
 1x / 1.5x / 2x — pitch-preserving, cached), a PDF download, and review-status
 editing.
+
+### Pronunciations
+
+The 🗣️ **Pronunciations** tab has two parts:
+
+- **📇 Phrase bank** — a personal card bank (Jyutping, English, audio, topic),
+  addable manually or auto-filled from a processed recording; export to
+  **Anki/CSV**; tracks **new cards/week** (target 35–50) and a **review streak**
+  (days with ≥10 reviews, target 6–7/week).
+- **🎧 Shadowing studio** — a play station for every MP3 plus sentence
+  shadowing: play a sentence clip at 0.5–2x, **record yourself**, and compare
+  side by side.
 
 ## Standard Task Procedure
 

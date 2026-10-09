@@ -5,6 +5,7 @@ Run:  streamlit run streamlit_app.py
 import json
 import sys
 import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
@@ -18,6 +19,7 @@ from app import (  # noqa: E402
     cleanup,
     config,
     library,
+    phrases,
     recorder,
     schedule,
     vocab,
@@ -40,9 +42,9 @@ else:
         "then restart the app. See README."
     )
 
-tab_sched, tab_record, tab_process, tab_library, tab_vocab = st.tabs(
+tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron = st.tabs(
     ["🗓️ Radio Time Table", "🔴 Record radio", "⚙️ Process recording",
-     "📚 Library", "🗂️ VocabBank"]
+     "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations"]
 )
 
 
@@ -513,3 +515,160 @@ with tab_vocab:
 
         with hist_tab:
             _render_history(hist)
+
+
+with tab_pron:
+    st.subheader("Pronunciations — phrase bank & shadowing")
+    bank_tab, shadow_tab = st.tabs(["📇 Phrase bank", "🎧 Shadowing studio"])
+
+    with bank_tab:
+        cards = phrases.load_cards()
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Cards", len(cards))
+        m2.metric("New this week", phrases.new_cards_this_week(),
+                  help="Target 35–50 new cards/week")
+        m3.metric("Review streak", f"{phrases.review_streak()} d",
+                  help="Consecutive days with ≥10 reviews")
+        m4.metric("Days on target (7d)", phrases.days_met_target_this_week(),
+                  help="Days this week with ≥10 reviews (target 6–7)")
+
+        st.markdown("**Daily review log**")
+        rc1, rc2 = st.columns([1, 3])
+        done = rc1.number_input("Reviews done today", 0, 1000, 0, key="rev_done")
+        if rc2.button("➕ Log reviews"):
+            phrases.log_reviews(int(done))
+            st.rerun()
+
+        st.markdown("**Add a phrase**")
+        with st.form("add_phrase"):
+            f1, f2 = st.columns(2)
+            jy = f1.text_input("Jyutping")
+            en = f2.text_input("English")
+            topic = f1.text_input("Topic tag")
+            audio = f2.text_input("Audio link / file (optional)")
+            if st.form_submit_button("Add card"):
+                if jy.strip() or en.strip():
+                    phrases.add_card(jy, en, audio, topic)
+                    st.rerun()
+                else:
+                    st.warning("Enter at least Jyutping or English.")
+
+        with st.expander("➕ Add from a processed recording (auto-fill + audio clip)"):
+            audio_files = sorted(config.AUDIO_DIR.glob("*.mp3"),
+                                 key=lambda p: p.stat().st_mtime, reverse=True)
+            if not audio_files:
+                st.info("No recordings in audio/ yet.")
+            else:
+                names = [p.name for p in audio_files]
+                by_name = {p.name: p for p in audio_files}
+                pick_file = st.selectbox("Recording", names, key="pb_rec")
+                segs = phrases.segments_for_audio(by_name[pick_file])
+                if not segs:
+                    st.info("No transcript for this recording yet.")
+                else:
+                    labels = [
+                        f"{i + 1}. {s.get('normalized_cantonese') or s.get('corrected') or s.get('cantonese', '')}"
+                        for i, s in enumerate(segs)
+                    ]
+                    idx = st.selectbox("Sentence", range(len(segs)),
+                                       format_func=lambda i: labels[i], key="pb_seg")
+                    s = segs[idx]
+                    st.markdown(f"**Jyutping:** `{s.get('jyutping','')}`")
+                    st.markdown(f"**English:** {s.get('english','')}")
+                    t1, t2 = st.columns(2)
+                    tag = t1.text_input("Topic tag", key="pb_tag")
+                    if t2.button("Add this phrase"):
+                        clip = phrases.clip_segment(
+                            str(by_name[pick_file]), s.get("start", 0.0),
+                            s.get("end", 0.0))
+                        audio_ref = ""
+                        if clip:
+                            phrases.REC_DIR.mkdir(parents=True, exist_ok=True)
+                            clip_path = phrases.REC_DIR / f"phrase_{uuid.uuid4().hex[:8]}.mp3"
+                            clip_path.write_bytes(clip)
+                            audio_ref = str(clip_path)
+                        phrases.add_card(s.get("jyutping", ""), s.get("english", ""),
+                                         audio_ref, tag)
+                        st.success("Added to phrase bank.")
+                        st.rerun()
+
+        if cards:
+            st.markdown("**Phrase bank**")
+            st.dataframe(
+                [{"Jyutping": c.get("jyutping", ""), "English": c.get("english", ""),
+                  "Topic": c.get("topic", ""), "Audio": c.get("audio", ""),
+                  "Added": (c.get("created_at") or "")[:10]}
+                 for c in cards],
+                width='stretch',
+            )
+            d1, d2 = st.columns(2)
+            d1.download_button("⬇️ Export Anki/CSV", phrases.export_csv(cards),
+                               file_name="phrase_bank.csv", mime="text/csv")
+            pick_del = d2.selectbox("Delete a card", [c["id"] for c in cards],
+                                    format_func=lambda cid: next(
+                                        (f"{(c.get('jyutping') or c.get('english'))[:40]}"
+                                         for c in cards if c["id"] == cid), cid),
+                                    key="pb_del")
+            if d2.button("🗑️ Delete selected"):
+                phrases.delete_card(pick_del)
+                st.rerun()
+        else:
+            st.info("No phrases yet — add your first card above.")
+
+    with shadow_tab:
+        st.markdown("**Play station**")
+        audio_files = sorted(config.AUDIO_DIR.glob("*.mp3"),
+                             key=lambda p: p.stat().st_mtime, reverse=True)
+        if not audio_files:
+            st.info("No audio files in audio/ yet — record an episode first.")
+        else:
+            names = [p.name for p in audio_files]
+            by_name = {p.name: p for p in audio_files}
+            pc1, pc2 = st.columns([3, 1])
+            chosen = pc1.selectbox("Audio file", names, key="sh_file")
+            speed = pc2.selectbox("Speed", [0.5, 0.75, 1.0, 1.5, 2.0], index=2,
+                                  format_func=lambda x: f"{x:g}x", key="sh_speed")
+            full = audio_util.speed_adjusted(str(by_name[chosen]), speed)
+            if full:
+                st.audio(full, format="audio/mpeg")
+
+            st.divider()
+            st.markdown("**Shadow a sentence** — listen → pause → repeat, "
+                        "matching tone contour and speed")
+            segs = phrases.segments_for_audio(by_name[chosen])
+            if not segs:
+                st.info("No transcript for this recording yet — process it first.")
+            else:
+                labels = [
+                    f"{i + 1}. {s.get('normalized_cantonese') or s.get('corrected') or s.get('cantonese', '')}"
+                    for i, s in enumerate(segs)
+                ]
+                idx = st.selectbox("Sentence", range(len(segs)),
+                                   format_func=lambda i: labels[i], key="sh_seg")
+                s = segs[idx]
+                st.markdown(f"**Jyutping:** `{s.get('jyutping','')}`")
+                st.markdown(f"**English:** {s.get('english','')}")
+                clip = phrases.clip_segment(str(by_name[chosen]),
+                                            s.get("start", 0.0), s.get("end", 0.0),
+                                            speed=speed)
+                if clip:
+                    st.audio(clip, format="audio/mpeg")
+                st.caption("1) Listen  2) Pause  3) Repeat aloud, matching tone & speed.")
+                rec = st.audio_input("🎤 Record yourself and compare")
+                if rec is not None:
+                    mine = rec.getvalue() if hasattr(rec, "getvalue") else rec.read()
+                    c1, c2 = st.columns(2)
+                    c1.markdown("**Original**")
+                    if clip:
+                        c1.audio(clip, format="audio/mpeg")
+                    c2.markdown("**You**")
+                    c2.audio(mine, format="audio/wav")
+                    if st.button("💾 Save my recording"):
+                        phrases.save_recording(mine)
+                        st.success("Saved to your shadowing recordings.")
+                saved = phrases.list_recordings()
+                if saved:
+                    with st.expander(f"🎙️ My recordings ({len(saved)})"):
+                        for path in saved[:20]:
+                            st.caption(Path(path).name)
+                            st.audio(Path(path).read_bytes(), format="audio/wav")

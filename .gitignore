@@ -26,6 +26,7 @@ metadata/*.db-journal
 metadata/*.json
 metadata/cleaned/
 metadata/speed/
+metadata/recordings/
 *.log
 
 # Screenshots / scratch

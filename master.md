@@ -43,15 +43,18 @@ radio_library/
 │   ├── __init__.py
 │   ├── config.py             ← paths / env settings
 │   ├── state.py              ← LangGraph state schema
-│   ├── asr.py                ← ASR providers (mock / pluggable)
+│   ├── asr.py                ← ASR providers (mock / faster-whisper + confidence)
 │   ├── cleanup.py            ← Demucs vocal isolation (+ ffmpeg fallback)
-│   ├── llm.py                ← LangChain LLM factory (+ mock fallback)
+│   ├── audio_util.py         ← pitch-preserving playback speed (atempo)
+│   ├── llm.py                ← LangChain LLM factory (+ mock fallback, prompts)
 │   ├── jyutping_tool.py      ← pycantonese wrapper + fallback dictionary
+│   ├── jyutping_validate.py  ← LSHK syllable/tone/alignment validator (no LLM)
 │   ├── grouping.py           ← topic/pause segmentation (3–6 blocks)
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
+│   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── nodes.py              ← LangGraph node functions
 │   └── graph.py              ← graph builder
 ├── audio/                    ← input MP3s (YYYY-MM-DD_station_duration.mp3)
@@ -328,6 +331,25 @@ Saved recordings, each expandable to show the grouped transcript, a
 pitch-preserving ffmpeg `atempo`, cached under `metadata/speed/`), PDF download,
 and review-status editing.
 
+### Pronunciations (🗣️ tab)
+
+Two sub-tabs. Data is local (`metadata/phrase_bank.json`,
+`metadata/phrase_reviews.json`, `metadata/recordings/`; all git-ignored).
+
+- **📇 Phrase bank** — a personal card bank with fields **Jyutping, English,
+  audio (link or file), topic tag**. Add cards manually, or **auto-fill from a
+  processed recording** (picks a sentence and saves its audio clip). Export an
+  **Anki/CSV** (columns: Jyutping, English, Audio, Topic). Progress metrics:
+  total cards, **new cards this week** (target 35–50), **review streak**
+  (consecutive days with ≥10 reviews) and **days on target this week**
+  (target 6–7); log reviews daily.
+- **🎧 Shadowing studio** — a **play station** for every MP3 in `audio/` with
+  speed control, plus **sentence shadowing**: pick a recording and a sentence,
+  play the clip at your chosen speed (listen → pause → repeat, matching tone
+  contour and speed), **record yourself** with the microphone, and compare the
+  original clip with your recording side by side. Recordings are saved for
+  later review.
+
 ## 9. Quality Controls (from the source plan)
 
 - Never overwrite original MP3s.
@@ -344,7 +366,7 @@ and review-status editing.
 |------|--------|
 | Stream recorder → 60 s MP3 | ✅ `2026-10-07_rthk-radio-5_1min_2.mp3` — 60.03 s @ 320 kbps, no noise (direct stream) |
 | LangGraph pipeline on recording | ✅ JSON + SRT + bilingual PDF generated, saved to SQLite |
-| Streamlit app (5 tabs: Radio Time Table, record, process, library, VocabBank) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes working |
+| Streamlit app (6 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes, phrase bank and shadowing working |
 | Live RTHK stream from sandbox | ⚠️ `stm1.rthk.hk` unreachable from this sandbox network; verified with local stream instead — works on a normal network |
 
 ## 11. Roadmap
