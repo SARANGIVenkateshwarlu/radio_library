@@ -24,7 +24,8 @@ class MockASR:
     name = "mock"
 
     def transcribe(self, audio_path: str) -> list[Segment]:
-        return [dict(s) for s in DEMO_TRANSCRIPT]
+        return [{**s, "confidence": 1.0, "no_speech_prob": 0.0}
+                for s in DEMO_TRANSCRIPT]
 
 
 class WhisperASR:
@@ -46,6 +47,7 @@ class WhisperASR:
         )
 
     def transcribe(self, audio_path: str) -> list[Segment]:
+        import math
         import subprocess
 
         import numpy as np
@@ -58,10 +60,20 @@ class WhisperASR:
         ).stdout
         audio = np.frombuffer(raw, dtype=np.float32)
         segs, info = self.model.transcribe(audio, vad_filter=True)
-        return [
-            {"start": s.start, "end": s.end, "cantonese": s.text.strip()}
-            for s in segs if s.text.strip()
-        ]
+        out = []
+        for s in segs:
+            text = s.text.strip()
+            if not text:
+                continue
+            avg = getattr(s, "avg_logprob", None)
+            out.append({
+                "start": s.start,
+                "end": s.end,
+                "cantonese": text,
+                "confidence": round(math.exp(avg), 3) if avg is not None else None,
+                "no_speech_prob": round(getattr(s, "no_speech_prob", 0.0) or 0.0, 3),
+            })
+        return out
 
 
 def get_asr(mock: bool = False):

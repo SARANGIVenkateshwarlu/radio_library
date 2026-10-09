@@ -102,6 +102,17 @@ def _int_setting(name: str, default: int) -> int:
 QREVIEW_TARGET = _int_setting("QREVIEW_TARGET", 90)
 QREVIEW_MAX_ATTEMPTS = _int_setting("QREVIEW_MAX_ATTEMPTS", 2)
 
+
+def _float_setting(name: str, default: float) -> float:
+    try:
+        return float(_setting(name, default=str(default)))
+    except (TypeError, ValueError):
+        return default
+
+
+# Below this ASR confidence a segment is flagged for human review.
+ASR_CONF_THRESHOLD = _float_setting("ASR_CONF_THRESHOLD", 0.5)
+
 # True when a real LLM endpoint is configured; otherwise MockLLM is used.
 LLM_ENABLED = bool(OPENAI_API_KEY)
 LLM_PROVIDER = (

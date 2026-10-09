@@ -73,12 +73,18 @@ def show_segments(segments):
             text = s.get("corrected") or s.get("cantonese", "")
             mark = " 〔?〕" if s.get("uncertain") and "〔?〕" not in text else ""
             st.markdown(f"{j}. {text}{mark}")
+            verbatim = s.get("verbatim_transcript")
+            if verbatim and verbatim != text:
+                st.caption(f"verbatim: {verbatim}")
         st.markdown("**Jyutping:**")
         for j, s in enumerate(block, 1):
             st.markdown(f"{j}. `{s.get('jyutping','')}`")
         st.markdown("**English:**")
         for j, s in enumerate(block, 1):
             st.markdown(f"{j}. {s.get('english','')}")
+        for j, s in enumerate(block, 1):
+            if s.get("needs_human_review"):
+                st.caption(f"⚠ line {j}: {s.get('review_reason', 'needs review')}")
         st.divider()
 
     seen, vocab = set(), []

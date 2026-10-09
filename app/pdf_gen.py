@@ -59,11 +59,18 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
             f"Station: {record.get('station','')} &nbsp;|&nbsp; "
             f"Recorded: {record.get('recorded_at','')} &nbsp;|&nbsp; "
             f"Audio: {record.get('audio_file','')} &nbsp;|&nbsp; "
+            f"Audio quality: {record.get('audio_quality','unknown')} &nbsp;|&nbsp; "
             f"Status: {record.get('review_status','unreviewed')} &nbsp;|&nbsp; "
             "Personal study use only",
             META,
         ),
-        Spacer(1, 6 * mm),
+        Spacer(1, 2 * mm),
+        Paragraph(
+            "⚠ = segment flagged for human review (uncertain Jyutping, "
+            "character/syllable mismatch, low ASR confidence, or music).",
+            TS,
+        ),
+        Spacer(1, 4 * mm),
     ]
     if record.get("translation_source") == "mock":
         story.append(Paragraph(
@@ -90,8 +97,18 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
                     text = s.get("corrected") or s.get("cantonese", "")
                 else:
                     text = s.get(key, "")
-                mark = " 〔?〕" if s.get("uncertain") and "〔?〕" not in (text or "") else ""
-                story.append(Paragraph(f"{j}. {text}{mark}", style))
+                marks = []
+                if s.get("uncertain") and "〔?〕" not in (text or ""):
+                    marks.append("〔?〕")
+                if key == "corrected" and s.get("needs_human_review"):
+                    marks.append("⚠ review")
+                suffix = (" " + " ".join(marks)) if marks else ""
+                story.append(Paragraph(f"{j}. {text}{suffix}", style))
+                if key == "corrected":
+                    verbatim = s.get("verbatim_transcript") or s.get("cantonese", "")
+                    if verbatim and verbatim != text:
+                        story.append(Paragraph(
+                            f"&nbsp;&nbsp;&nbsp;verbatim: {verbatim}", TS))
             story.append(Spacer(1, 2 * mm))
         story.append(Spacer(1, 3 * mm))
 

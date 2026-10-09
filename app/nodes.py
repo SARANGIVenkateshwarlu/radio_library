@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
-from . import asr, cleanup, config, library, pdf_gen
+from . import asr, cleanup, config, jyutping_validate, library, pdf_gen
 from .grouping import assign_blocks
 from .jyutping_tool import to_jyutping
 from .llm import (
@@ -59,7 +59,10 @@ def cleanup_audio(state: RadioState) -> dict:
 def transcribe(state: RadioState) -> dict:
     provider = asr.get_asr(mock=state.get("mock_asr", True))
     audio = state.get("asr_audio_path") or state["audio_path"]
-    return {"segments": provider.transcribe(audio)}
+    segs = provider.transcribe(audio)
+    for s in segs:  # keep the untouched spoken form as verbatim
+        s.setdefault("verbatim_transcript", s.get("cantonese", ""))
+    return {"segments": segs}
 
 
 def _llm_workers() -> int:
@@ -76,6 +79,7 @@ def correct(state: RadioState) -> dict:
         s = dict(s)
         out = chain.invoke({"text": s["cantonese"]}).content.strip()
         s["corrected"] = out
+        s["normalized_cantonese"] = out
         s["uncertain"] = "〔?〕" in out
         return s
 
@@ -114,6 +118,44 @@ def translate(state: RadioState) -> dict:
     with ThreadPoolExecutor(max_workers=_llm_workers()) as ex:
         segs = list(ex.map(_one, state["segments"]))
     return {"segments": segs}
+
+
+def validate_output(state: RadioState) -> dict:
+    """Deterministic QC: validate Jyutping and attach confidence/review flags.
+
+    Runs without the LLM (guideline: never rely on the LLM to check its own
+    Jyutping). Sets per-segment ``confidence``, ``uncertain_tokens``,
+    ``needs_human_review`` and ``review_reason``.
+    """
+    quality = "good" if state.get("cleanup_method") in ("demucs", "ffmpeg") else "unknown"
+    segs = []
+    for s in state["segments"]:
+        s = dict(s)
+        s.setdefault("verbatim_transcript", s.get("cantonese", ""))
+        s.setdefault("normalized_cantonese", s.get("corrected") or s.get("cantonese", ""))
+        problems = jyutping_validate.validate_segment(s)
+        tc = s.get("confidence")
+        tc = float(tc) if isinstance(tc, (int, float)) else 0.0
+        jyut_valid = not any(
+            ("Jyutping" in p or "syllable" in p) for p in problems)
+
+        s["confidence"] = {
+            "audio": round(1.0 - float(s.get("no_speech_prob") or 0.0), 3),
+            "transcription": round(tc, 3),
+            "jyutping": 0.9 if jyut_valid else 0.3,
+            "translation": 0.9 if s.get("english") else 0.0,
+        }
+        s["uncertain_tokens"] = [
+            t for t in (s.get("jyutping") or "").split() if t == "〔?〕"]
+        s.setdefault("alternative_readings", [])
+        s["audio_quality"] = quality
+        reasons = list(problems)
+        if tc and tc < config.ASR_CONF_THRESHOLD:
+            reasons.append(f"low ASR confidence ({tc:.2f})")
+        s["needs_human_review"] = bool(reasons)
+        s["review_reason"] = "; ".join(reasons) if reasons else None
+        segs.append(s)
+    return {"segments": segs, "audio_quality": quality}
 
 
 def segment_blocks(state: RadioState) -> dict:
@@ -240,6 +282,7 @@ def _record(state: RadioState) -> dict:
         "review_status": state.get("review_status", "unreviewed"),
         "translation_source": "llm" if config.LLM_ENABLED else "mock",
         "cleanup_method": state.get("cleanup_method"),
+        "audio_quality": state.get("audio_quality"),
         "quality_review": state.get("quality_review"),
     }
 

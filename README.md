@@ -200,6 +200,28 @@ document.
 - Dictionary-based Jyutping verification (not pure LLM guessing).
 - Review status: `unreviewed` / `partially_reviewed` / `verified`.
 
+## LLM design guideline alignment
+
+The project follows the recommended staged, structured-output design:
+
+- **HK Cantonese pinned** — the system prompt targets modern spoken Hong Kong
+  Cantonese and forbids rewriting into Mandarin/written Chinese; particles,
+  fillers and code-switching are preserved.
+- **Staged pipeline** — ASR (faster-whisper) and validation are separate from
+  the LLM's correction/translation layer; the LLM never does acoustic
+  recognition or tone decisions.
+- **Verbatim vs normalized** — each segment keeps `verbatim_transcript` and
+  `normalized_cantonese` separately.
+- **Programmatic Jyutping validation** — `app/jyutping_validate.py` checks every
+  syllable against an LSHK onset+final table, requires tone numbers 1–6, and
+  checks character/syllable alignment (no LLM self-checks).
+- **Uncertainty fields** — per-segment `confidence`
+  (audio/transcription/jyutping/translation), `uncertain_tokens`,
+  `alternative_readings`, `needs_human_review` and `review_reason`, plus an
+  English `quality_review`; flagged segments show a ⚠ in the app and PDF.
+
+See [`master.md`](master.md) §12 for the full mapping.
+
 ## Roadmap
 
 1. 5–10 min daily prototype on one station (current stage).

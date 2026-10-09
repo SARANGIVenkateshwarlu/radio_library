@@ -70,9 +70,10 @@ radio_library/
 | `transcribe`  | audio file       | Cantonese segments + ts       | ASR provider (mock/pluggable) |
 | `correct`     | raw transcript   | corrected Cantonese           | LangChain LLM chain           |
 | `jyutping`    | corrected text   | Jyutping per sentence         | pycantonese / dictionary      |
-| `translate`   | corrected text   | English translation           | LangChain LLM chain           |
+| `translate`   | corrected text   | English translation (meaning) | LangChain LLM chain           |
+| `validate_output` | all text     | confidence + review flags     | deterministic QC (no LLM)     |
 | `segment_blocks` | segments      | 3–6 sentence blocks           | LLM topic / pause grouping    |
-| `review_quality` | all text      | QA report + flags             | LangChain LLM chain           |
+| `review_quality` | all text      | English QA + refine to best   | LangChain LLM chain           |
 | `generate_pdf`| all above        | PDF path                      | reportlab (CID font)          |
 | `save_to_library` | all above    | DB row + JSON + SRT           | SQLite                        |
 
@@ -86,10 +87,29 @@ radio_library/
   "recorded_at": "2026-10-07T08:00:00+08:00",
   "duration_seconds": 1800,
   "audio_file": "audio/2026-10-07_RTHK_30min.mp3",
+  "audio_quality": "good | noisy | music | overlapping_speech | unknown",
+  "cleanup_method": "demucs | ffmpeg | off",
+  "translation_source": "llm | mock",
   "segments": [
-    {"start": 0.0, "end": 4.2, "cantonese": "...", "jyutping": "...", "english": "...",
-     "vocabulary": [{"word": "...", "jyutping": "...", "meaning": "..."}]}
+    {
+      "start": 0.0, "end": 4.2,
+      "verbatim_transcript": "...",      // what was heard (raw ASR, unchanged)
+      "normalized_cantonese": "...",     // readable HK Cantonese (== corrected)
+      "cantonese": "...",                // alias of verbatim_transcript
+      "corrected": "...",                // alias of normalized_cantonese
+      "jyutping": "nei5 hou2",
+      "english": "...",
+      "vocabulary": [{"word": "...", "jyutping": "...", "meaning": "..."}],
+      "confidence": {"audio": 0.0, "transcription": 0.0, "jyutping": 0.0, "translation": 0.0},
+      "uncertain_tokens": [],
+      "alternative_readings": [],
+      "needs_human_review": false,
+      "review_reason": null,
+      "audio_quality": "good",
+      "block": 0
+    }
   ],
+  "quality_review": {"status": "ok", "accuracy_score": 90, "summary": "...", "issues": [], "flagged_segments": []},
   "review_status": "unreviewed"
 }
 ```
@@ -334,3 +354,27 @@ and review-status editing.
 3. Speaker diarisation for phone-in programmes.
 4. Vocabulary extraction + flashcards + RAG over the library.
 5. Scheduled recording (cron / Android recorder + auto-upload).
+
+## 12. LLM design guideline alignment
+
+The pipeline follows the staged, structured-output design (no single mega-prompt):
+
+| Guideline | Implementation |
+|-----------|----------------|
+| 1. Define HK Cantonese explicitly | `SYSTEM_PROMPT` in `app/llm.py` pins *modern spoken Hong Kong Cantonese*, preserves sentence-final particles (喎 喇 啫 㗎 吖 啦 嘅 咩 囉), fillers, code-switching and names, and forbids rewriting into Mandarin/written Chinese. |
+| 2. Separate ASR from interpretation | Distinct nodes: `cleanup_audio` → `transcribe` → `correct` → `jyutping` → `translate` → `validate_output` → `review_quality` (voice-activity/noise via Demucs/ffmpeg + VAD; ASR is faster-whisper, not the LLM). |
+| 3. Preserve the original spoken form | Every segment keeps `verbatim_transcript` (untouched ASR) alongside `normalized_cantonese` (readable HK Cantonese). |
+| 4. Jyutping only, strict validation | LSHK Jyutping from pycantonese, then `app/jyutping_validate.py` checks every syllable against an onset+final table, requires a tone 1–6, and verifies character/syllable alignment — programmatically, not by the LLM. |
+| 5. Tones are essential | The validator flags missing/invalid tones; `confidence.jyutping` drops and the segment is flagged for review. |
+| 6. Multiple/colloquial readings | `alternative_readings` field per segment (populated when a reading is genuinely variable; empty otherwise). |
+| 7. Spoken vs written layers | `verbatim_transcript` + `normalized_cantonese` + Jyutping + English are stored separately; a formal-Chinese equivalent is optional and never replaces the Cantonese. |
+| 8. Translate meaning, not characters | Translation prompt asks for sentence-level meaning, forbids inventing gender/tense/politeness; vocabulary offers per-word meaning. |
+| 9. Timestamps + aligned segments | Timestamped segments (start/end) grouped into phrase-level blocks; Jyutping is character-aligned. |
+| 10. Uncertainty / evidence / validation | Per-segment `confidence` (audio/transcription/jyutping/translation), `audio_quality`, `uncertain_tokens`, `needs_human_review`, `review_reason`; recording-level `quality_review`. |
+
+Deterministic QC (guideline 10 + the "practical quality-control pipeline"):
+validate JSON, check timestamps, validate Jyutping syllables/tones/alignment, and
+set review flags — all in `validate_output` (no LLM). The LLM reviewer runs a
+second pass and refines flagged segments (`review_quality`, English report). The
+LLM is never the component responsible for acoustic recognition or tone
+accuracy — that stays with the Cantonese ASR and the dictionary/validator.

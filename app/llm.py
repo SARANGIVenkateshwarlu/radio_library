@@ -62,24 +62,47 @@ def get_llm() -> BaseChatModel:
 
 
 # LangChain chains (prompt | llm) used by the graph nodes.
-CORRECT_PROMPT = ChatPromptTemplate.from_template(
-    "你係一個廣東話編輯。修正以下電台語音轉寫嘅錯字同標點，"
-    "保留口語風格，唔好改寫意思。如不確定，用〔?〕標記。"
-    "只輸出修正後嘅句子本身，唔好加任何標題、解釋、前言或引號。\n\n原文：{text}"
+# Shared system prompt: pin the variety and the "don't guess, mark it" rule.
+SYSTEM_PROMPT = (
+    "You are a Hong Kong Cantonese transcription and language-learning "
+    "assistant. The target variety is modern spoken Hong Kong Cantonese — not "
+    "Mandarin, Guangzhou Cantonese, or formal written Chinese. Preserve "
+    "Cantonese vocabulary, sentence-final particles (喎 喇 啫 㗎 吖 啦 嘅 咩 囉), "
+    "fillers, repetitions, English code-switching, slang, and proper names. Do "
+    "not rewrite colloquial Cantonese into Mandarin or written Chinese. Use LSHK "
+    "Jyutping with tone numbers 1-6 at the end of every syllable. Mark "
+    "uncertainty instead of guessing; never invent names, words, tones, or "
+    "meanings."
 )
 
-TRANSLATE_PROMPT = ChatPromptTemplate.from_template(
-    "Translate the following colloquial Cantonese radio sentence into natural, "
-    "idiomatic English. Convey the MEANING (not a word-for-word gloss). Keep "
-    "proper names and numbers exact. Output only the English translation, with "
-    "no notes or romanisation.\n\nCantonese：{text}"
-)
+CORRECT_PROMPT = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human",
+     "你係一個現代香港廣東話編輯。修正以下電台語音轉寫嘅錯字同標點，"
+     "保留香港口語詞彙、語氣助詞、語氣、中英夾雜、專有名詞同俚語；"
+     "唔好將口語改寫成普通話或書面中文。如不確定，用〔?〕標記，唔好亂猜。"
+     "只輸出修正後嘅句子本身，唔好加任何標題、解釋、前言或引號。\n\n原文：{text}"),
+])
 
-VOCAB_PROMPT = ChatPromptTemplate.from_template(
-    "From the Cantonese sentence below, extract up to 3 useful vocabulary items for a learner. "
-    "Output one per line, exactly in this format: word | jyutping | english meaning. "
-    "No other text.\n\n句子：{text}"
-)
+TRANSLATE_PROMPT = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human",
+     "Translate the following colloquial Hong Kong Cantonese radio sentence into "
+     "natural English. Translate the MEANING at sentence level, not word-by-word; "
+     "handle particles, classifiers and aspect markers naturally. Keep proper "
+     "names, numbers and English insertions exact. Do not add gender, tense, "
+     "politeness or intent that is not in the Cantonese. Output only the English "
+     "translation.\n\nCantonese：{text}"),
+])
+
+VOCAB_PROMPT = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT),
+    ("human",
+     "From the Cantonese sentence below, extract up to 3 useful vocabulary items "
+     "for a learner. Use LSHK Jyutping (tone numbers 1-6 at the end of every "
+     "syllable). Output one per line, exactly: word | jyutping | english meaning. "
+     "No other text.\n\n句子：{text}"),
+])
 
 GROUP_PROMPT = ChatPromptTemplate.from_template(
     "下面係一段電台節目嘅廣東話句子，每句前面有編號。請將佢哋分成若干段落，"
