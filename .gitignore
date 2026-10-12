@@ -29,6 +29,9 @@ metadata/speed/
 metadata/recordings/
 *.log
 
+# Local Whisper models (converted CTranslate2 / HF)
+models/
+
 # Screenshots / scratch
 screenshots/
 

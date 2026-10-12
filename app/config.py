@@ -113,6 +113,24 @@ def _float_setting(name: str, default: float) -> float:
 # Below this ASR confidence a segment is flagged for human review.
 ASR_CONF_THRESHOLD = _float_setting("ASR_CONF_THRESHOLD", 0.5)
 
+# --- ASR (Whisper) -----------------------------------------------------------
+# WHISPER_BACKEND = "faster-whisper" (CTranslate2, fast) or "transformers".
+WHISPER_BACKEND = _setting("WHISPER_BACKEND", default="faster-whisper").strip().lower()
+# Model id or local path. For Cantonese large-v3-turbo, see README:
+#   faster-whisper: a converted CTranslate2 dir (e.g. models/whisper-large-v3-turbo-cantonese-ct2)
+#   transformers:   "wingskh/whisper-large-v3-turbo-cantonese"
+WHISPER_MODEL = _setting("WHISPER_MODEL", default="base")
+WHISPER_DEVICE = _setting("WHISPER_DEVICE", default="cpu")
+WHISPER_COMPUTE = _setting("WHISPER_COMPUTE", default="int8")
+WHISPER_LANGUAGE = _setting("WHISPER_LANGUAGE", default="yue")   # Cantonese; "" = auto
+WHISPER_BEAM = _int_setting("WHISPER_BEAM", 5)
+# Batched inference (faster-whisper): >1 speeds up a lot, esp. on GPU.
+WHISPER_BATCH_SIZE = _int_setting("WHISPER_BATCH_SIZE", 8)
+WHISPER_INITIAL_PROMPT = _setting(
+    "WHISPER_INITIAL_PROMPT",
+    default="以下係香港廣東話電台節目嘅內容，請用繁體中文轉寫。",
+)
+
 # True when a real LLM endpoint is configured; otherwise MockLLM is used.
 LLM_ENABLED = bool(OPENAI_API_KEY)
 LLM_PROVIDER = (

@@ -29,6 +29,7 @@ STATIONS = {
     "RTHK Radio 3": "https://stm1.rthk.hk/radio3",
     "RTHK Radio 4": "https://stm1.rthk.hk/radio4",
     "RTHK Radio 5": "https://stm1.rthk.hk/radio5",
+    "Talk Only (www.talkonly.net)": "https://live.talkonly.net:8443/talkonly.mp3",
 }
 
 # Highest standard MP3 bitrate (no 360k mode exists for MP3).
@@ -41,8 +42,14 @@ def _slug(station: str) -> str:
     return station.lower().replace(" ", "-")
 
 
-def start_recording(station: str, url: str, duration_s: int, bitrate: str = "320k") -> dict:
-    """Start a background ffmpeg recording. Returns a job dict."""
+def start_recording(station: str, url: str, duration_s: int, bitrate: str = "320k",
+                    buffer_s: int = 12) -> dict:
+    """Start a background ffmpeg recording.
+
+    ``buffer_s`` is the disconnect-tolerance window (seconds): ffmpeg keeps
+    input buffered and auto-reconnects for up to that long, gap-filling the
+    audio timeline so brief stream drops don't break a continuous recording.
+    """
     if not ffmpeg_available():
         raise RuntimeError(
             f"ffmpeg was not found (looked for '{config.FFMPEG_BINARY}' on PATH). "
@@ -63,12 +70,23 @@ def start_recording(station: str, url: str, duration_s: int, bitrate: str = "320
     job_id = uuid.uuid4().hex[:8]
     log_path = config.METADATA_DIR / f"rec_{job_id}.log"
 
+    buf = max(0, int(buffer_s))
     cmd = [
         config.FFMPEG_BINARY, "-y",
-        "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5",
+        "-hide_banner", "-loglevel", "warning",
+        # input buffering + robust reconnection for flaky live streams
+        "-thread_queue_size", "2048",
+        "-rw_timeout", "15000000",
+        "-reconnect", "1",
+        "-reconnect_streamed", "1",
+        "-reconnect_at_eof", "1",
+        "-reconnect_delay_max", str(buf + 5),
+        "-fflags", "+discardcorrupt+genpts",
         "-i", url,
         "-t", str(duration_s),
         "-vn",
+        # keep the audio timeline continuous across short gaps
+        "-af", "aresample=async=1",
         "-codec:a", "libmp3lame",
         "-b:a", bitrate,
         "-ar", "44100",
@@ -91,6 +109,7 @@ def start_recording(station: str, url: str, duration_s: int, bitrate: str = "320
         "_log": log,
         "duration_s": duration_s,
         "bitrate": bitrate,
+        "buffer_s": buf,
         "started": time.time(),
     }
     _jobs[job_id] = job

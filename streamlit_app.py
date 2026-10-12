@@ -78,12 +78,13 @@ def show_segments(segments):
             verbatim = s.get("verbatim_transcript")
             if verbatim and verbatim != text:
                 st.caption(f"verbatim: {verbatim}")
-        st.markdown("**Jyutping:**")
-        for j, s in enumerate(block, 1):
-            st.markdown(f"{j}. `{s.get('jyutping','')}`")
-        st.markdown("**English:**")
-        for j, s in enumerate(block, 1):
-            st.markdown(f"{j}. {s.get('english','')}")
+        st.markdown("**Jyutping · English**")
+        st.table({
+            "Jyutping": [f"{j}. {s.get('jyutping', '')}"
+                         for j, s in enumerate(block, 1)],
+            "English": [f"{j}. {s.get('english', '')}"
+                        for j, s in enumerate(block, 1)],
+        })
         for j, s in enumerate(block, 1):
             if s.get("needs_human_review"):
                 st.caption(f"⚠ line {j}: {s.get('review_reason', 'needs review')}")
@@ -197,6 +198,11 @@ with tab_record:
         duration_s = {"5 min": 300, "10 min": 600, "30 min": 1800, "1 hour": 3600}[dur_label]
     bitrate = c2.selectbox("MP3 quality", recorder.BITRATES,
                            index=recorder.BITRATES.index("320k"))
+    buffer_s = st.slider(
+        "Stream buffer / disconnect tolerance (seconds)", 0, 30, 12,
+        help="ffmpeg keeps this many seconds buffered and auto-reconnects, so "
+             "brief stream drops don't break a continuous recording.",
+    )
 
     if "rec_job" not in st.session_state:
         st.session_state.rec_job = None
@@ -208,7 +214,8 @@ with tab_record:
     if bc1.button("🔴 Start recording", type="primary", disabled=bool(running),
                   key="record_start", width="stretch"):
         try:
-            job = recorder.start_recording(station, stream_url, duration_s, bitrate)
+            job = recorder.start_recording(station, stream_url, duration_s,
+                                           bitrate, buffer_s=buffer_s)
         except RuntimeError as exc:
             st.error(str(exc))
         else:
@@ -237,42 +244,23 @@ with tab_record:
                 st.code(stt["error_tail"])
             st.session_state.rec_job = None
 
-with tab_process:
-    st.subheader("Run the LangGraph pipeline on a recording")
-
-    audio_files = sorted(
-        config.AUDIO_DIR.glob("*.mp3"),
-        key=lambda p: p.stat().st_mtime,
-        reverse=True,
-    )
-    if audio_files:
-        by_name = {p.name: str(p) for p in audio_files}
-        chosen = st.selectbox(
-            f"Audio file ({len(audio_files)} in audio/ — latest first)",
-            list(by_name),
-        )
-        audio_path = by_name[chosen]
-        st.caption(f"Path: `{audio_path}`")
-    else:
-        st.info("No MP3s in `audio/` yet — record one in the 🔴 Record radio tab.")
-        audio_path = st.text_input(
-            "Audio file path", value="audio/2026-10-07_RTHK_5min.mp3")
-
+def process_controls(audio_path, kp):
     mock = st.checkbox(
         "Use mock ASR (offline demo transcript — leave OFF for real recordings)",
-        value=False,
+        value=False, key=f"{kp}_mock",
     )
     clean = st.checkbox(
         "Clean audio first — isolate voice / remove background music "
         f"({'Demucs' if cleanup.demucs_available() else 'ffmpeg'} · slower)",
-        value=cleanup.demucs_available(),
+        value=cleanup.demucs_available(), key=f"{kp}_clean",
     )
 
-    if st.button("▶️ Run pipeline", type="primary") and audio_path:
+    if st.button("▶️ Run pipeline", type="primary", key=f"{kp}_run") and audio_path:
         with st.status("Running LangGraph pipeline…", expanded=True) as status:
             for step in ["load_audio", "cleanup_audio", "transcribe", "correct",
-                         "jyutping", "translate", "segment_blocks",
-                         "review_quality", "generate_pdf", "save_to_library"]:
+                         "jyutping", "translate", "validate_output",
+                         "segment_blocks", "review_quality", "generate_pdf",
+                         "save_to_library"]:
                 st.write(f"• {step}")
             final = run(audio_path, mock_asr=mock, clean_audio=clean)
             status.update(label=f"Done: {final['recording_id']}", state="complete")
@@ -295,7 +283,62 @@ with tab_process:
         pdf_path = Path(final["pdf_path"])
         if pdf_path.exists():
             st.download_button("⬇️ Download PDF", pdf_path.read_bytes(),
-                               file_name=pdf_path.name, mime="application/pdf")
+                               file_name=pdf_path.name, mime="application/pdf",
+                               key=f"{kp}_dl")
+
+
+with tab_process:
+    st.subheader("Run the LangGraph pipeline on a recording")
+    proc_r, proc_c = st.tabs(["📻 Radio recordings", "⬆️ Custom MP3"])
+
+    with proc_r:
+        audio_files = sorted(
+            config.AUDIO_DIR.glob("*.mp3"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        if audio_files:
+            by_name = {p.name: str(p) for p in audio_files}
+            chosen = st.selectbox(
+                f"Audio file ({len(audio_files)} in audio/ — latest first)",
+                list(by_name),
+            )
+            audio_path = by_name[chosen]
+            st.caption(f"Path: `{audio_path}`")
+        else:
+            st.info("No MP3s in `audio/` yet — record one in the 🔴 Record radio tab.")
+            audio_path = st.text_input(
+                "Audio file path", value="audio/2026-10-07_RTHK_5min.mp3")
+        process_controls(audio_path, kp="radio")
+
+    with proc_c:
+        saved = st.session_state.get("custom_audio")
+        if saved and Path(saved).exists():
+            st.success(f"Saved: `{saved}`")
+            c_clear, _ = st.columns([1, 3])
+            if c_clear.button("✖️ Clear / pick another"):
+                st.session_state.pop("custom_audio", None)
+                st.rerun()
+            st.caption(
+                "This file is now in `audio/` and is processed exactly like a radio "
+                "MP3 — full pipeline: cleanup → ASR → Jyutping → translation → "
+                "validation → LLM review → PDF → library."
+            )
+            process_controls(saved, kp="custom")
+        else:
+            up = st.file_uploader(
+                "Upload an MP3 (YouTube, podcast, phone — any local file)",
+                type=["mp3"],
+            )
+            src = st.text_input("Source / title tag (used in the file name)",
+                                value="custom")
+            if up is not None:
+                st.audio(up.getvalue(), format="audio/mpeg")
+                if st.button("▶️ Save to audio/ and process", type="primary",
+                             key="save_custom"):
+                    path, dur = audio_util.save_upload_mp3(up.getvalue(), src)
+                    st.session_state["custom_audio"] = path
+                    st.rerun()
 
 with tab_library:
     st.subheader("Saved recordings")

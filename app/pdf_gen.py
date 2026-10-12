@@ -86,31 +86,43 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
         end = block[-1].get("end", 0.0)
         story.append(Paragraph(
             f"<b>Block {bi}</b> &nbsp; [{_fmt_ts(start)} – {_fmt_ts(end)}]", BLOCK))
-        for label, key, style in (
-            ("Cantonese:", "corrected", CANTO),
-            ("Jyutping:", "jyutping", JYUT),
-            ("English:", "english", ENG),
-        ):
-            story.append(Paragraph(f"<b>{label}</b>", META))
-            for j, s in enumerate(block, 1):
-                if key == "corrected":
-                    text = s.get("corrected") or s.get("cantonese", "")
-                else:
-                    text = s.get(key, "")
-                marks = []
-                if s.get("uncertain") and "〔?〕" not in (text or ""):
-                    marks.append("〔?〕")
-                if key == "corrected" and s.get("needs_human_review"):
-                    marks.append("⚠ review")
-                suffix = (" " + " ".join(marks)) if marks else ""
-                story.append(Paragraph(f"{j}. {text}{suffix}", style))
-                if key == "corrected":
-                    verbatim = s.get("verbatim_transcript") or s.get("cantonese", "")
-                    if verbatim and verbatim != text:
-                        story.append(Paragraph(
-                            f"&nbsp;&nbsp;&nbsp;verbatim: {verbatim}", TS))
-            story.append(Spacer(1, 2 * mm))
-        story.append(Spacer(1, 3 * mm))
+
+        story.append(Paragraph("<b>Cantonese:</b>", META))
+        for j, s in enumerate(block, 1):
+            text = s.get("corrected") or s.get("cantonese", "")
+            marks = []
+            if s.get("uncertain") and "〔?〕" not in (text or ""):
+                marks.append("〔?〕")
+            if s.get("needs_human_review"):
+                marks.append("⚠ review")
+            suffix = (" " + " ".join(marks)) if marks else ""
+            story.append(Paragraph(f"{j}. {text}{suffix}", CANTO))
+            verbatim = s.get("verbatim_transcript") or s.get("cantonese", "")
+            if verbatim and verbatim != text:
+                story.append(Paragraph(f"&nbsp;&nbsp;&nbsp;verbatim: {verbatim}", TS))
+        story.append(Spacer(1, 1 * mm))
+
+        # Jyutping | English side by side, one row per sentence (saves space).
+        header = [Paragraph("<b>Jyutping</b>", TS), Paragraph("<b>English</b>", TS)]
+        rows = [
+            [
+                Paragraph(f"{j}. {s.get('jyutping', '')}", JYUT),
+                Paragraph(f"{j}. {s.get('english', '') or ''}", ENG),
+            ]
+            for j, s in enumerate(block, 1)
+        ]
+        table = Table([header] + rows, colWidths=[58 * mm, 104 * mm], repeatRows=1)
+        table.setStyle(TableStyle([
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#cccccc")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eef3fb")),
+        ]))
+        story.append(table)
+        story.append(Spacer(1, 4 * mm))
 
     seen, vocab = set(), []
     for s in record.get("segments", []):

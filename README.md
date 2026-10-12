@@ -125,6 +125,132 @@ Without a key the pipeline runs in **mock mode** (rough-gloss translations, not
 real English); the UI shows a yellow warning and the PDF prints a mock-mode
 note.
 
+### Local LLM with Ollama
+
+You already run Ollama — point the app at it (no cloud key needed):
+
+```bash
+ollama pull qwen2.5:7b        # strong Chinese↔English; use a smaller/3b on low RAM
+```
+```
+# .env / .streamlit/secrets.toml
+OPENAI_BASE_URL=http://localhost:11434/v1
+OPENAI_API_KEY=ollama
+LLM_MODEL=qwen2.5:7b
+LLM_MAX_WORKERS=1
+```
+
+> **CPU-only caveat:** local LLMs are much slower than cloud. Big/reasoning
+> models are unusable here — on a CPU-only box `glm-4.7-flash` took ~130 s per
+> call and some quants (`qwen2.5:7b`) crash Ollama. Prefer a small model; if
+> Ollama is unstable/slow on your hardware, use a cloud LLM instead.
+
+## Cantonese ASR (local Whisper large-v3-turbo)
+
+The app uses Whisper for transcription. For Cantonese, use a **large-v3-turbo
+Cantonese** model (e.g.
+[`wingskh/whisper-large-v3-turbo-cantonese`](https://huggingface.co/wingskh/whisper-large-v3-turbo-cantonese))
+— much better than `base`/`small` and faster than large-v3.
+
+### Option A — faster-whisper (recommended: fast CPU/GPU inference)
+
+Convert the model to CTranslate2 once, then point the app at it:
+
+```bash
+pip install transformers ctranslate2 torch
+ct2-transformers-converter \
+  --model wingskh/whisper-large-v3-turbo-cantonese \
+  --output_dir models/whisper-large-v3-turbo-cantonese-ct2 \
+  --copy_files tokenizer.json preprocessor_config.json generation_config.json \
+  --quantization int8
+```
+```
+# .env
+WHISPER_BACKEND=faster-whisper
+WHISPER_MODEL=models/whisper-large-v3-turbo-cantonese-ct2
+WHISPER_COMPUTE=int8          # use float16 with WHISPER_DEVICE=cuda on a GPU
+WHISPER_LANGUAGE=yue
+```
+
+### Option B — transformers (no conversion, slower)
+
+```bash
+pip install transformers torch accelerate
+```
+```
+WHISPER_BACKEND=transformers
+WHISPER_MODEL=wingskh/whisper-large-v3-turbo-cantonese
+WHISPER_LANGUAGE=yue
+```
+
+The model downloads on first run. (Ollama is for the LLM; Whisper runs through
+faster-whisper/transformers, not Ollama.)
+
+> **Windows download tips:** use `hf_transfer` for much faster downloads
+> (`pip install hf_transfer`, `HF_HUB_ENABLE_HF_TRANSFER=1`). If you see
+> `WinError 1314` (symlink privilege), download into a real folder instead —
+> `huggingface_hub.snapshot_download("deepdml/faster-whisper-large-v3-turbo-ct2",
+> local_dir="models/whisper-large-v3-turbo-ct2")` — or set
+> `HF_HUB_DISABLE_SYMLINKS=1`.
+
+### Choosing a Cantonese model
+
+| Model | Size | Speed | Notes |
+|-------|------|-------|-------|
+| `wingskh/whisper-large-v3-turbo-cantonese` | 808M | fast | **Recommended** — turbo, lower cost |
+| `khleeloo/whisper-large-v3-cantonese` | 1.54B | slower | Higher accuracy, but **gated** and ~6 GB |
+
+Both are transformers-format, so use **Option A** (convert to CTranslate2) or
+**Option B** (transformers backend). The `khleeloo` model is **gated**, so
+authenticate first:
+
+```bash
+pip install huggingface_hub
+huggingface-cli login          # paste a READ-role token after accepting the license
+# or set HF_TOKEN=hf_... in your environment / .env
+```
+
+Then either convert it (`WHISPER_MODEL=khleeloo/whisper-large-v3-cantonese` for
+the transformers backend, or a CTranslate2 output dir for faster-whisper). For a
+GPU, use `WHISPER_COMPUTE=float16` and `WHISPER_DEVICE=cuda`.
+
+### Best accuracy **and** speed
+
+The CTranslate2 backend + **batched inference** is how you get both. Pick by
+hardware:
+
+| Hardware | Model | Settings | Result |
+|----------|-------|----------|--------|
+| **NVIDIA GPU** | `khleeloo/whisper-large-v3-cantonese` → CTranslate2 | `WHISPER_DEVICE=cuda`, `WHISPER_COMPUTE=float16`, `WHISPER_BATCH_SIZE=16`, `WHISPER_BEAM=5` | best accuracy, very fast |
+| **CPU only** | `wingskh/whisper-large-v3-turbo-cantonese` → CTranslate2 | `WHISPER_DEVICE=cpu`, `WHISPER_COMPUTE=int8`, `WHISPER_BATCH_SIZE=8`, `WHISPER_BEAM=5` | fast + good accuracy |
+| **Max accuracy, any HW** | turbo CTranslate2 | as above, then rely on the LLM quality-review pass | turbo speed, refined output |
+
+```env
+WHISPER_BATCH_SIZE=8     # raise on GPU (16-32), lower on low RAM
+WHISPER_BEAM=5           # 1-2 = faster, 5 = more accurate
+```
+
+Notes: batched inference (VAD-chunked) is the biggest single speed-up; `int8`
+on CPU is ~2× faster than fp32 with minimal loss; `float16` on GPU is both fast
+**and** accurate. The LLM refinement pass (`review_quality`) then fixes
+low-confidence segments on top of the ASR. Large-v3 on CPU (no batching) is the
+only genuinely slow combination — avoid it.
+
+### ASR guidelines for Cantonese
+
+- **Language = `yue`** (`WHISPER_LANGUAGE=yue`). The `yue` token needs the
+  **large-v3 family** — with `base`/`small` the app falls back to auto-detect.
+- **Initial prompt** in Traditional Chinese/Cantonese (`WHISPER_INITIAL_PROMPT`)
+  biases output toward Cantonese characters.
+- **`condition_on_previous_text=False`** (set in the code) avoids repetition
+  loops on radio audio.
+- **VAD on** + `temperature` fallback `[0,.2,.4,.6,.8,1]` + `beam_size=5` are
+  the defaults for robustness on noisy music-heavy streams.
+- Jyutping is **never** produced by the ASR/LLM — it comes from the
+  dictionary/validator (`app/jyutping_tool.py`, `app/jyutping_validate.py`).
+- Preprocess noisy/musical recordings with the **Clean audio (Demucs)** option
+  before ASR.
+
 ### Radio Time Table
 
 The 🗓️ **Radio Time Table** tab shows today's RTHK schedule for Radio 1–5,
@@ -137,13 +263,20 @@ chit-chat) is **green + bold**, and **music** is greyed out and tagged
 ### Recording
 
 The 🔴 Record tab captures the station's digital stream directly with ffmpeg —
-no microphone, so there is no room noise. Presets include RTHK Radio 1–5; any
+no microphone, so there is no room noise. Presets include RTHK Radio 1–5 and
+**Talk Only** (www.talkonly.net); any
 stream URL works. Output lands in `audio/YYYY-MM-DD_station_duration.mp3` at up
-to 320 kbps.
+to 320 kbps. A **stream buffer** slider (default 12 s) keeps input buffered,
+auto-reconnects and gap-fills the audio timeline so brief stream drops don't
+break a continuous recording.
 
 ### Processing
 
-The ⚙️ Process recording tab lists every MP3 in `audio/` (newest first).
+The ⚙️ Process recording tab has two sub-tabs: **📻 Radio recordings** (pick any
+MP3 in `audio/`, newest first) and **⬆️ Custom MP3** — upload a file from
+YouTube, a podcast, or your phone. Custom MP3s are saved to `audio/` with the
+standard filename (duration auto-detected) and then run the **same full
+pipeline** as radio recordings.
 
 - **Clean audio first** — removes background music by isolating the vocal stem
   with **Demucs** (ffmpeg denoise fallback). Great for noisy/musical sources;
@@ -202,10 +335,10 @@ The 🗣️ **Pronunciations** tab has two parts:
 ## Output Format Rules
 
 The PDF groups sentences into blocks of **3–6**, split on a topic change or
-pause. Each block prints all its **Cantonese** lines, then all its **Jyutping**
-lines, then all its **English** lines (numbered so the three sections line up).
-A deduplicated **vocabulary table** (Word | Jyutping | Meaning) closes the
-document.
+pause. Each block prints the **Cantonese** lines, then **Jyutping and English
+side-by-side in one table** (column 1 Jyutping, column 2 English, one row per
+sentence) so the two are easy to compare while saving paper. A deduplicated
+**vocabulary table** (Word | Jyutping | Meaning) closes the document.
 
 ## Quality Controls
 

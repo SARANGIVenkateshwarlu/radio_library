@@ -32,5 +32,11 @@ faster-whisper>=1.2.1
 # Pulls in torch; the htdemucs model (~300MB) downloads on first use.
 demucs>=4.1.0
 
+# Optional — only for the transformers ASR backend or converting a Hugging Face
+# Whisper model to CTranslate2 (see README "Cantonese ASR"). torch/accelerate
+# usually come with demucs already.
+# transformers>=4.40
+# accelerate>=0.30
+
 # Numerics
 numpy>=2.4.4

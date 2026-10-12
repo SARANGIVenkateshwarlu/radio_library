@@ -123,8 +123,10 @@ radio_library/
 
 Segments are grouped into blocks split on a **topic change or a pause**
 (LLM-proposed boundaries when an LLM is configured, otherwise audio gaps;
-sizes clamped to `BLOCK_MIN`..`BLOCK_MAX`, default 3–6). Each block prints all
-its Cantonese lines, then all its Jyutping lines, then all its English lines:
+sizes clamped to `BLOCK_MIN`..`BLOCK_MAX`, default 3–6). Each block prints the
+Cantonese sentences, then **Jyutping and English side-by-side in one table**
+(one row per sentence — column 1 Jyutping, column 2 English) to save space and
+make the two lines easy to compare:
 
 ```
 Block 1   [hh:mm:ss – hh:mm:ss]
@@ -133,13 +135,9 @@ Cantonese:
 1. <corrected Cantonese>
 2. ...
 
-Jyutping:
-1. <jyutping>
-2. ...
-
-English:
-1. <real English translation — never a placeholder>
-2. ...
+Jyutping             | English
+1. <jyutping>        | 1. <real English translation — never a placeholder>
+2. ...               | 2. ...
 
 Block 2   [hh:mm:ss – hh:mm:ss]
 ...
@@ -270,7 +268,9 @@ with a **🔄 Refresh** button. Every row uses the same format:
 
 Direct stream capture with ffmpeg — the station's digital stream is recorded
 straight to disk, no microphone, so there is no room noise. Presets include
-RTHK Radio 1–5 (`https://stm1.rthk.hk/radio5`, etc.); any stream URL works.
+RTHK Radio 1–5 (`https://stm1.rthk.hk/radio5`, etc.) and **Talk Only**
+(`https://live.talkonly.net:8443/talkonly.mp3`, www.talkonly.net); any stream URL
+works.
 The **Start recording** / **Stop** buttons are enlarged and full-width for easy
 tapping on a touch screen.
 
@@ -280,13 +280,25 @@ tapping on a touch screen.
   360 kbps mode; 320k is the highest available setting).
 - Output lands in `audio/YYYY-MM-DD_station_duration.mp3`, ready for the
   ⚙️ Process recording tab.
-- Start/stop from the browser; ffmpeg auto-reconnects on stream drops.
+- **Stream buffer / disconnect tolerance** (slider, default **12 s**, 0–30 s):
+  ffmpeg keeps the input buffered, auto-reconnects (`reconnect` +
+  `reconnect_at_eof`) and gap-fills the audio timeline (`aresample=async=1`)
+  so brief live-stream drops don't break a continuous recording. Applies to
+  every station (RTHK 1–5, Talk Only).
 
 ### Processing (⚙️ Process recording tab)
 
-Pick the recording from a dropdown of every MP3 in `audio/` (newest on top),
-leave "mock ASR" off, and run the pipeline. Results are saved to the library
-and shown inline.
+Two sub-tabs:
+
+- **📻 Radio recordings** — pick a recording from a dropdown of every MP3 in
+  `audio/` (newest on top), leave "mock ASR" off, and run the pipeline. Results
+  are saved to the library and shown inline.
+- **⬆️ Custom MP3** — upload an MP3 from **YouTube, a podcast, your phone or any
+  local file**. It is saved into `audio/` with the standard naming convention
+  (`date_source_duration.mp3`, duration probed with ffprobe/ffmpeg), so it then
+  runs the **exact same A-to-Z pipeline** as a radio file: cleanup → ASR →
+  Jyutping → translation → validation → LLM review → PDF → library. Optionally
+  tag it with a source name used in the file name.
 
 - **Clean audio first** — isolates the vocal stem with **Demucs** (`htdemucs`)
   so background music is dropped before ASR; falls back to an ffmpeg
@@ -400,3 +412,71 @@ set review flags — all in `validate_output` (no LLM). The LLM reviewer runs a
 second pass and refines flagged segments (`review_quality`, English report). The
 LLM is never the component responsible for acoustic recognition or tone
 accuracy — that stays with the Cantonese ASR and the dictionary/validator.
+
+## 13. Local Cantonese ASR (Whisper large-v3-turbo) & guidelines
+
+Transcription uses Whisper. For Cantonese, use a **large-v3-turbo Cantonese**
+model (e.g. `wingskh/whisper-large-v3-turbo-cantonese`) — far better than
+`base`/`small`, faster and cheaper than large-v3. Two backends
+(`WHISPER_BACKEND`):
+
+**A. faster-whisper (recommended).** Convert the HF model to CTranslate2 once:
+
+```bash
+pip install transformers ctranslate2 torch
+ct2-transformers-converter \
+  --model wingskh/whisper-large-v3-turbo-cantonese \
+  --output_dir models/whisper-large-v3-turbo-cantonese-ct2 \
+  --copy_files tokenizer.json preprocessor_config.json generation_config.json \
+  --quantization int8
+```
+
+```env
+WHISPER_BACKEND=faster-whisper
+WHISPER_MODEL=models/whisper-large-v3-turbo-cantonese-ct2
+WHISPER_COMPUTE=int8      # float16 + WHISPER_DEVICE=cuda on a GPU
+WHISPER_LANGUAGE=yue
+```
+
+**B. transformers (no conversion, slower).** `pip install transformers torch
+accelerate`, then `WHISPER_BACKEND=transformers` and
+`WHISPER_MODEL=wingskh/whisper-large-v3-turbo-cantonese` (downloads on first run).
+
+**Alternative model:** `khleeloo/whisper-large-v3-cantonese` — full large-v3
+(1.54B, ~6 GB), higher accuracy but slower, and **gated** (accept the license on
+HF and authenticate: `huggingface-cli login` or `HF_TOKEN`). Both models are
+transformers-format, so use backend A (convert) or B.
+
+**LLM with Ollama (local, no key):** `ollama pull qwen2.5:14b`, then
+`OPENAI_BASE_URL=http://localhost:11434/v1`, `OPENAI_API_KEY=ollama`,
+`LLM_MODEL=qwen2.5:14b`. Ollama runs the *LLM*; Whisper runs via
+faster-whisper/transformers.
+
+**Accuracy + speed.** CTranslate2 + **batched inference** gives both. Best
+configs:
+
+| Hardware | Model (CTranslate2) | Settings |
+|----------|---------------------|----------|
+| GPU | `khleeloo/whisper-large-v3-cantonese` | `WHISPER_DEVICE=cuda`, `WHISPER_COMPUTE=float16`, `WHISPER_BATCH_SIZE=16`, `WHISPER_BEAM=5` |
+| CPU | `wingskh/whisper-large-v3-turbo-cantonese` | `WHISPER_DEVICE=cpu`, `WHISPER_COMPUTE=int8`, `WHISPER_BATCH_SIZE=8`, `WHISPER_BEAM=5` |
+
+`WHISPER_BATCH_SIZE>1` enables `faster_whisper.BatchedInferencePipeline` (the
+biggest single speed-up); `beam_size` trades speed for accuracy; `int8` (CPU) is
+~2× faster than fp32; `float16` (GPU) is fast *and* accurate. The LLM
+`review_quality` pass further improves accuracy on flagged segments.
+
+**ASR guidelines**
+
+- **`WHISPER_LANGUAGE=yue`** — the `yue` token requires the large-v3 family;
+  smaller models fall back to auto-detect automatically.
+- **`WHISPER_INITIAL_PROMPT`** in Traditional Chinese/Cantonese biases the
+  output toward Cantonese characters (never leave it in Mandarin).
+- **`condition_on_previous_text=False`**, **VAD on**, **temperature fallback**
+  `[0,.2,.4,.6,.8,1]`, **`beam_size=5`** (all defaults in `app/asr.py`) for
+  robustness on noisy, music-heavy radio.
+- Preprocess noisy/musical audio with **Demucs** (`cleanup_audio`) first.
+- Jyutping and tones are **never** produced by Whisper/LLM — they come from the
+  dictionary + validator, per §12.
+
+Config lives in `app/config.py` (`WHISPER_*`, `QREVIEW_*`); the provider factory
+is `app/asr.py:get_asr`.
