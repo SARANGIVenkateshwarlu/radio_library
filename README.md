@@ -368,6 +368,10 @@ The project follows the recommended staged, structured-output design:
   (audio/transcription/jyutping/translation), `uncertain_tokens`,
   `alternative_readings`, `needs_human_review` and `review_reason`, plus an
   English `quality_review`; flagged segments show a ⚠ in the app and PDF.
+- **Quality tuning** — the reviewer is strict-but-fair (ignores legitimate
+  dialectal variant readings; only flags genuinely invalid Jyutping), and
+  translation is **context-aware** (neighboring sentences included) so radio
+  fragments read naturally. Curated `OVERRIDES` fill pycantonese gaps.
 
 See [`master.md`](master.md) §12 for the full mapping.
 

@@ -99,13 +99,25 @@ def jyutping(state: RadioState) -> dict:
     return {"segments": segs}
 
 
+def _neighbor_context(segments: list[dict], i: int, window: int = 2) -> str:
+    lo, hi = max(0, i - window), min(len(segments), i + window + 1)
+    lines = [
+        (s.get("normalized_cantonese") or s.get("corrected") or s.get("cantonese") or "")
+        for s in segments[lo:hi]
+    ]
+    return " / ".join(x for x in lines if x)
+
+
 def translate(state: RadioState) -> dict:
     t_chain = translate_chain()
     v_chain = vocab_chain()
 
-    def _one(s: dict) -> dict:
+    def _one(pair: tuple[int, dict]) -> dict:
+        i, s = pair
         s = dict(s)
-        s["english"] = t_chain.invoke({"text": s["corrected"]}).content.strip()
+        ctx = _neighbor_context(state["segments"], i)
+        s["english"] = t_chain.invoke(
+            {"text": s["corrected"], "context": ctx}).content.strip()
         raw = v_chain.invoke({"text": s["corrected"]}).content.strip()
         vocab = []
         for line in raw.splitlines():
@@ -116,7 +128,7 @@ def translate(state: RadioState) -> dict:
         return s
 
     with ThreadPoolExecutor(max_workers=_llm_workers()) as ex:
-        segs = list(ex.map(_one, state["segments"]))
+        segs = list(ex.map(_one, enumerate(state["segments"])))
     return {"segments": segs}
 
 

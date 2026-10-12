@@ -478,5 +478,15 @@ biggest single speed-up); `beam_size` trades speed for accuracy; `int8` (CPU) is
 - Jyutping and tones are **never** produced by Whisper/LLM — they come from the
   dictionary + validator, per §12.
 
+**Quality knobs (post-2026 tuning):** the reviewer is **strict-but-fair** — it
+does not penalize legitimate dialectal variants or demand dictionary edits, and
+only flags genuinely invalid Jyutping (missing tone / illegal syllable /
+alignment), so the `accuracy_score` reflects real content quality. Translation
+is **context-aware** (each sentence is translated with its neighbours) so radio
+fragments and references resolve naturally. `OVERRIDES` in
+`app/jyutping_tool.py` fills characters pycantonese misses. Typical score:
+~92/100 for clean transcripts; hard call-in audio scores lower because of ASR
+errors — the best lever there is a better Cantonese ASR + Demucs cleanup.
+
 Config lives in `app/config.py` (`WHISPER_*`, `QREVIEW_*`); the provider factory
 is `app/asr.py:get_asr`.

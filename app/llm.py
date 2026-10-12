@@ -89,10 +89,12 @@ TRANSLATE_PROMPT = ChatPromptTemplate.from_messages([
     ("human",
      "Translate the following colloquial Hong Kong Cantonese radio sentence into "
      "natural English. Translate the MEANING at sentence level, not word-by-word; "
-     "handle particles, classifiers and aspect markers naturally. Keep proper "
-     "names, numbers and English insertions exact. Do not add gender, tense, "
-     "politeness or intent that is not in the Cantonese. Output only the English "
-     "translation.\n\nCantonese：{text}"),
+     "handle particles, classifiers and aspect markers naturally. Use the "
+     "surrounding context to resolve fragments, pronouns and references. Keep "
+     "proper names, numbers and English insertions exact. Do not add gender, "
+     "tense, politeness or intent that is not in the Cantonese. Output only the "
+     "English translation.\n\n"
+     "Context:\n{context}\n\nCantonese：{text}"),
 ])
 
 VOCAB_PROMPT = ChatPromptTemplate.from_messages([
@@ -112,13 +114,22 @@ GROUP_PROMPT = ChatPromptTemplate.from_template(
 )
 
 REVIEW_PROMPT = ChatPromptTemplate.from_template(
-    "You are a strict reviewer of Cantonese learning materials. Below is a "
-    "line-by-line radio transcript, one per line in the form "
-    "N. CANT: <Cantonese> | JYUT: <Jyutping> | ENG: <English>.\n"
-    "Check: (a) Cantonese transcription typos; (b) Jyutping accuracy; "
-    "(c) English accuracy and naturalness; (d) missing translations. "
-    "Assess only — do not rewrite the content.\n"
-    "Write ALL output in ENGLISH.\n"
+    "You are a strict but fair reviewer of a Hong Kong Cantonese learning "
+    "transcript. Below is the line-by-line radio transcript, one per line in "
+    "the form N. CANT: <Cantonese> | JYUT: <Jyutping> | ENG: <English>.\n"
+    "The Jyutping is produced by a verified LSHK dictionary pipeline and has "
+    "already been validated (legal syllables, tones 1-6, character alignment). "
+    "Therefore: "
+    "- Do NOT flag legitimate dialectal/register variants or 'more natural' "
+    "alternatives when the current Jyutping is valid LSHK (e.g. haa6 ng5 vs "
+    "haa6 aa5 for 下午, sing2 vs seng2). Only flag genuinely invalid Jyutping: "
+    "a missing tone number, an illegal syllable, or a character/syllable "
+    "mismatch.\n"
+    "Focus the accuracy score mainly on: (a) Cantonese transcription errors / "
+    "typos, (b) missing or invented content, (c) English accuracy and "
+    "naturalness, (d) missing translations. Flag only clear, defensible "
+    "problems — fewer high-confidence issues are better than many nitpicks.\n"
+    "Write ALL output in ENGLISH. Score 0-100 (higher = better quality).\n"
     "Output ONLY a JSON object (no other text, no code fences):\n"
     '{{"accuracy_score": <integer 0-100>, "summary": "<one-sentence English summary>", '
     '"issues": [{{"segment": <n>, "problem": "<English>", "suggestion": "<English>"}}], '

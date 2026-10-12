@@ -38,6 +38,17 @@ FALLBACK_DICT = {
 
 _IS_CJK = re.compile(r"[一-鿿]")
 
+# Curated per-character readings that override pycantonese where it is missing
+# or demonstrably wrong for Hong Kong radio usage.
+OVERRIDES = {
+    "排": "paai4",
+    "諜": "dip6",
+    "遨": "ngou4",
+    "岑": "sam4",
+    "欖": "laam5",
+    "磡": "ham3",
+}
+
 
 def _fallback_convert(text: str) -> str:
     out = []
@@ -51,9 +62,22 @@ def _fallback_convert(text: str) -> str:
 
 def to_jyutping(text: str) -> str:
     """Convert Cantonese text to Jyutping, one romanisation per character."""
+    toks = []
     if _HAS_PYCT:
         pairs = pycantonese.characters_to_jyutping(text)
-        toks = [jyut if jyut else (ch if not _IS_CJK.match(ch) else "〔?〕")
-                for ch, jyut in pairs]
-        return " ".join(t for t in toks if t.strip())
-    return _fallback_convert(text)
+        for ch, jyut in pairs:
+            if ch in OVERRIDES:
+                toks.append(OVERRIDES[ch])
+            elif jyut:
+                toks.append(jyut)
+            elif _IS_CJK.match(ch):
+                toks.append("〔?〕")
+            else:
+                toks.append(ch)
+    else:
+        for ch in text:
+            if _IS_CJK.match(ch):
+                toks.append(OVERRIDES.get(ch, FALLBACK_DICT.get(ch, "〔?〕")))
+            elif ch.strip():
+                toks.append(ch)
+    return " ".join(t for t in toks if t.strip())
