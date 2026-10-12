@@ -17,6 +17,7 @@ import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 
 from . import config
 
@@ -26,6 +27,20 @@ STATS_PATH = config.METADATA_DIR / "vocab_stats.json"
 REVIEW_RATIO = 0.7
 MIN_QUESTIONS = 6
 MAX_QUESTIONS = 10
+
+# Reference dictionaries for word meaning / Jyutping checking and examples.
+DICTIONARIES = [
+    ("words.hk", "https://words.hk/zidin/{q}"),
+    ("jyutdictionary.com", "https://jyutdictionary.com/dictionary/?q={q}"),
+    ("cantowords.com", "https://cantowords.com/dictionary/{q}"),
+]
+
+
+def dictionary_links(word: str) -> list[tuple[str, str]]:
+    """Numbered (label, deep-link URL) list for one word across the dictionaries."""
+    q = quote((word or "").strip())
+    return [(label, url.replace("{q}", q)) for label, url in DICTIONARIES]
+
 
 _CLIP_CACHE: dict[tuple, bytes | None] = {}
 

@@ -292,8 +292,9 @@ pipeline** as radio recordings.
 The 🗂️ **VocabBank** tab pools vocabulary from every processed session:
 
 - **Browse by session** — pick a recording from a dropdown and see its words
-  (word / Jyutping / meaning / context), each with a **words.hk** link
-  (`words.hk/zidin/<word>`) for pronunciation and example sentences; CSV export.
+  (word / Jyutping / meaning / context), each with **three dictionary links** to
+  check meaning, Jyutping and examples: **words.hk**, **jyutdictionary.com** and
+  **cantowords.com**; CSV export.
 - **Quick quiz** — Jyutping-only (no Chinese characters). 6–10 questions mixing
   *Jyutping → meaning* and *meaning → Jyutping*, at ~70% reviewed + ~30% new,
   one idea per question, plausible distractors. Immediate feedback includes the

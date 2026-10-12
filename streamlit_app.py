@@ -460,9 +460,10 @@ def _render_quiz():
             st.error(f"❌ You chose: {choice}  \n\nCorrect: **{q['answer']}**")
         e = q["entry"]
         st.markdown(f"**Word:** {e['word']} ({e['jyutping']}) — {e['meaning']}")
-        st.markdown(
-            f"[🔗 Hear pronunciation & examples on words.hk]"
-            f"(https://words.hk/zidin/{quote(e['word'])})")
+        dicts = vocab.dictionary_links(e["word"])
+        st.markdown("**🔎 Check meaning / Jyutping / examples:** " +
+                    " · ".join(f"{i}) [{label}]({url})"
+                              for i, (label, url) in enumerate(dicts, 1)))
         if e["sentence"]:
             st.markdown(f"**In context:** {e['sentence']}")
         if e["english"]:
@@ -532,18 +533,28 @@ with tab_vocab:
             chosen = st.selectbox("Session (group = one recording)", order,
                                   format_func=lambda g: labels[g])
             entries = by_group[chosen]
+            table_rows = []
+            for e in entries:
+                links = dict(vocab.dictionary_links(e["word"]))
+                table_rows.append({
+                    "Word": e["word"], "Jyutping": e["jyutping"],
+                    "Meaning": e["meaning"], "In context": e["sentence"],
+                    "words.hk": links["words.hk"],
+                    "jyutdictionary.com": links["jyutdictionary.com"],
+                    "cantowords.com": links["cantowords.com"],
+                })
             st.dataframe(
-                [{"Word": e["word"], "Jyutping": e["jyutping"],
-                  "Meaning": e["meaning"], "In context": e["sentence"],
-                  "words.hk": f"https://words.hk/zidin/{quote(e['word'])}"}
-                 for e in entries],
+                table_rows,
                 column_config={
                     "words.hk": st.column_config.LinkColumn(
-                        "Pronunciation & examples",
-                        display_text="🔗 words.hk",
-                        help="Open on words.hk to hear the pronunciation and "
-                             "see Cantonese usage examples",
-                    ),
+                        "words.hk", display_text="open",
+                        help="words.hk — pronunciation + examples"),
+                    "jyutdictionary.com": st.column_config.LinkColumn(
+                        "jyutdictionary.com", display_text="open",
+                        help="jyutdictionary.com — meaning + Jyutping"),
+                    "cantowords.com": st.column_config.LinkColumn(
+                        "cantowords.com", display_text="open",
+                        help="cantowords.com — meaning + examples"),
                 },
                 width='stretch',
             )
@@ -562,6 +573,12 @@ with tab_vocab:
 
 with tab_pron:
     st.subheader("Pronunciations — phrase bank & shadowing")
+    st.caption(
+        "Reference dictionaries for meaning / Jyutping / examples: "
+        "1) [words.hk](https://words.hk/) · 2) [jyutdictionary.com]"
+        "(https://jyutdictionary.com/dictionary/) · "
+        "3) [cantowords.com](https://cantowords.com/dictionary/)"
+    )
     bank_tab, shadow_tab = st.tabs(["📇 Phrase bank", "🎧 Shadowing studio"])
 
     with bank_tab:

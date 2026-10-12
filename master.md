@@ -320,8 +320,8 @@ read from the SQLite library and transcript JSON files. Sections:
 
 - **Browse by session** — dropdown of groups (labelled by MP3 file name); a
   table of word / Jyutping / meaning / in-context for the selected session,
-  plus a **words.hk** link per word (`https://words.hk/zidin/<word>`) to hear
-  the pronunciation and practice with Cantonese examples. CSV export for one
+  plus **three dictionary links** per word (words.hk, jyutdictionary.com,
+  cantowords.com) for meaning, Jyutping and examples. CSV export for one
   session or all.
 - **Quick quiz** — **character-free**, Jyutping-only (the learner cannot read
   hanzi). Two mixed types: *Jyutping → meaning* and its reverse
