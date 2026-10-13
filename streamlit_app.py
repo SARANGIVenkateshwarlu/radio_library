@@ -737,50 +737,103 @@ with tab_pron:
 
 with tab_teacher:
     st.subheader("🎓 Cantonese Teacher — photo worksheet")
-    st.caption(
-        "Upload a photo of a Hong Kong scene → a colour-coded Cantonese "
-        "worksheet PDF in the CantoneseTeacher style "
-        "(10 sentences · Q&A · vocabulary · 圖像教學工作紙)."
-    )
-    tt_cam, tt_up = st.tabs(["📷 Camera", "🖼️ Upload"])
-    photo = None
-    with tt_cam:
-        cam = st.camera_input("Point at a Hong Kong scene 影低香港日常景象")
-        if cam:
-            photo = cam
-    with tt_up:
-        up = st.file_uploader("Image JPG/PNG/HEIC",
-                              type=["jpg", "jpeg", "png", "heic"], key="teacher_up")
-        if up:
-            photo = up
-    if photo is not None:
-        st.image(photo.getvalue(), caption="Your photo 你嘅相")
+    tt_new, tt_prev = st.tabs(["📝 New worksheet", "📚 Previous lessons"])
 
-    with st.expander("⚙️ Options 選項"):
-        theme = st.text_input("Theme 主題 (optional)", value="", key="teacher_theme")
-        num_qa = st.slider("Q&A pairs 問答數量", 2, 5, 3, key="teacher_qa")
-        manual = st.text_area(
-            "Manual description (optional — skips the vision model)",
-            value="", key="teacher_manual")
-        use_demo = st.checkbox(
-            "Use built-in demo lesson (no AI generation)", value=False,
-            key="teacher_demo")
+    with tt_new:
+        st.caption(
+            "Upload a photo of a Hong Kong scene → a colour-coded Cantonese "
+            "worksheet PDF in the CantoneseTeacher style "
+            "(10 sentences · Q&A · vocabulary · 圖像教學工作紙). "
+            f"Saved as `{datetime.now().strftime('%Y-%m-%d')}_lesson_N.pdf`."
+        )
+        tt_cam, tt_up = st.tabs(["📷 Camera", "🖼️ Upload"])
+        photo = None
+        with tt_cam:
+            cam = st.camera_input("Point at a Hong Kong scene 影低香港日常景象")
+            if cam:
+                photo = cam
+        with tt_up:
+            up = st.file_uploader("Image JPG/PNG/HEIC",
+                                  type=["jpg", "jpeg", "png", "heic"], key="teacher_up")
+            if up:
+                photo = up
+        if photo is not None:
+            st.image(photo.getvalue(), caption="Your photo 你嘅相")
 
-    if st.button("✨ Generate worksheet PDF 生成工作紙", type="primary",
-                 disabled=photo is None, key="teacher_gen"):
-        import tempfile
+        with st.expander("⚙️ Options 選項"):
+            theme = st.text_input("Theme 主題 (optional)", value="", key="teacher_theme")
+            num_qa = st.slider("Q&A pairs 問答數量", 2, 5, 3, key="teacher_qa")
+            manual = st.text_area(
+                "Manual description (optional — skips the vision model)",
+                value="", key="teacher_manual")
+            use_demo = st.checkbox(
+                "Use built-in demo lesson (no AI generation)", value=False,
+                key="teacher_demo")
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as f:
-            f.write(photo.getvalue())
-            img_path = f.name
-        with st.spinner("Analysing photo & building PDF… 分析緊張相，整緊PDF"):
-            pdf_path, warning = cantonese_teacher.generate_worksheet(
-                img_path, theme=theme, num_qa=num_qa,
-                description=manual, use_demo=use_demo)
-        if warning:
-            st.warning(warning)
-        st.success("Worksheet ready! 工作紙整好喇！")
-        st.download_button("⬇️ Download PDF 下載",
-                           data=Path(pdf_path).read_bytes(),
-                           file_name=Path(pdf_path).name,
-                           mime="application/pdf")
+        if st.button("✨ Generate worksheet PDF 生成工作紙", type="primary",
+                     disabled=photo is None, key="teacher_gen"):
+            import tempfile
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as f:
+                f.write(photo.getvalue())
+                img_path = f.name
+            with st.spinner("Analysing photo & building PDF… 分析緊張相，整緊PDF"):
+                pdf_path, warning, name = cantonese_teacher.generate_worksheet(
+                    img_path, theme=theme, num_qa=num_qa,
+                    description=manual, use_demo=use_demo)
+            if warning:
+                st.warning(warning)
+            st.success(f"Worksheet ready! 工作紙整好喇（`{name}`）")
+            st.download_button("⬇️ Download PDF 下載",
+                               data=Path(pdf_path).read_bytes(),
+                               file_name=Path(pdf_path).name,
+                               mime="application/pdf")
+
+    with tt_prev:
+        st.markdown("**Previous lessons** — previously generated worksheets")
+        lessons = cantonese_teacher.list_lessons()
+        if not lessons:
+            st.info("No previous lessons yet — generate a worksheet first.")
+        else:
+            st.caption(f"{len(lessons)} worksheet(s) in "
+                       "`metadata/cantonese_teacher/`")
+            names = [l["name"] for l in lessons]
+            sel = st.selectbox("Review a lesson (date_lesson_N)", names,
+                               key="teacher_prev_sel")
+            chosen = next(l for l in lessons if l["name"] == sel)
+            c1, c2, c3 = st.columns(3)
+            c1.write(f"🗓️ Created: {chosen['mtime']}")
+            c2.write(f"📦 {(chosen['size'] / 1024):.0f} KB")
+            c3.download_button("⬇️ Download PDF", chosen["pdf"].read_bytes(),
+                               file_name=chosen["pdf"].name, mime="application/pdf",
+                               key="teacher_prev_dl")
+            if chosen["json"].exists():
+                try:
+                    data = json.loads(chosen["json"].read_text(encoding="utf-8"))
+                except json.JSONDecodeError:
+                    data = {}
+                if data:
+                    with st.expander(f"👀 Review: {data.get('title', sel)}"):
+                        st.markdown(f"**{data.get('title', sel)}**")
+                        st.markdown("**Ten Key Sentences:**")
+                        for i, s in enumerate(data.get("sentences", []), 1):
+                            st.markdown(
+                                f"{i}. **{s.get('cantonese')}** · {s.get('jyutping')} "
+                                f"· *{s.get('english')}*")
+                        qas = data.get("qa") or []
+                        if qas:
+                            st.markdown("**Q&A:**")
+                            for i, q in enumerate(qas, 1):
+                                st.markdown(f"Q{i}: {q.get('question_cantonese')} — "
+                                            f"{q.get('question_english')}")
+                                st.markdown(f"A{i}: {q.get('answer_cantonese')} — "
+                                            f"{q.get('answer_english')}")
+            st.markdown("---")
+            st.markdown("**All generated files** (newest first)")
+            for l in lessons:
+                fc1, fc2 = st.columns([4, 1])
+                fc1.caption(f"{l['name']} · {l['mtime']} · "
+                            f"{(l['size'] / 1024):.0f} KB")
+                fc2.download_button("PDF", l["pdf"].read_bytes(),
+                                    file_name=l["pdf"].name, mime="application/pdf",
+                                    key=f"dlprev_{l['name']}")

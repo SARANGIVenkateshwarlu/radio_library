@@ -14,6 +14,7 @@ from __future__ import annotations
 import base64
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 
 from . import config
@@ -114,15 +115,50 @@ def build_image_pdf(lesson: dict, image_path: str, out_path: str) -> str:
     return cantonese_pdf.build_pdf(lesson, image_path, out_path)
 
 
+def lesson_dir() -> Path:
+    d = config.METADATA_DIR / "cantonese_teacher"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def next_lesson_index(day: str | None = None) -> int:
+    """Next lesson number for a date (YYYY-MM-DD_lesson_N)."""
+    day = day or datetime.now().strftime("%Y-%m-%d")
+    prefix = f"{day}_lesson_"
+    highest = 0
+    for p in lesson_dir().glob(prefix + "*.pdf"):
+        m = re.match(re.escape(prefix) + r"(\d+)\.pdf$", p.name)
+        if m:
+            highest = max(highest, int(m.group(1)))
+    return highest + 1
+
+
+def list_lessons() -> list[dict]:
+    """Previously generated worksheets, newest first."""
+    items = []
+    for p in sorted(lesson_dir().glob("*.pdf"), reverse=True):
+        items.append({
+            "name": p.stem,
+            "pdf": p,
+            "json": p.with_suffix(".json"),
+            "size": p.stat().st_size,
+            "mtime": datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d %H:%M"),
+        })
+    return items
+
+
 def generate_worksheet(image_path: str, theme: str = "", num_qa: int = 3,
                        description: str = "", use_demo: bool = False,
-                       out_dir=None) -> tuple[str, str | None]:
-    """Full pipeline. Returns (pdf_path, warning_or_None). Falls back to demo."""
-    out_dir = out_dir or (config.METADATA_DIR / "cantonese_teacher")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    import time
+                       out_dir=None) -> tuple[str, str | None, str]:
+    """Full pipeline. Returns (pdf_path, warning_or_None, lesson_name).
 
-    pdf_path = out_dir / f"worksheet_{int(time.time())}.pdf"
+    Files are named ``YYYY-MM-DD_lesson_N`` (reviewable in the app) and the
+    lesson JSON is saved alongside the PDF.
+    """
+    out_dir = Path(out_dir) if out_dir else lesson_dir()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    name = f"{datetime.now().strftime('%Y-%m-%d')}_lesson_{next_lesson_index()}"
+    pdf_path = out_dir / f"{name}.pdf"
 
     warning = None
     try:
@@ -143,4 +179,7 @@ def generate_worksheet(image_path: str, theme: str = "", num_qa: int = 3,
         lesson = demo_lesson(theme)
         lesson["qa"] = lesson["qa"][:num_qa]
         build_image_pdf(lesson, image_path, str(pdf_path))
-    return str(pdf_path), warning
+
+    (out_dir / f"{name}.json").write_text(
+        json.dumps(lesson, ensure_ascii=False, indent=2), encoding="utf-8")
+    return str(pdf_path), warning, name

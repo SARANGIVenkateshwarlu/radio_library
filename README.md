@@ -343,7 +343,9 @@ lines. Snap 📷 or upload 🖼️ a photo → set options → **Generate worksh
 download. Live generation uses the configured vision/LLM endpoint
 (`CANTONESE_TEACHER_MODEL`, default = the app LLM); if the vision model isn't
 multimodal or generation fails it falls back to a built-in demo lesson (or your
-manual description).
+manual description). The tab's **📚 Previous lessons** sub-tab reviews every
+worksheet saved as `YYYY-MM-DD_lesson_N.pdf` (lesson JSON alongside), listed
+newest-first, with download and an in-app review of the sentences and Q&A.
 
 ## Output Format Rules
 

@@ -375,6 +375,9 @@ output/assets git-ignored):
   PDF** (10 sentences · Q&A · vocabulary table), word-colour-matched across
   Cantonese/Jyutping/English. Live generation uses the configured endpoint
   (`CANTONESE_TEACHER_MODEL`); a built-in demo lesson is the offline fallback.
+- **📚 Previous lessons** sub-tab reviews every generated worksheet: files are
+  named `YYYY-MM-DD_lesson_N.pdf` (lesson JSON saved alongside), listed newest
+  first, with download and an in-app review of the ten sentences + Q&A.
 - Follows the locked `RULES.md` layout (title → image → ten sentences → Q&A →
   vocabulary; fonts 21/15/16/13/11.5; footer `Page 第 N 頁`).
 - Implementation: `app/cantonese_teacher.py` (vision + lesson JSON + validation)
