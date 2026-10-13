@@ -1,0 +1,197 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – On the MTR 搭港鐵",
+  "image_caption": "Situation: passengers stand in a crowded Hong Kong MTR train carriage. 情境：乘客企喺好逼嘅港鐵車廂入面。",
+  "sentences": [
+    {
+      "cantonese": "架車好逼，冇位坐。",
+      "jyutping": "gaa3 ce1 hou2 bik1, mou5 wai2 co5.",
+      "english": "The train is very crowded — there are no seats.",
+      "segments": [
+        {"chinese": "架車", "jyutping": "gaa3 ce1", "english": "the train"},
+        {"chinese": "好逼", "jyutping": "hou2 bik1", "english": "very crowded"},
+        {"chinese": "冇", "jyutping": "mou5", "english": "there is no"},
+        {"chinese": "位坐", "jyutping": "wai2 co5", "english": "seat to sit"}
+      ]
+    },
+    {
+      "cantonese": "唔該借歪，我要落車。",
+      "jyutping": "m4 goi1 ze3 me2, ngo5 jiu3 lok6 ce1.",
+      "english": "Excuse me please, I need to get off.",
+      "segments": [
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "please"},
+        {"chinese": "借歪", "jyutping": "ze3 me2", "english": "excuse me (passing through)"},
+        {"chinese": "我要", "jyutping": "ngo5 jiu3", "english": "I need to"},
+        {"chinese": "落車", "jyutping": "lok6 ce1", "english": "get off"}
+      ]
+    },
+    {
+      "cantonese": "企喺度要捉緊扶手。",
+      "jyutping": "kei5 hai2 dou6 jiu3 zuk1 gan2 fu4 sau2.",
+      "english": "If you are standing, hold the handrail tight.",
+      "segments": [
+        {"chinese": "企喺度", "jyutping": "kei5 hai2 dou6", "english": "standing here"},
+        {"chinese": "要", "jyutping": "jiu3", "english": "must"},
+        {"chinese": "捉緊", "jyutping": "zuk1 gan2", "english": "hold tight"},
+        {"chinese": "扶手", "jyutping": "fu4 sau2", "english": "the handrail"}
+      ]
+    },
+    {
+      "cantonese": "下一站係旺角，好多人上落。",
+      "jyutping": "haa6 jat1 zaam6 hai6 wong6 gok3, hou2 do1 jan4 soeng5 lok6.",
+      "english": "The next stop is Mong Kok — many people get on and off.",
+      "segments": [
+        {"chinese": "下一站", "jyutping": "haa6 jat1 zaam6", "english": "the next stop"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "旺角", "jyutping": "wong6 gok3", "english": "Mong Kok"},
+        {"chinese": "好多人", "jyutping": "hou2 do1 jan4", "english": "many people"},
+        {"chinese": "上落", "jyutping": "soeng5 lok6", "english": "get on and off"}
+      ]
+    },
+    {
+      "cantonese": "上車嗰陣唔好衝門。",
+      "jyutping": "soeng5 ce1 go2 zan6 m4 hou2 cung1 mun4.",
+      "english": "When boarding, don't rush the doors.",
+      "segments": [
+        {"chinese": "上車", "jyutping": "soeng5 ce1", "english": "boarding"},
+        {"chinese": "嗰陣", "jyutping": "go2 zan6", "english": "when"},
+        {"chinese": "唔好", "jyutping": "m4 hou2", "english": "don't"},
+        {"chinese": "衝門", "jyutping": "cung1 mun4", "english": "rush the doors"}
+      ]
+    },
+    {
+      "cantonese": "車門就快關，唔該行入啲。",
+      "jyutping": "ce1 mun4 zau6 faai3 gwaan1, m4 goi1 haang4 jap6 di1.",
+      "english": "The doors are closing soon — please move further in.",
+      "segments": [
+        {"chinese": "車門", "jyutping": "ce1 mun4", "english": "the train doors"},
+        {"chinese": "就快關", "jyutping": "zau6 faai3 gwaan1", "english": "are closing soon"},
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "please"},
+        {"chinese": "行入啲", "jyutping": "haang4 jap6 di1", "english": "move further in"}
+      ]
+    },
+    {
+      "cantonese": "好多人喺車廂度睇電話。",
+      "jyutping": "hou2 do1 jan4 hai2 ce1 soeng1 dou6 tai2 din6 waa2.",
+      "english": "Many people are looking at their phones in the carriage.",
+      "segments": [
+        {"chinese": "好多人", "jyutping": "hou2 do1 jan4", "english": "many people"},
+        {"chinese": "喺車廂度", "jyutping": "hai2 ce1 soeng1 dou6", "english": "in the carriage"},
+        {"chinese": "睇", "jyutping": "tai2", "english": "are looking at"},
+        {"chinese": "電話", "jyutping": "din6 waa2", "english": "their phones"}
+      ]
+    },
+    {
+      "cantonese": "我哋喺金鐘站轉車。",
+      "jyutping": "ngo5 dei6 hai2 gam1 zung1 zaam6 zyun2 ce1.",
+      "english": "We change trains at Admiralty station.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "喺", "jyutping": "hai2", "english": "at"},
+        {"chinese": "金鐘站", "jyutping": "gam1 zung1 zaam6", "english": "Admiralty station"},
+        {"chinese": "轉車", "jyutping": "zyun2 ce1", "english": "change trains"}
+      ]
+    },
+    {
+      "cantonese": "呢班車去柴灣方向。",
+      "jyutping": "ni1 baan1 ce1 heoi3 caai4 waan1 fong1 hoeng3.",
+      "english": "This train goes in the direction of Chai Wan.",
+      "segments": [
+        {"chinese": "呢班車", "jyutping": "ni1 baan1 ce1", "english": "this train"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "goes"},
+        {"chinese": "柴灣", "jyutping": "caai4 waan1", "english": "Chai Wan"},
+        {"chinese": "方向", "jyutping": "fong1 hoeng3", "english": "direction"}
+      ]
+    },
+    {
+      "cantonese": "撞到熟人好巧，一齊搭車傾偈。",
+      "jyutping": "zong6 dou3 suk6 jan4 hou2 haau2, jat1 cai4 daap3 ce1 king1 gai2.",
+      "english": "What a coincidence to bump into a friend — we ride together and chat.",
+      "segments": [
+        {"chinese": "撞到", "jyutping": "zong6 dou3", "english": "bump into"},
+        {"chinese": "熟人", "jyutping": "suk6 jan4", "english": "a friend"},
+        {"chinese": "好巧", "jyutping": "hou2 haau2", "english": "what a coincidence"},
+        {"chinese": "一齊搭車", "jyutping": "jat1 cai4 daap3 ce1", "english": "ride together"},
+        {"chinese": "傾偈", "jyutping": "king1 gai2", "english": "have a chat"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "下一站係邊度呀？",
+      "question_jyutping": "haa6 jat1 zaam6 hai6 bin1 dou6 aa3?",
+      "question_english": "What is the next stop?",
+      "question_segments": [
+        {"chinese": "下一站", "jyutping": "haa6 jat1 zaam6", "english": "the next stop"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "下一站係旺角。",
+      "answer_jyutping": "haa6 jat1 zaam6 hai6 wong6 gok3.",
+      "answer_english": "The next stop is Mong Kok.",
+      "answer_segments": [
+        {"chinese": "下一站", "jyutping": "haa6 jat1 zaam6", "english": "the next stop"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "旺角", "jyutping": "wong6 gok3", "english": "Mong Kok"}
+      ]
+    },
+    {
+      "question_cantonese": "呢度有冇位坐呀？",
+      "question_jyutping": "ni1 dou6 jau5 mou5 wai2 co5 aa3?",
+      "question_english": "Is there a seat here?",
+      "question_segments": [
+        {"chinese": "呢度", "jyutping": "ni1 dou6", "english": "here"},
+        {"chinese": "有冇", "jyutping": "jau5 mou5", "english": "is there or not"},
+        {"chinese": "位坐", "jyutping": "wai2 co5", "english": "a seat"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "冇喇，企一陣啦。",
+      "answer_jyutping": "mou5 laa3, kei5 jat1 zan6 laa1.",
+      "answer_english": "No — let's just stand for a while.",
+      "answer_segments": [
+        {"chinese": "冇喇", "jyutping": "mou5 laa3", "english": "no more"},
+        {"chinese": "企一陣", "jyutping": "kei5 jat1 zan6", "english": "stand for a while"},
+        {"chinese": "啦", "jyutping": "laa1", "english": "(suggestion particle)"}
+      ]
+    },
+    {
+      "question_cantonese": "喺邊度轉車去機場呀？",
+      "question_jyutping": "hai2 bin1 dou6 zyun2 ce1 heoi3 gei1 coeng4 aa3?",
+      "question_english": "Where do I change trains to the airport?",
+      "question_segments": [
+        {"chinese": "喺邊度", "jyutping": "hai2 bin1 dou6", "english": "at where"},
+        {"chinese": "轉車", "jyutping": "zyun2 ce1", "english": "change trains"},
+        {"chinese": "去機場", "jyutping": "heoi3 gei1 coeng4", "english": "to the airport"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "喺香港站轉機場快綫。",
+      "answer_jyutping": "hai2 hoeng1 gong2 zaam6 zyun2 gei1 coeng4 faai3 sin3.",
+      "answer_english": "Change to the Airport Express at Hong Kong Station.",
+      "answer_segments": [
+        {"chinese": "喺香港站", "jyutping": "hai2 hoeng1 gong2 zaam6", "english": "at Hong Kong Station"},
+        {"chinese": "轉", "jyutping": "zyun2", "english": "change to"},
+        {"chinese": "機場快綫", "jyutping": "gei1 coeng4 faai3 sin3", "english": "the Airport Express"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "港鐵", "jyutping": "gong2 tit3", "pos": "noun 名詞", "english": "MTR (Hong Kong subway)", "example": "我哋搭港鐵返屋企。"},
+    {"chinese": "車廂", "jyutping": "ce1 soeng1", "pos": "noun 名詞", "english": "train carriage", "example": "好多人喺車廂度睇電話。"},
+    {"chinese": "逼", "jyutping": "bik1", "pos": "adj 形容詞", "english": "crowded", "example": "架車好逼，冇位坐。"},
+    {"chinese": "位", "jyutping": "wai2", "pos": "noun 名詞", "english": "seat / place", "example": "冇位坐。"},
+    {"chinese": "借歪", "jyutping": "ze3 me2", "pos": "phrase 短語", "english": "excuse me (when squeezing past)", "example": "唔該借歪，我要落車。"},
+    {"chinese": "扶手", "jyutping": "fu4 sau2", "pos": "noun 名詞", "english": "handrail / grab handle", "example": "企喺度要捉緊扶手。"},
+    {"chinese": "企", "jyutping": "kei5", "pos": "verb 動詞", "english": "to stand", "example": "冇喇，企一陣啦。"},
+    {"chinese": "下一站", "jyutping": "haa6 jat1 zaam6", "pos": "phrase 短語", "english": "the next stop", "example": "下一站係旺角。"},
+    {"chinese": "上落", "jyutping": "soeng5 lok6", "pos": "verb 動詞", "english": "to get on and off", "example": "好多人上落。"},
+    {"chinese": "車門", "jyutping": "ce1 mun4", "pos": "noun 名詞", "english": "train doors", "example": "車門就快關。"},
+    {"chinese": "衝門", "jyutping": "cung1 mun4", "pos": "verb 動詞", "english": "to rush the closing doors", "example": "上車嗰陣唔好衝門。"},
+    {"chinese": "行入啲", "jyutping": "haang4 jap6 di1", "pos": "phrase 短語", "english": "move further in", "example": "唔該行入啲。"},
+    {"chinese": "轉車", "jyutping": "zyun2 ce1", "pos": "verb 動詞", "english": "to change trains/buses", "example": "我哋喺金鐘站轉車。"},
+    {"chinese": "方向", "jyutping": "fong1 hoeng3", "pos": "noun 名詞", "english": "direction", "example": "呢班車去柴灣方向。"},
+    {"chinese": "電話", "jyutping": "din6 waa2", "pos": "noun 名詞", "english": "phone", "example": "好多人喺車廂度睇電話。"},
+    {"chinese": "傾偈", "jyutping": "king1 gai2", "pos": "verb 動詞", "english": "to chat", "example": "一齊搭車傾偈。"},
+    {"chinese": "撞到", "jyutping": "zong6 dou3", "pos": "verb 動詞", "english": "to bump into (someone)", "example": "撞到熟人好巧。"},
+    {"chinese": "機場快綫", "jyutping": "gei1 coeng4 faai3 sin3", "pos": "noun 名詞", "english": "Airport Express", "example": "喺香港站轉機場快綫。"}
+  ]
+}

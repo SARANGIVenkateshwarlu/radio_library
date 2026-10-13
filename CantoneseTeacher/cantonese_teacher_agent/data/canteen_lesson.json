@@ -1,0 +1,207 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – University Canteen 大學食堂",
+  "image_caption": "Situation: students order food at self-service kiosks in the CityU canteen (城大食坊 City Express). 情境：學生喺大學食堂用自助點餐機叫嘢食。",
+  "sentences": [
+    {
+      "cantonese": "呢度係城大食坊，有好多嘢食揀。",
+      "jyutping": "ni1 dou6 hai6 sing4 daai6 sik6 fong1, jau5 hou2 do1 je5 sik6 gaan2.",
+      "english": "This is the CityU canteen — there is lots of food to choose from.",
+      "segments": [
+        {"chinese": "呢度", "jyutping": "ni1 dou6", "english": "here"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "城大食坊", "jyutping": "sing4 daai6 sik6 fong1", "english": "the CityU canteen"},
+        {"chinese": "有好多", "jyutping": "jau5 hou2 do1", "english": "there are many"},
+        {"chinese": "嘢食", "jyutping": "je5 sik6", "english": "food"},
+        {"chinese": "揀", "jyutping": "gaan2", "english": "to choose"}
+      ]
+    },
+    {
+      "cantonese": "我哋喺自助點餐機度落單。",
+      "jyutping": "ngo5 dei6 hai2 zi6 zo6 dim2 caan1 gei1 dou6 lok6 daan1.",
+      "english": "We order at the self-service ordering kiosks.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "喺", "jyutping": "hai2", "english": "at"},
+        {"chinese": "自助點餐機", "jyutping": "zi6 zo6 dim2 caan1 gei1", "english": "self-service kiosk"},
+        {"chinese": "度", "jyutping": "dou6", "english": "(place marker)"},
+        {"chinese": "落單", "jyutping": "lok6 daan1", "english": "place an order"}
+      ]
+    },
+    {
+      "cantonese": "你先排隊，我去睇下個餐牌。",
+      "jyutping": "nei5 sin1 paai4 deoi2, ngo5 heoi3 tai2 haa6 go3 caan1 paai2.",
+      "english": "You queue up first — I'll go have a look at the menu.",
+      "segments": [
+        {"chinese": "你", "jyutping": "nei5", "english": "you"},
+        {"chinese": "先", "jyutping": "sin1", "english": "first"},
+        {"chinese": "排隊", "jyutping": "paai4 deoi2", "english": "queue up"},
+        {"chinese": "我去", "jyutping": "ngo5 heoi3", "english": "I'll go"},
+        {"chinese": "睇下", "jyutping": "tai2 haa6", "english": "have a look at"},
+        {"chinese": "個餐牌", "jyutping": "go3 caan1 paai2", "english": "the menu"}
+      ]
+    },
+    {
+      "cantonese": "我想食個牛肉飯同埋一杯凍檸茶。",
+      "jyutping": "ngo5 soeng2 sik6 go3 ngau4 juk6 faan6 tung4 maai4 jat1 bui1 dung3 ning4 caa4.",
+      "english": "I want a beef rice and an iced lemon tea.",
+      "segments": [
+        {"chinese": "我想食", "jyutping": "ngo5 soeng2 sik6", "english": "I want to eat"},
+        {"chinese": "個牛肉飯", "jyutping": "go3 ngau4 juk6 faan6", "english": "a beef rice"},
+        {"chinese": "同埋", "jyutping": "tung4 maai4", "english": "and also"},
+        {"chinese": "一杯", "jyutping": "jat1 bui1", "english": "a cup of"},
+        {"chinese": "凍檸茶", "jyutping": "dung3 ning4 caa4", "english": "iced lemon tea"}
+      ]
+    },
+    {
+      "cantonese": "可以用八達通或者信用卡俾錢。",
+      "jyutping": "ho2 ji5 jung6 baat3 daat6 tung1 waak6 ze2 seon3 jung6 kaat1 bei2 cin2.",
+      "english": "You can pay by Octopus card or credit card.",
+      "segments": [
+        {"chinese": "可以用", "jyutping": "ho2 ji5 jung6", "english": "can use"},
+        {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "english": "Octopus card"},
+        {"chinese": "或者", "jyutping": "waak6 ze2", "english": "or"},
+        {"chinese": "信用卡", "jyutping": "seon3 jung6 kaat1", "english": "credit card"},
+        {"chinese": "俾錢", "jyutping": "bei2 cin2", "english": "to pay"}
+      ]
+    },
+    {
+      "cantonese": "落完單記得攞返張單。",
+      "jyutping": "lok6 jyun4 daan1 gei3 dak1 lo2 faan1 zoeng1 daan1.",
+      "english": "After ordering, remember to take your receipt.",
+      "segments": [
+        {"chinese": "落完單", "jyutping": "lok6 jyun4 daan1", "english": "after ordering"},
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "攞返", "jyutping": "lo2 faan1", "english": "take back"},
+        {"chinese": "張單", "jyutping": "zoeng1 daan1", "english": "the receipt"}
+      ]
+    },
+    {
+      "cantonese": "等陣個屏幕會顯示你個號碼。",
+      "jyutping": "dang2 zan6 go3 ping4 mok6 wui5 hin2 si6 nei5 go3 hou6 maa2.",
+      "english": "In a moment the screen will show your number.",
+      "segments": [
+        {"chinese": "等陣", "jyutping": "dang2 zan6", "english": "in a moment"},
+        {"chinese": "個屏幕", "jyutping": "go3 ping4 mok6", "english": "the screen"},
+        {"chinese": "會", "jyutping": "wui5", "english": "will"},
+        {"chinese": "顯示", "jyutping": "hin2 si6", "english": "show"},
+        {"chinese": "你個號碼", "jyutping": "nei5 go3 hou6 maa2", "english": "your number"}
+      ]
+    },
+    {
+      "cantonese": "聽到叫號就去櫃檯攞嘢食。",
+      "jyutping": "teng1 dou3 giu3 hou6 zau6 heoi3 gwai6 toi4 lo2 je5 sik6.",
+      "english": "When you hear your number called, go to the counter to collect your food.",
+      "segments": [
+        {"chinese": "聽到", "jyutping": "teng1 dou3", "english": "when you hear"},
+        {"chinese": "叫號", "jyutping": "giu3 hou6", "english": "number called"},
+        {"chinese": "就去", "jyutping": "zau6 heoi3", "english": "then go to"},
+        {"chinese": "櫃檯", "jyutping": "gwai6 toi4", "english": "the counter"},
+        {"chinese": "攞嘢食", "jyutping": "lo2 je5 sik6", "english": "collect your food"}
+      ]
+    },
+    {
+      "cantonese": "呢度啲嘢食又平又快，好多學生嚟食。",
+      "jyutping": "ni1 dou6 di1 je5 sik6 jau6 peng4 jau6 faai3, hou2 do1 hok6 saang1 lei4 sik6.",
+      "english": "The food here is cheap and fast — many students come to eat.",
+      "segments": [
+        {"chinese": "呢度啲嘢食", "jyutping": "ni1 dou6 di1 je5 sik6", "english": "the food here"},
+        {"chinese": "又平又快", "jyutping": "jau6 peng4 jau6 faai3", "english": "cheap and fast"},
+        {"chinese": "好多", "jyutping": "hou2 do1", "english": "many"},
+        {"chinese": "學生", "jyutping": "hok6 saang1", "english": "students"},
+        {"chinese": "嚟食", "jyutping": "lei4 sik6", "english": "come to eat"}
+      ]
+    },
+    {
+      "cantonese": "食完記得將個餐盤放返喺回收處。",
+      "jyutping": "sik6 jyun4 gei3 dak1 zoeng1 go3 caan1 pun4 fong3 faan1 hai2 wui4 sau1 cyu3.",
+      "english": "After eating, remember to put your tray back at the collection point.",
+      "segments": [
+        {"chinese": "食完", "jyutping": "sik6 jyun4", "english": "after eating"},
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "將個餐盤", "jyutping": "zoeng1 go3 caan1 pun4", "english": "take the tray"},
+        {"chinese": "放返喺", "jyutping": "fong3 faan1 hai2", "english": "put back at"},
+        {"chinese": "回收處", "jyutping": "wui4 sau1 cyu3", "english": "collection point"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "喺邊度落單呀？",
+      "question_jyutping": "hai2 bin1 dou6 lok6 daan1 aa3?",
+      "question_english": "Where do you place your order?",
+      "question_segments": [
+        {"chinese": "喺", "jyutping": "hai2", "english": "at"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "落單", "jyutping": "lok6 daan1", "english": "place an order"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "喺自助點餐機度落單。",
+      "answer_jyutping": "hai2 zi6 zo6 dim2 caan1 gei1 dou6 lok6 daan1.",
+      "answer_english": "At the self-service ordering kiosks.",
+      "answer_segments": [
+        {"chinese": "喺", "jyutping": "hai2", "english": "at"},
+        {"chinese": "自助點餐機", "jyutping": "zi6 zo6 dim2 caan1 gei1", "english": "self-service kiosk"},
+        {"chinese": "度", "jyutping": "dou6", "english": "(place marker)"},
+        {"chinese": "落單", "jyutping": "lok6 daan1", "english": "place an order"}
+      ]
+    },
+    {
+      "question_cantonese": "點樣俾錢呀？",
+      "question_jyutping": "dim2 joeng2 bei2 cin2 aa3?",
+      "question_english": "How do you pay?",
+      "question_segments": [
+        {"chinese": "點樣", "jyutping": "dim2 joeng2", "english": "how"},
+        {"chinese": "俾錢", "jyutping": "bei2 cin2", "english": "pay"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "可以拍八達通，好方便。",
+      "answer_jyutping": "ho2 ji5 paak3 baat3 daat6 tung1, hou2 fong1 bin6.",
+      "answer_english": "You can tap your Octopus card — very convenient.",
+      "answer_segments": [
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "you can"},
+        {"chinese": "拍", "jyutping": "paak3", "english": "tap"},
+        {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "english": "Octopus card"},
+        {"chinese": "好方便", "jyutping": "hou2 fong1 bin6", "english": "very convenient"}
+      ]
+    },
+    {
+      "question_cantonese": "要等幾耐呀？",
+      "question_jyutping": "jiu3 dang2 gei2 noi6 aa3?",
+      "question_english": "How long do you have to wait?",
+      "question_segments": [
+        {"chinese": "要等", "jyutping": "jiu3 dang2", "english": "have to wait"},
+        {"chinese": "幾耐", "jyutping": "gei2 noi6", "english": "how long"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "好快㗎啫，幾分鐘就有得食。",
+      "answer_jyutping": "hou2 faai3 gaa3 ze1, gei2 fan1 zung1 zau6 jau5 dak1 sik6.",
+      "answer_english": "It's quick — just a few minutes and the food is ready.",
+      "answer_segments": [
+        {"chinese": "好快", "jyutping": "hou2 faai3", "english": "very fast"},
+        {"chinese": "㗎啫", "jyutping": "gaa3 ze1", "english": "(only/just particle)"},
+        {"chinese": "幾分鐘", "jyutping": "gei2 fan1 zung1", "english": "a few minutes"},
+        {"chinese": "就有得食", "jyutping": "zau6 jau5 dak1 sik6", "english": "then ready to eat"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "食堂", "jyutping": "sik6 tong4", "pos": "noun 名詞", "english": "canteen", "example": "呢度係城大食坊。"},
+    {"chinese": "自助點餐機", "jyutping": "zi6 zo6 dim2 caan1 gei1", "pos": "noun 名詞", "english": "self-service ordering kiosk", "example": "我哋喺自助點餐機度落單。"},
+    {"chinese": "落單", "jyutping": "lok6 daan1", "pos": "verb 動詞", "english": "to place an order", "example": "我哋喺自助點餐機度落單。"},
+    {"chinese": "餐牌", "jyutping": "caan1 paai2", "pos": "noun 名詞", "english": "menu", "example": "我去睇下個餐牌。"},
+    {"chinese": "排隊", "jyutping": "paai4 deoi2", "pos": "verb 動詞", "english": "to queue up", "example": "你先排隊。"},
+    {"chinese": "嘢食", "jyutping": "je5 sik6", "pos": "noun 名詞", "english": "food (colloquial)", "example": "有好多嘢食揀。"},
+    {"chinese": "牛肉飯", "jyutping": "ngau4 juk6 faan6", "pos": "noun 名詞", "english": "beef with rice", "example": "我想食個牛肉飯。"},
+    {"chinese": "凍檸茶", "jyutping": "dung3 ning4 caa4", "pos": "noun 名詞", "english": "iced lemon tea", "example": "同埋一杯凍檸茶。"},
+    {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "pos": "noun 名詞", "english": "Octopus card", "example": "可以拍八達通，好方便。"},
+    {"chinese": "俾錢", "jyutping": "bei2 cin2", "pos": "verb 動詞", "english": "to pay", "example": "可以用八達通俾錢。"},
+    {"chinese": "攞", "jyutping": "lo2", "pos": "verb 動詞", "english": "to take / collect", "example": "記得攞返張單。"},
+    {"chinese": "單", "jyutping": "daan1", "pos": "noun 名詞", "english": "receipt / order slip", "example": "落完單記得攞返張單。"},
+    {"chinese": "屏幕", "jyutping": "ping4 mok6", "pos": "noun 名詞", "english": "screen", "example": "個屏幕會顯示你個號碼。"},
+    {"chinese": "號碼", "jyutping": "hou6 maa2", "pos": "noun 名詞", "english": "number", "example": "個屏幕會顯示你個號碼。"},
+    {"chinese": "櫃檯", "jyutping": "gwai6 toi4", "pos": "noun 名詞", "english": "counter", "example": "去櫃檯攞嘢食。"},
+    {"chinese": "學生", "jyutping": "hok6 saang1", "pos": "noun 名詞", "english": "student", "example": "好多學生嚟食。"},
+    {"chinese": "平", "jyutping": "peng4", "pos": "adj 形容詞", "english": "cheap", "example": "呢度啲嘢食又平又快。"},
+    {"chinese": "回收處", "jyutping": "wui4 sau1 cyu3", "pos": "noun 名詞", "english": "collection / return point", "example": "將個餐盤放返喺回收處。"}
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – Crossing the Road 過馬路",
+  "image_caption": "Situation: pedestrians cross a busy junction near Golden Computer Arcade (黃金電腦商場); the traffic light is red. 情境：行人喺黃金電腦商場附近嘅路口過馬路，而家係紅燈。",
+  "sentences": [
+    {
+      "cantonese": "而家係紅燈，唔好過馬路。",
+      "jyutping": "ji4 gaa1 hai6 hung4 dang1, m4 hou2 gwo3 maa5 lou6.",
+      "english": "It's a red light now — don't cross the road.",
+      "segments": [
+        {"chinese": "而家", "jyutping": "ji4 gaa1", "english": "now"},
+        {"chinese": "係紅燈", "jyutping": "hai6 hung4 dang1", "english": "is a red light"},
+        {"chinese": "唔好", "jyutping": "m4 hou2", "english": "don't"},
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "cross the road"}
+      ]
+    },
+    {
+      "cantonese": "等到綠燈先過馬路。",
+      "jyutping": "dang2 dou3 luk6 dang1 sin1 gwo3 maa5 lou6.",
+      "english": "Wait until the green light before crossing.",
+      "segments": [
+        {"chinese": "等到", "jyutping": "dang2 dou3", "english": "wait until"},
+        {"chinese": "綠燈", "jyutping": "luk6 dang1", "english": "the green light"},
+        {"chinese": "先", "jyutping": "sin1", "english": "only then"},
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "cross the road"}
+      ]
+    },
+    {
+      "cantonese": "過馬路要行斑馬線。",
+      "jyutping": "gwo3 maa5 lou6 jiu3 haang4 baan1 maa5 sin3.",
+      "english": "Use the zebra crossing when you cross the road.",
+      "segments": [
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "crossing the road"},
+        {"chinese": "要行", "jyutping": "jiu3 haang4", "english": "you must use"},
+        {"chinese": "斑馬線", "jyutping": "baan1 maa5 sin3", "english": "the zebra crossing"}
+      ]
+    },
+    {
+      "cantonese": "過之前要睇左睇右。",
+      "jyutping": "gwo3 zi1 cin4 jiu3 tai2 zo2 tai2 jau6.",
+      "english": "Before crossing, look left and right.",
+      "segments": [
+        {"chinese": "過之前", "jyutping": "gwo3 zi1 cin4", "english": "before crossing"},
+        {"chinese": "要", "jyutping": "jiu3", "english": "you must"},
+        {"chinese": "睇左睇右", "jyutping": "tai2 zo2 tai2 jau6", "english": "look left and right"}
+      ]
+    },
+    {
+      "cantonese": "記得拖住小朋友過馬路。",
+      "jyutping": "gei3 dak1 to1 zyu6 siu2 pang4 jau5 gwo3 maa5 lou6.",
+      "english": "Remember to hold your child's hand while crossing.",
+      "segments": [
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "拖住", "jyutping": "to1 zyu6", "english": "to hold (hands)"},
+        {"chinese": "小朋友", "jyutping": "siu2 pang4 jau5", "english": "the child"},
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "crossing the road"}
+      ]
+    },
+    {
+      "cantonese": "對面係黃金電腦商場。",
+      "jyutping": "deoi3 min6 hai6 wong4 gam1 din6 nou5 soeng1 coeng4.",
+      "english": "Opposite is the Golden Computer Arcade.",
+      "segments": [
+        {"chinese": "對面", "jyutping": "deoi3 min6", "english": "opposite"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "黃金電腦商場", "jyutping": "wong4 gam1 din6 nou5 soeng1 coeng4", "english": "Golden Computer Arcade"}
+      ]
+    },
+    {
+      "cantonese": "呢個路口好多車，要小心。",
+      "jyutping": "ni1 go3 lou6 hau2 hou2 do1 ce1, jiu3 siu2 sam1.",
+      "english": "This junction has a lot of traffic — be careful.",
+      "segments": [
+        {"chinese": "呢個路口", "jyutping": "ni1 go3 lou6 hau2", "english": "this junction"},
+        {"chinese": "好多車", "jyutping": "hou2 do1 ce1", "english": "has lots of traffic"},
+        {"chinese": "要小心", "jyutping": "jiu3 siu2 sam1", "english": "be careful"}
+      ]
+    },
+    {
+      "cantonese": "唔好一邊過馬路一邊睇電話。",
+      "jyutping": "m4 hou2 jat1 bin1 gwo3 maa5 lou6 jat1 bin1 tai2 din6 waa2.",
+      "english": "Don't look at your phone while crossing the road.",
+      "segments": [
+        {"chinese": "唔好", "jyutping": "m4 hou2", "english": "don't"},
+        {"chinese": "一邊", "jyutping": "jat1 bin1", "english": "while"},
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "crossing the road"},
+        {"chinese": "一邊睇電話", "jyutping": "jat1 bin1 tai2 din6 waa2", "english": "looking at your phone"}
+      ]
+    },
+    {
+      "cantonese": "架車讓緊我哋，快啲過啦。",
+      "jyutping": "gaa3 ce1 joeng6 gan2 ngo5 dei6, faai3 di1 gwo3 laa1.",
+      "english": "The car is letting us cross — hurry up.",
+      "segments": [
+        {"chinese": "架車", "jyutping": "gaa3 ce1", "english": "the car"},
+        {"chinese": "讓緊", "jyutping": "joeng6 gan2", "english": "is giving way to"},
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "us"},
+        {"chinese": "快啲過啦", "jyutping": "faai3 di1 gwo3 laa1", "english": "cross quickly"}
+      ]
+    },
+    {
+      "cantonese": "過咗馬路就係商場入口。",
+      "jyutping": "gwo3 zo2 maa5 lou6 zau6 hai6 soeng1 coeng4 jap6 hau2.",
+      "english": "Once across the road, that's the mall entrance.",
+      "segments": [
+        {"chinese": "過咗馬路", "jyutping": "gwo3 zo2 maa5 lou6", "english": "after crossing the road"},
+        {"chinese": "就係", "jyutping": "zau6 hai6", "english": "there is"},
+        {"chinese": "商場", "jyutping": "soeng1 coeng4", "english": "the mall"},
+        {"chinese": "入口", "jyutping": "jap6 hau2", "english": "entrance"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "而家可唔可以過馬路呀？",
+      "question_jyutping": "ji4 gaa1 ho2 m4 ho2 ji5 gwo3 maa5 lou6 aa3?",
+      "question_english": "Can we cross the road now?",
+      "question_segments": [
+        {"chinese": "而家", "jyutping": "ji4 gaa1", "english": "now"},
+        {"chinese": "可唔可以", "jyutping": "ho2 m4 ho2 ji5", "english": "can we"},
+        {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "english": "cross the road"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "唔得，仲係紅燈。",
+      "answer_jyutping": "m4 dak1, zung6 hai6 hung4 dang1.",
+      "answer_english": "No — it's still a red light.",
+      "answer_segments": [
+        {"chinese": "唔得", "jyutping": "m4 dak1", "english": "no"},
+        {"chinese": "仲係", "jyutping": "zung6 hai6", "english": "it's still"},
+        {"chinese": "紅燈", "jyutping": "hung4 dang1", "english": "a red light"}
+      ]
+    },
+    {
+      "question_cantonese": "點樣過對面先安全呀？",
+      "question_jyutping": "dim2 joeng2 gwo3 deoi3 min6 sin1 on1 cyun4 aa3?",
+      "question_english": "How do we cross to the other side safely?",
+      "question_segments": [
+        {"chinese": "點樣", "jyutping": "dim2 joeng2", "english": "how"},
+        {"chinese": "過對面", "jyutping": "gwo3 deoi3 min6", "english": "cross to the other side"},
+        {"chinese": "先", "jyutping": "sin1", "english": "so as to be"},
+        {"chinese": "安全", "jyutping": "on1 cyun4", "english": "safe"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "行斑馬線，睇清楚左右先過。",
+      "answer_jyutping": "haang4 baan1 maa5 sin3, tai2 cing1 co2 zo2 jau6 sin1 gwo3.",
+      "answer_english": "Use the zebra crossing and check both ways clearly before crossing.",
+      "answer_segments": [
+        {"chinese": "行斑馬線", "jyutping": "haang4 baan1 maa5 sin3", "english": "use the zebra crossing"},
+        {"chinese": "睇清楚", "jyutping": "tai2 cing1 co2", "english": "check clearly"},
+        {"chinese": "左右", "jyutping": "zo2 jau6", "english": "left and right"},
+        {"chinese": "先過", "jyutping": "sin1 gwo3", "english": "then cross"}
+      ]
+    },
+    {
+      "question_cantonese": "黃金電腦商場喺邊度呀？",
+      "question_jyutping": "wong4 gam1 din6 nou5 soeng1 coeng4 hai2 bin1 dou6 aa3?",
+      "question_english": "Where is the Golden Computer Arcade?",
+      "question_segments": [
+        {"chinese": "黃金電腦商場", "jyutping": "wong4 gam1 din6 nou5 soeng1 coeng4", "english": "Golden Computer Arcade"},
+        {"chinese": "喺", "jyutping": "hai2", "english": "is at"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "喺對面，過咗馬路就到。",
+      "answer_jyutping": "hai2 deoi3 min6, gwo3 zo2 maa5 lou6 zau6 dou3.",
+      "answer_english": "It's opposite — cross the road and you're there.",
+      "answer_segments": [
+        {"chinese": "喺對面", "jyutping": "hai2 deoi3 min6", "english": "it's opposite"},
+        {"chinese": "過咗馬路", "jyutping": "gwo3 zo2 maa5 lou6", "english": "after crossing the road"},
+        {"chinese": "就到", "jyutping": "zau6 dou3", "english": "you're there"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "過馬路", "jyutping": "gwo3 maa5 lou6", "pos": "verb phrase 動詞", "english": "to cross the road", "example": "等到綠燈先過馬路。"},
+    {"chinese": "紅燈", "jyutping": "hung4 dang1", "pos": "noun 名詞", "english": "red light", "example": "而家係紅燈，唔好過馬路。"},
+    {"chinese": "綠燈", "jyutping": "luk6 dang1", "pos": "noun 名詞", "english": "green light", "example": "等到綠燈先過馬路。"},
+    {"chinese": "斑馬線", "jyutping": "baan1 maa5 sin3", "pos": "noun 名詞", "english": "zebra crossing", "example": "過馬路要行斑馬線。"},
+    {"chinese": "路口", "jyutping": "lou6 hau2", "pos": "noun 名詞", "english": "junction / intersection", "example": "呢個路口好多車。"},
+    {"chinese": "對面", "jyutping": "deoi3 min6", "pos": "prep 介詞", "english": "opposite / the other side", "example": "對面係黃金電腦商場。"},
+    {"chinese": "黃金電腦商場", "jyutping": "wong4 gam1 din6 nou5 soeng1 coeng4", "pos": "noun 名詞", "english": "Golden Computer Arcade (Sham Shui Po)", "example": "對面係黃金電腦商場。"},
+    {"chinese": "商場", "jyutping": "soeng1 coeng4", "pos": "noun 名詞", "english": "shopping mall / arcade", "example": "過咗馬路就係商場入口。"},
+    {"chinese": "入口", "jyutping": "jap6 hau2", "pos": "noun 名詞", "english": "entrance", "example": "過咗馬路就係商場入口。"},
+    {"chinese": "拖住", "jyutping": "to1 zyu6", "pos": "verb 動詞", "english": "to hold (someone's hand)", "example": "記得拖住小朋友過馬路。"},
+    {"chinese": "小朋友", "jyutping": "siu2 pang4 jau5", "pos": "noun 名詞", "english": "child / kid", "example": "記得拖住小朋友過馬路。"},
+    {"chinese": "小心", "jyutping": "siu2 sam1", "pos": "adj/verb 形容詞", "english": "careful / be careful", "example": "呢個路口好多車，要小心。"},
+    {"chinese": "安全", "jyutping": "on1 cyun4", "pos": "adj 形容詞", "english": "safe", "example": "點樣過對面先安全呀？"},
+    {"chinese": "讓", "jyutping": "joeng6", "pos": "verb 動詞", "english": "to give way / let pass", "example": "架車讓緊我哋。"},
+    {"chinese": "快啲", "jyutping": "faai3 di1", "pos": "adv 副詞", "english": "quickly / hurry up", "example": "快啲過啦。"},
+    {"chinese": "等到", "jyutping": "dang2 dou3", "pos": "verb 動詞", "english": "to wait until", "example": "等到綠燈先過馬路。"},
+    {"chinese": "一邊……一邊", "jyutping": "jat1 bin1 ... jat1 bin1", "pos": "pattern 句式", "english": "while doing X, do Y", "example": "唔好一邊過馬路一邊睇電話。"},
+    {"chinese": "睇清楚", "jyutping": "tai2 cing1 co2", "pos": "verb phrase 動詞", "english": "to look carefully / check clearly", "example": "睇清楚左右先過。"}
+  ]
+}

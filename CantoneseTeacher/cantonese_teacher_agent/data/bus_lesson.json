@@ -1,0 +1,193 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – On the Bus 搭巴士",
+  "image_caption": "Situation: passengers ride on the lower deck of a Hong Kong bus. 情境：乘客坐喺香港巴士嘅下層。",
+  "sentences": [
+    {
+      "cantonese": "我哋搭巴士去銅鑼灣。",
+      "jyutping": "ngo5 dei6 daap3 baa1 si2 heoi3 tung4 lo4 waan4.",
+      "english": "We are taking the bus to Causeway Bay.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "搭", "jyutping": "daap3", "english": "take"},
+        {"chinese": "巴士", "jyutping": "baa1 si2", "english": "the bus"},
+        {"chinese": "去銅鑼灣", "jyutping": "heoi3 tung4 lo4 waan4", "english": "to Causeway Bay"}
+      ]
+    },
+    {
+      "cantonese": "上車記得拍八達通。",
+      "jyutping": "soeng5 ce1 gei3 dak1 paak3 baat3 daat6 tung1.",
+      "english": "Remember to tap your Octopus card when boarding.",
+      "segments": [
+        {"chinese": "上車", "jyutping": "soeng5 ce1", "english": "when boarding"},
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "拍", "jyutping": "paak3", "english": "to tap"},
+        {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "english": "Octopus card"}
+      ]
+    },
+    {
+      "cantonese": "下層有好多吉位。",
+      "jyutping": "haa6 cang4 jau5 hou2 do1 gat1 wai2.",
+      "english": "The lower deck has lots of empty seats.",
+      "segments": [
+        {"chinese": "下層", "jyutping": "haa6 cang4", "english": "the lower deck"},
+        {"chinese": "有好多", "jyutping": "jau5 hou2 do1", "english": "has many"},
+        {"chinese": "吉位", "jyutping": "gat1 wai2", "english": "empty seats"}
+      ]
+    },
+    {
+      "cantonese": "我想坐窗口位睇風景。",
+      "jyutping": "ngo5 soeng2 co5 coeng1 hau2 wai2 tai2 fung1 ging2.",
+      "english": "I want to sit by the window and look at the view.",
+      "segments": [
+        {"chinese": "我想", "jyutping": "ngo5 soeng2", "english": "I want"},
+        {"chinese": "坐", "jyutping": "co5", "english": "to sit"},
+        {"chinese": "窗口位", "jyutping": "coeng1 hau2 wai2", "english": "window seat"},
+        {"chinese": "睇風景", "jyutping": "tai2 fung1 ging2", "english": "look at the view"}
+      ]
+    },
+    {
+      "cantonese": "落車前要撳鐘。",
+      "jyutping": "lok6 ce1 cin4 jiu3 gam6 zung1.",
+      "english": "You have to press the bell before getting off.",
+      "segments": [
+        {"chinese": "落車前", "jyutping": "lok6 ce1 cin4", "english": "before getting off"},
+        {"chinese": "要", "jyutping": "jiu3", "english": "must"},
+        {"chinese": "撳鐘", "jyutping": "gam6 zung1", "english": "press the bell"}
+      ]
+    },
+    {
+      "cantonese": "下一站係總站，全部人都要落車。",
+      "jyutping": "haa6 jat1 zaam6 hai6 zung2 zaam6, cyun4 bou6 jan4 dou1 jiu3 lok6 ce1.",
+      "english": "The next stop is the terminus — everyone has to get off.",
+      "segments": [
+        {"chinese": "下一站", "jyutping": "haa6 jat1 zaam6", "english": "the next stop"},
+        {"chinese": "係總站", "jyutping": "hai6 zung2 zaam6", "english": "is the terminus"},
+        {"chinese": "全部人", "jyutping": "cyun4 bou6 jan4", "english": "everyone"},
+        {"chinese": "都要落車", "jyutping": "dou1 jiu3 lok6 ce1", "english": "must get off"}
+      ]
+    },
+    {
+      "cantonese": "捉緊扶手，架車會轉彎。",
+      "jyutping": "zuk1 gan2 fu4 sau2, gaa3 ce1 wui5 zyun2 waan1.",
+      "english": "Hold the handrail tight — the bus is about to turn.",
+      "segments": [
+        {"chinese": "捉緊", "jyutping": "zuk1 gan2", "english": "hold tight"},
+        {"chinese": "扶手", "jyutping": "fu4 sau2", "english": "the handrail"},
+        {"chinese": "架車", "jyutping": "gaa3 ce1", "english": "the bus"},
+        {"chinese": "會轉彎", "jyutping": "wui5 zyun2 waan1", "english": "is about to turn"}
+      ]
+    },
+    {
+      "cantonese": "坐低咗就唔好周圍走。",
+      "jyutping": "co5 dai1 zo2 zau6 m4 hou2 zau1 wai4 zau2.",
+      "english": "Once you are seated, don't walk around.",
+      "segments": [
+        {"chinese": "坐低咗", "jyutping": "co5 dai1 zo2", "english": "once seated"},
+        {"chinese": "就唔好", "jyutping": "zau6 m4 hou2", "english": "then don't"},
+        {"chinese": "周圍走", "jyutping": "zau1 wai4 zau2", "english": "walk around"}
+      ]
+    },
+    {
+      "cantonese": "呢班車唔經旺角㗎。",
+      "jyutping": "ni1 baan1 ce1 m4 ging1 wong6 gok3 gaa3.",
+      "english": "This bus doesn't go via Mong Kok.",
+      "segments": [
+        {"chinese": "呢班車", "jyutping": "ni1 baan1 ce1", "english": "this bus"},
+        {"chinese": "唔經", "jyutping": "m4 ging1", "english": "doesn't go via"},
+        {"chinese": "旺角", "jyutping": "wong6 gok3", "english": "Mong Kok"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(particle)"}
+      ]
+    },
+    {
+      "cantonese": "車上唔可以食嘢飲嘢。",
+      "jyutping": "ce1 soeng6 m4 ho2 ji5 sik6 je5 jam2 je5.",
+      "english": "You are not allowed to eat or drink on the bus.",
+      "segments": [
+        {"chinese": "車上", "jyutping": "ce1 soeng6", "english": "on the bus"},
+        {"chinese": "唔可以", "jyutping": "m4 ho2 ji5", "english": "not allowed to"},
+        {"chinese": "食嘢", "jyutping": "sik6 je5", "english": "eat"},
+        {"chinese": "飲嘢", "jyutping": "jam2 je5", "english": "drink"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "呢班車去唔去銅鑼灣呀？",
+      "question_jyutping": "ni1 baan1 ce1 heoi3 m4 heoi3 tung4 lo4 waan4 aa3?",
+      "question_english": "Does this bus go to Causeway Bay?",
+      "question_segments": [
+        {"chinese": "呢班車", "jyutping": "ni1 baan1 ce1", "english": "this bus"},
+        {"chinese": "去唔去", "jyutping": "heoi3 m4 heoi3", "english": "does it go (or not)"},
+        {"chinese": "銅鑼灣", "jyutping": "tung4 lo4 waan4", "english": "Causeway Bay"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "去㗎，總站就係銅鑼灣。",
+      "answer_jyutping": "heoi3 gaa3, zung2 zaam6 zau6 hai6 tung4 lo4 waan4.",
+      "answer_english": "Yes it does — the terminus is Causeway Bay.",
+      "answer_segments": [
+        {"chinese": "去㗎", "jyutping": "heoi3 gaa3", "english": "yes it goes"},
+        {"chinese": "總站", "jyutping": "zung2 zaam6", "english": "the terminus"},
+        {"chinese": "就係", "jyutping": "zau6 hai6", "english": "is exactly"},
+        {"chinese": "銅鑼灣", "jyutping": "tung4 lo4 waan4", "english": "Causeway Bay"}
+      ]
+    },
+    {
+      "question_cantonese": "車費幾多錢呀？",
+      "question_jyutping": "ce1 fai3 gei2 do1 cin2 aa3?",
+      "question_english": "How much is the bus fare?",
+      "question_segments": [
+        {"chinese": "車費", "jyutping": "ce1 fai3", "english": "the fare"},
+        {"chinese": "幾多錢", "jyutping": "gei2 do1 cin2", "english": "how much money"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "五個八，拍卡就得。",
+      "answer_jyutping": "ng5 go3 baat3, paak3 kaat1 zau6 dak1.",
+      "answer_english": "Five dollars eighty — just tap your card.",
+      "answer_segments": [
+        {"chinese": "五個八", "jyutping": "ng5 go3 baat3", "english": "$5.80"},
+        {"chinese": "拍卡", "jyutping": "paak3 kaat1", "english": "tap your card"},
+        {"chinese": "就得", "jyutping": "zau6 dak1", "english": "and it's done"}
+      ]
+    },
+    {
+      "question_cantonese": "落車要唔要撳鐘呀？",
+      "question_jyutping": "lok6 ce1 jiu3 m4 jiu3 gam6 zung1 aa3?",
+      "question_english": "Do I need to press the bell to get off?",
+      "question_segments": [
+        {"chinese": "落車", "jyutping": "lok6 ce1", "english": "to get off"},
+        {"chinese": "要唔要", "jyutping": "jiu3 m4 jiu3", "english": "need or not"},
+        {"chinese": "撳鐘", "jyutping": "gam6 zung1", "english": "press the bell"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "要㗎，唔撳司機可能唔停。",
+      "answer_jyutping": "jiu3 gaa3, m4 gam6 si1 gei1 ho2 nang4 m4 ting4.",
+      "answer_english": "Yes — if you don't press it, the driver may not stop.",
+      "answer_segments": [
+        {"chinese": "要㗎", "jyutping": "jiu3 gaa3", "english": "yes, you must"},
+        {"chinese": "唔撳", "jyutping": "m4 gam6", "english": "if you don't press"},
+        {"chinese": "司機", "jyutping": "si1 gei1", "english": "the driver"},
+        {"chinese": "可能唔停", "jyutping": "ho2 nang4 m4 ting4", "english": "may not stop"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "巴士", "jyutping": "baa1 si2", "pos": "noun 名詞", "english": "bus", "example": "我哋搭巴士去銅鑼灣。"},
+    {"chinese": "上層", "jyutping": "soeng6 cang4", "pos": "noun 名詞", "english": "upper deck", "example": "上層可以睇風景。"},
+    {"chinese": "下層", "jyutping": "haa6 cang4", "pos": "noun 名詞", "english": "lower deck", "example": "下層有好多吉位。"},
+    {"chinese": "吉位", "jyutping": "gat1 wai2", "pos": "noun 名詞", "english": "empty seat (colloquial)", "example": "下層有好多吉位。"},
+    {"chinese": "窗口位", "jyutping": "coeng1 hau2 wai2", "pos": "noun 名詞", "english": "window seat", "example": "我想坐窗口位睇風景。"},
+    {"chinese": "撳鐘", "jyutping": "gam6 zung1", "pos": "verb 動詞", "english": "to press the stop bell", "example": "落車前要撳鐘。"},
+    {"chinese": "總站", "jyutping": "zung2 zaam6", "pos": "noun 名詞", "english": "terminus", "example": "下一站係總站。"},
+    {"chinese": "站頭", "jyutping": "zaam6 tau4", "pos": "noun 名詞", "english": "bus stop", "example": "喺站頭等車。"},
+    {"chinese": "路線", "jyutping": "lou6 sin3", "pos": "noun 名詞", "english": "route", "example": "呢條路線去銅鑼灣。"},
+    {"chinese": "經", "jyutping": "ging1", "pos": "verb 動詞", "english": "to pass through / via", "example": "呢班車唔經旺角㗎。"},
+    {"chinese": "轉彎", "jyutping": "zyun2 waan1", "pos": "verb 動詞", "english": "to turn a corner", "example": "架車會轉彎。"},
+    {"chinese": "車費", "jyutping": "ce1 fai3", "pos": "noun 名詞", "english": "fare", "example": "車費幾多錢呀？"},
+    {"chinese": "拍卡", "jyutping": "paak3 kaat1", "pos": "verb 動詞", "english": "to tap a card", "example": "拍卡就得。"},
+    {"chinese": "停車", "jyutping": "ting4 ce1", "pos": "verb 動詞", "english": "to stop (the vehicle)", "example": "唔撳司機可能唔停。"},
+    {"chinese": "風景", "jyutping": "fung1 ging2", "pos": "noun 名詞", "english": "view / scenery", "example": "我想坐窗口位睇風景。"},
+    {"chinese": "周圍走", "jyutping": "zau1 wai4 zau2", "pos": "phrase 短語", "english": "to walk around", "example": "坐低咗就唔好周圍走。"},
+    {"chinese": "錯過", "jyutping": "co3 gwo3", "pos": "verb 動詞", "english": "to miss", "example": "唔好錯過個站頭。"},
+    {"chinese": "食嘢", "jyutping": "sik6 je5", "pos": "verb 動詞", "english": "to eat (something)", "example": "車上唔可以食嘢飲嘢。"}
+  ]
+}

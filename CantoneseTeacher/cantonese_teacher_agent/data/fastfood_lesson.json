@@ -1,0 +1,149 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – Fast Food Street 快餐店街",
+  "image_caption": "A busy Hong Kong street with McDonald's (open 24 hours), McCafé, Café de Coral (大家樂) and a congee shop (海皇粥店). 香港街道，有廿四小時麥當勞、McCafé、大家樂同海皇粥店。",
+  "sentences": [
+    {
+      "cantonese": "呢度有間廿四小時營業嘅麥當勞。",
+      "jyutping": "ni1 dou6 jau5 gaan3 jaa6 sei3 siu2 si4 jing4 jip6 ge3 mak6 dong1 lou4.",
+      "english": "There is a 24-hour McDonald's here.",
+      "segments": [
+        {"chinese": "呢度", "jyutping": "ni1 dou6", "english": "Here"},
+        {"chinese": "有間", "jyutping": "jau5 gaan3", "english": "there is a"},
+        {"chinese": "廿四小時", "jyutping": "jaa6 sei3 siu2 si4", "english": "24-hour"},
+        {"chinese": "營業", "jyutping": "jing4 jip6", "english": "open (business)"},
+        {"chinese": "嘅", "jyutping": "ge3", "english": "(possessive particle)"},
+        {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "english": "McDonald's"}
+      ]
+    },
+    {
+      "cantonese": "我哋去大家樂食快餐啦。",
+      "jyutping": "ngo5 dei6 heoi3 daai6 gaa1 lok6 sik6 faai3 caan1 laa1.",
+      "english": "Let's go to Café de Coral for fast food.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "We"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "go to"},
+        {"chinese": "大家樂", "jyutping": "daai6 gaa1 lok6", "english": "Café de Coral"},
+        {"chinese": "食", "jyutping": "sik6", "english": "to eat"},
+        {"chinese": "快餐", "jyutping": "faai3 caan1", "english": "fast food"},
+        {"chinese": "啦", "jyutping": "laa1", "english": "(suggestion particle)"}
+      ]
+    },
+    {
+      "cantonese": "你想食粥定係食漢堡包呀？",
+      "jyutping": "nei5 soeng2 sik6 zuk1 ding6 hai6 sik6 hon3 bou2 baau1 aa3?",
+      "english": "Do you want to eat congee or a hamburger?",
+      "segments": [
+        {"chinese": "你", "jyutping": "nei5", "english": "You"},
+        {"chinese": "想", "jyutping": "soeng2", "english": "want"},
+        {"chinese": "食粥", "jyutping": "sik6 zuk1", "english": "to eat congee"},
+        {"chinese": "定係", "jyutping": "ding6 hai6", "english": "or"},
+        {"chinese": "食漢堡包", "jyutping": "sik6 hon3 bou2 baau1", "english": "to eat a hamburger"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(question particle)"}
+      ]
+    },
+    {
+      "cantonese": "呢條街有好多唔同嘅餐廳。",
+      "jyutping": "ni1 tiu4 gaai1 jau5 hou2 do1 m4 tung4 ge3 caan1 teng1.",
+      "english": "This street has many different restaurants.",
+      "segments": [
+        {"chinese": "呢條街", "jyutping": "ni1 tiu4 gaai1", "english": "This street"},
+        {"chinese": "有", "jyutping": "jau5", "english": "has"},
+        {"chinese": "好多", "jyutping": "hou2 do1", "english": "many"},
+        {"chinese": "唔同", "jyutping": "m4 tung4", "english": "different"},
+        {"chinese": "嘅", "jyutping": "ge3", "english": "(particle)"},
+        {"chinese": "餐廳", "jyutping": "caan1 teng1", "english": "restaurants"}
+      ]
+    },
+    {
+      "cantonese": "夜晚肚餓都可以嚟呢度食嘢。",
+      "jyutping": "je6 maan5 tou5 ngo4 dou1 ho2 ji5 lei4 ni1 dou6 sik6 je5.",
+      "english": "If you are hungry at night, you can still come here to eat.",
+      "segments": [
+        {"chinese": "夜晚", "jyutping": "je6 maan5", "english": "At night"},
+        {"chinese": "肚餓", "jyutping": "tou5 ngo4", "english": "hungry"},
+        {"chinese": "都", "jyutping": "dou1", "english": "still"},
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "can"},
+        {"chinese": "嚟呢度", "jyutping": "lei4 ni1 dou6", "english": "come here"},
+        {"chinese": "食嘢", "jyutping": "sik6 je5", "english": "to eat"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "麥當勞幾點關門呀？",
+      "question_jyutping": "mak6 dong1 lou4 gei2 dim2 gwaan1 mun4 aa3?",
+      "question_english": "What time does McDonald's close?",
+      "question_segments": [
+        {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "english": "McDonald's"},
+        {"chinese": "幾點", "jyutping": "gei2 dim2", "english": "what time"},
+        {"chinese": "關門", "jyutping": "gwaan1 mun4", "english": "close"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "佢廿四小時都開，唔會關門。",
+      "answer_jyutping": "keoi5 jaa6 sei3 siu2 si4 dou1 hoi1, m4 wui2 gwaan1 mun4.",
+      "answer_english": "It is open 24 hours — it never closes.",
+      "answer_segments": [
+        {"chinese": "佢", "jyutping": "keoi5", "english": "It"},
+        {"chinese": "廿四小時", "jyutping": "jaa6 sei3 siu2 si4", "english": "24 hours"},
+        {"chinese": "都開", "jyutping": "dou1 hoi1", "english": "is open"},
+        {"chinese": "唔會", "jyutping": "m4 wui2", "english": "will not"},
+        {"chinese": "關門", "jyutping": "gwaan1 mun4", "english": "close"}
+      ]
+    },
+    {
+      "question_cantonese": "你想食啲咩呀？",
+      "question_jyutping": "nei5 soeng2 sik6 di1 me1 aa3?",
+      "question_english": "What would you like to eat?",
+      "question_segments": [
+        {"chinese": "你", "jyutping": "nei5", "english": "You"},
+        {"chinese": "想食", "jyutping": "soeng2 sik6", "english": "want to eat"},
+        {"chinese": "啲", "jyutping": "di1", "english": "some"},
+        {"chinese": "咩", "jyutping": "me1", "english": "what"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "我想食個魚柳包同埋一杯咖啡。",
+      "answer_jyutping": "ngo5 soeng2 sik6 go3 jyu4 lau5 baau1 tung4 maai4 jat1 bui1 gaa3 fe1.",
+      "answer_english": "I would like a Filet-O-Fish and a cup of coffee.",
+      "answer_segments": [
+        {"chinese": "我想食", "jyutping": "ngo5 soeng2 sik6", "english": "I want to eat"},
+        {"chinese": "個魚柳包", "jyutping": "go3 jyu4 lau5 baau1", "english": "a Filet-O-Fish"},
+        {"chinese": "同埋", "jyutping": "tung4 maai4", "english": "and also"},
+        {"chinese": "一杯", "jyutping": "jat1 bui1", "english": "a cup of"},
+        {"chinese": "咖啡", "jyutping": "gaa3 fe1", "english": "coffee"}
+      ]
+    },
+    {
+      "question_cantonese": "大家樂喺邊度呀？",
+      "question_jyutping": "daai6 gaa1 lok6 hai2 bin1 dou6 aa3?",
+      "question_english": "Where is Café de Coral?",
+      "question_segments": [
+        {"chinese": "大家樂", "jyutping": "daai6 gaa1 lok6", "english": "Café de Coral"},
+        {"chinese": "喺", "jyutping": "hai2", "english": "is at"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "喺麥當勞樓上。",
+      "answer_jyutping": "hai2 mak6 dong1 lou4 lau4 soeng6.",
+      "answer_english": "It is upstairs from McDonald's.",
+      "answer_segments": [
+        {"chinese": "喺", "jyutping": "hai2", "english": "at"},
+        {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "english": "McDonald's"},
+        {"chinese": "樓上", "jyutping": "lau4 soeng6", "english": "upstairs"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "pos": "noun 名詞", "english": "McDonald's", "example": "呢度有間廿四小時營業嘅麥當勞。"},
+    {"chinese": "大家樂", "jyutping": "daai6 gaa1 lok6", "pos": "noun 名詞", "english": "Café de Coral (HK fast food chain)", "example": "我哋去大家樂食快餐啦。"},
+    {"chinese": "餐廳", "jyutping": "caan1 teng1", "pos": "noun 名詞", "english": "restaurant", "example": "呢條街有好多唔同嘅餐廳。"},
+    {"chinese": "快餐", "jyutping": "faai3 caan1", "pos": "noun 名詞", "english": "fast food", "example": "我哋去大家樂食快餐啦。"},
+    {"chinese": "食", "jyutping": "sik6", "pos": "verb 動詞", "english": "to eat", "example": "你想食粥定係食漢堡包呀？"},
+    {"chinese": "粥", "jyutping": "zuk1", "pos": "noun 名詞", "english": "congee (rice porridge)", "example": "你想食粥定係食漢堡包呀？"},
+    {"chinese": "漢堡包", "jyutping": "hon3 bou2 baau1", "pos": "noun 名詞", "english": "hamburger", "example": "你想食粥定係食漢堡包呀？"},
+    {"chinese": "咖啡", "jyutping": "gaa3 fe1", "pos": "noun 名詞", "english": "coffee", "example": "我想食個魚柳包同埋一杯咖啡。"},
+    {"chinese": "廿四小時", "jyutping": "jaa6 sei3 siu2 si4", "pos": "phrase 短語", "english": "24 hours", "example": "佢廿四小時都開，唔會關門。"},
+    {"chinese": "關門", "jyutping": "gwaan1 mun4", "pos": "verb 動詞", "english": "to close (a shop)", "example": "麥當勞幾點關門呀？"},
+    {"chinese": "樓上", "jyutping": "lau4 soeng6", "pos": "noun 名詞", "english": "upstairs", "example": "喺麥當勞樓上。"},
+    {"chinese": "肚餓", "jyutping": "tou5 ngo4", "pos": "adj 形容詞", "english": "hungry", "example": "夜晚肚餓都可以嚟呢度食嘢。"}
+  ]
+}

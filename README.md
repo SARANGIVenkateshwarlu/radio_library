@@ -333,6 +333,18 @@ The 🗣️ **Pronunciations** tab has two parts:
 4. Regenerate without re-running ASR: `python regen_outputs.py --all`.
 5. Verify the PDF and set review status in the 📚 Library tab.
 
+### Cantonese Teacher
+
+The 🎓 **Cantonese Teacher** tab turns a photo of any Hong Kong scene into a
+**colour-coded worksheet PDF** in the CantoneseTeacher style: 10 key sentences,
+Q&A, and a vocabulary table (Chinese | Jyutping | POS | English | Example) —
+the same colour marks the same word across the Cantonese, Jyutping and English
+lines. Snap 📷 or upload 🖼️ a photo → set options → **Generate worksheet PDF** →
+download. Live generation uses the configured vision/LLM endpoint
+(`CANTONESE_TEACHER_MODEL`, default = the app LLM); if the vision model isn't
+multimodal or generation fails it falls back to a built-in demo lesson (or your
+manual description).
+
 ## Output Format Rules
 
 The PDF groups sentences into blocks of **3–6**, split on a topic change or

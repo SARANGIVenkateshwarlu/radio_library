@@ -1,0 +1,208 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – At the ATM 櫃員機撳錢",
+  "image_caption": "Situation: a person uses the HSBC Express Banking (理財易) ATMs in a shopping mall to withdraw cash. 情境：一個人喺商場用滙豐理財易櫃員機撳錢。",
+  "sentences": [
+    {
+      "cantonese": "呢度係滙豐嘅理財易中心。",
+      "jyutping": "ni1 dou6 hai6 wui6 fung1 ge3 lei5 coi4 jik6 zung1 sam1.",
+      "english": "This is HSBC's Express Banking centre.",
+      "segments": [
+        {"chinese": "呢度", "jyutping": "ni1 dou6", "english": "here"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "滙豐", "jyutping": "wui6 fung1", "english": "HSBC"},
+        {"chinese": "嘅", "jyutping": "ge3", "english": "'s (particle)"},
+        {"chinese": "理財易", "jyutping": "lei5 coi4 jik6", "english": "Express Banking"},
+        {"chinese": "中心", "jyutping": "zung1 sam1", "english": "centre"}
+      ]
+    },
+    {
+      "cantonese": "我要去櫃員機撳錢。",
+      "jyutping": "ngo5 jiu3 heoi3 gwai6 jyun4 gei1 gam6 cin2.",
+      "english": "I need to go to the ATM to withdraw cash.",
+      "segments": [
+        {"chinese": "我要", "jyutping": "ngo5 jiu3", "english": "I need"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "go to"},
+        {"chinese": "櫃員機", "jyutping": "gwai6 jyun4 gei1", "english": "the ATM"},
+        {"chinese": "撳錢", "jyutping": "gam6 cin2", "english": "withdraw cash"}
+      ]
+    },
+    {
+      "cantonese": "張銀行卡插咗入去，跟住撳密碼。",
+      "jyutping": "zoeng1 ngan4 hong4 kaat1 caap3 zo2 jap6 heoi3, gan1 zyu6 gam6 mat6 maa2.",
+      "english": "Insert the bank card, then key in your PIN.",
+      "segments": [
+        {"chinese": "張銀行卡", "jyutping": "zoeng1 ngan4 hong4 kaat1", "english": "the bank card"},
+        {"chinese": "插咗入去", "jyutping": "caap3 zo2 jap6 heoi3", "english": "inserted in"},
+        {"chinese": "跟住", "jyutping": "gan1 zyu6", "english": "then"},
+        {"chinese": "撳", "jyutping": "gam6", "english": "press"},
+        {"chinese": "密碼", "jyutping": "mat6 maa2", "english": "PIN / password"}
+      ]
+    },
+    {
+      "cantonese": "我想攞五百蚊出嚟。",
+      "jyutping": "ngo5 soeng2 lo2 ng5 baak3 man1 ceot1 lei4.",
+      "english": "I want to take out five hundred dollars.",
+      "segments": [
+        {"chinese": "我想", "jyutping": "ngo5 soeng2", "english": "I want"},
+        {"chinese": "攞", "jyutping": "lo2", "english": "to take"},
+        {"chinese": "五百蚊", "jyutping": "ng5 baak3 man1", "english": "five hundred dollars"},
+        {"chinese": "出嚟", "jyutping": "ceot1 lei4", "english": "out"}
+      ]
+    },
+    {
+      "cantonese": "部機可以入支票同埋存錢。",
+      "jyutping": "bou6 gei1 ho2 ji5 jap6 zi1 piu3 tung4 maai4 cyun4 cin2.",
+      "english": "The machine can deposit cheques and also cash.",
+      "segments": [
+        {"chinese": "部機", "jyutping": "bou6 gei1", "english": "the machine"},
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "can"},
+        {"chinese": "入支票", "jyutping": "jap6 zi1 piu3", "english": "deposit cheques"},
+        {"chinese": "同埋", "jyutping": "tung4 maai4", "english": "and also"},
+        {"chinese": "存錢", "jyutping": "cyun4 cin2", "english": "deposit cash"}
+      ]
+    },
+    {
+      "cantonese": "記得攞返張卡同收據。",
+      "jyutping": "gei3 dak1 lo2 faan1 zoeng1 kaat1 tung4 sau1 geoi3.",
+      "english": "Remember to take back your card and the receipt.",
+      "segments": [
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "攞返", "jyutping": "lo2 faan1", "english": "take back"},
+        {"chinese": "張卡", "jyutping": "zoeng1 kaat1", "english": "the card"},
+        {"chinese": "同", "jyutping": "tung4", "english": "and"},
+        {"chinese": "收據", "jyutping": "sau1 geoi3", "english": "receipt"}
+      ]
+    },
+    {
+      "cantonese": "唔好俾人睇到你個密碼。",
+      "jyutping": "m4 hou2 bei2 jan4 tai2 dou3 nei5 go3 mat6 maa2.",
+      "english": "Don't let anyone see your PIN.",
+      "segments": [
+        {"chinese": "唔好", "jyutping": "m4 hou2", "english": "don't"},
+        {"chinese": "俾人", "jyutping": "bei2 jan4", "english": "let people"},
+        {"chinese": "睇到", "jyutping": "tai2 dou3", "english": "see"},
+        {"chinese": "你個密碼", "jyutping": "nei5 go3 mat6 maa2", "english": "your PIN"}
+      ]
+    },
+    {
+      "cantonese": "銀行收咗工都可以用櫃員機。",
+      "jyutping": "ngan4 hong4 sau1 zo2 gung1 dou1 ho2 ji5 jung6 gwai6 jyun4 gei1.",
+      "english": "You can still use the ATM after the bank has closed.",
+      "segments": [
+        {"chinese": "銀行", "jyutping": "ngan4 hong4", "english": "the bank"},
+        {"chinese": "收咗工", "jyutping": "sau1 zo2 gung1", "english": "has closed"},
+        {"chinese": "都可以", "jyutping": "dou1 ho2 ji5", "english": "still can"},
+        {"chinese": "用", "jyutping": "jung6", "english": "use"},
+        {"chinese": "櫃員機", "jyutping": "gwai6 jyun4 gei1", "english": "the ATM"}
+      ]
+    },
+    {
+      "cantonese": "我想查吓戶口仲有幾多錢。",
+      "jyutping": "ngo5 soeng2 caa4 haa6 wu6 hau2 zung6 jau5 gei2 do1 cin2.",
+      "english": "I want to check how much money is left in my account.",
+      "segments": [
+        {"chinese": "我想", "jyutping": "ngo5 soeng2", "english": "I want"},
+        {"chinese": "查吓", "jyutping": "caa4 haa6", "english": "to check"},
+        {"chinese": "戶口", "jyutping": "wu6 hau2", "english": "the account"},
+        {"chinese": "仲有", "jyutping": "zung6 jau5", "english": "still has"},
+        {"chinese": "幾多錢", "jyutping": "gei2 do1 cin2", "english": "how much money"}
+      ]
+    },
+    {
+      "cantonese": "如果部機食咗張卡，就打熱線求助。",
+      "jyutping": "jyu4 gwo2 bou6 gei1 sik6 zo2 zoeng1 kaat1, zau6 daa2 jit6 sin3 kau4 zo6.",
+      "english": "If the machine swallows your card, call the hotline for help.",
+      "segments": [
+        {"chinese": "如果", "jyutping": "jyu4 gwo2", "english": "if"},
+        {"chinese": "部機", "jyutping": "bou6 gei1", "english": "the machine"},
+        {"chinese": "食咗張卡", "jyutping": "sik6 zo2 zoeng1 kaat1", "english": "swallowed the card"},
+        {"chinese": "就打", "jyutping": "zau6 daa2", "english": "then call"},
+        {"chinese": "熱線", "jyutping": "jit6 sin3", "english": "the hotline"},
+        {"chinese": "求助", "jyutping": "kau4 zo6", "english": "for help"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "邊度有櫃員機呀？",
+      "question_jyutping": "bin1 dou6 jau5 gwai6 jyun4 gei1 aa3?",
+      "question_english": "Where is there an ATM?",
+      "question_segments": [
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "有", "jyutping": "jau5", "english": "is there"},
+        {"chinese": "櫃員機", "jyutping": "gwai6 jyun4 gei1", "english": "an ATM"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "滙豐隔籬就有幾部。",
+      "answer_jyutping": "wui6 fung1 gaak3 lei4 zau6 jau5 gei2 bou6.",
+      "answer_english": "Right next to HSBC there are a few machines.",
+      "answer_segments": [
+        {"chinese": "滙豐", "jyutping": "wui6 fung1", "english": "HSBC"},
+        {"chinese": "隔籬", "jyutping": "gaak3 lei4", "english": "next to"},
+        {"chinese": "就有", "jyutping": "zau6 jau5", "english": "there are"},
+        {"chinese": "幾部", "jyutping": "gei2 bou6", "english": "a few (machines)"}
+      ]
+    },
+    {
+      "question_cantonese": "可唔可以入支票呀？",
+      "question_jyutping": "ho2 m4 ho2 ji5 jap6 zi1 piu3 aa3?",
+      "question_english": "Can I deposit a cheque?",
+      "question_segments": [
+        {"chinese": "可唔可以", "jyutping": "ho2 m4 ho2 ji5", "english": "can I"},
+        {"chinese": "入", "jyutping": "jap6", "english": "deposit"},
+        {"chinese": "支票", "jyutping": "zi1 piu3", "english": "a cheque"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "可以，揀「入票」就得喇。",
+      "answer_jyutping": "ho2 ji5, gaan2 \"jap6 piu3\" zau6 dak1 laa1.",
+      "answer_english": "Yes — just choose \"deposit cheque\" and it's done.",
+      "answer_segments": [
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "yes, you can"},
+        {"chinese": "揀", "jyutping": "gaan2", "english": "choose"},
+        {"chinese": "「入票」", "jyutping": "\"jap6 piu3\"", "english": "\"deposit cheque\""},
+        {"chinese": "就得喇", "jyutping": "zau6 dak1 laa1", "english": "and it's done"}
+      ]
+    },
+    {
+      "question_cantonese": "一次最多可以撳幾多錢呀？",
+      "question_jyutping": "jat1 ci3 zeoi3 do1 ho2 ji5 gam6 gei2 do1 cin2 aa3?",
+      "question_english": "How much can I withdraw at most in one go?",
+      "question_segments": [
+        {"chinese": "一次", "jyutping": "jat1 ci3", "english": "one time"},
+        {"chinese": "最多", "jyutping": "zeoi3 do1", "english": "at most"},
+        {"chinese": "可以撳", "jyutping": "ho2 ji5 gam6", "english": "can withdraw"},
+        {"chinese": "幾多錢", "jyutping": "gei2 do1 cin2", "english": "how much money"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "通常每日最多一萬蚊。",
+      "answer_jyutping": "tung1 soeng4 mui5 jat6 zeoi3 do1 jat1 maan6 man1.",
+      "answer_english": "Usually the limit is ten thousand dollars per day.",
+      "answer_segments": [
+        {"chinese": "通常", "jyutping": "tung1 soeng4", "english": "usually"},
+        {"chinese": "每日", "jyutping": "mui5 jat6", "english": "per day"},
+        {"chinese": "最多", "jyutping": "zeoi3 do1", "english": "at most"},
+        {"chinese": "一萬蚊", "jyutping": "jat1 maan6 man1", "english": "ten thousand dollars"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "銀行", "jyutping": "ngan4 hong4", "pos": "noun 名詞", "english": "bank", "example": "銀行收咗工都可以用櫃員機。"},
+    {"chinese": "滙豐", "jyutping": "wui6 fung1", "pos": "noun 名詞", "english": "HSBC", "example": "呢度係滙豐嘅理財易中心。"},
+    {"chinese": "理財易", "jyutping": "lei5 coi4 jik6", "pos": "noun 名詞", "english": "Express Banking (HSBC self-service)", "example": "呢度係滙豐嘅理財易中心。"},
+    {"chinese": "櫃員機", "jyutping": "gwai6 jyun4 gei1", "pos": "noun 名詞", "english": "ATM", "example": "我要去櫃員機撳錢。"},
+    {"chinese": "撳錢", "jyutping": "gam6 cin2", "pos": "verb 動詞", "english": "to withdraw cash (colloquial)", "example": "我要去櫃員機撳錢。"},
+    {"chinese": "銀行卡", "jyutping": "ngan4 hong4 kaat1", "pos": "noun 名詞", "english": "bank card", "example": "張銀行卡插咗入去。"},
+    {"chinese": "密碼", "jyutping": "mat6 maa2", "pos": "noun 名詞", "english": "PIN / password", "example": "唔好俾人睇到你個密碼。"},
+    {"chinese": "攞返", "jyutping": "lo2 faan1", "pos": "verb 動詞", "english": "to take back", "example": "記得攞返張卡同收據。"},
+    {"chinese": "收據", "jyutping": "sau1 geoi3", "pos": "noun 名詞", "english": "receipt", "example": "記得攞返張卡同收據。"},
+    {"chinese": "支票", "jyutping": "zi1 piu3", "pos": "noun 名詞", "english": "cheque", "example": "部機可以入支票。"},
+    {"chinese": "入票", "jyutping": "jap6 piu3", "pos": "verb 動詞", "english": "to deposit a cheque", "example": "揀「入票」就得喇。"},
+    {"chinese": "存錢", "jyutping": "cyun4 cin2", "pos": "verb 動詞", "english": "to deposit money", "example": "部機可以入支票同埋存錢。"},
+    {"chinese": "戶口", "jyutping": "wu6 hau2", "pos": "noun 名詞", "english": "(bank) account", "example": "我想查吓戶口仲有幾多錢。"},
+    {"chinese": "查", "jyutping": "caa4", "pos": "verb 動詞", "english": "to check", "example": "我想查吓戶口仲有幾多錢。"},
+    {"chinese": "隔籬", "jyutping": "gaak3 lei4", "pos": "noun 名詞", "english": "next door / beside", "example": "滙豐隔籬就有幾部。"},
+    {"chinese": "熱線", "jyutping": "jit6 sin3", "pos": "noun 名詞", "english": "hotline", "example": "就打熱線求助。"},
+    {"chinese": "求助", "jyutping": "kau4 zo6", "pos": "verb 動詞", "english": "to ask for help", "example": "就打熱線求助。"},
+    {"chinese": "五百蚊", "jyutping": "ng5 baak3 man1", "pos": "phrase 短語", "english": "five hundred dollars", "example": "我想攞五百蚊出嚟。"}
+  ]
+}

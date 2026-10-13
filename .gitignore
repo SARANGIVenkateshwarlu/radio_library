@@ -27,10 +27,18 @@ metadata/*.json
 metadata/cleaned/
 metadata/speed/
 metadata/recordings/
+metadata/cantonese_teacher/
 *.log
 
 # Local Whisper models (converted CTranslate2 / HF)
 models/
+
+# CantoneseTeacher (integrated) — keep sources/prompts/data, ignore bulk output
+CantoneseTeacher/cantonese_teacher_agent/output/
+CantoneseTeacher/cantonese_teacher_agent/lessons/*.pdf
+CantoneseTeacher/cantonese_teacher_agent/lessons/*.html
+CantoneseTeacher/cantonese_teacher_agent/assets/
+CantoneseTeacher/ipython_*.png
 
 # Screenshots / scratch
 screenshots/

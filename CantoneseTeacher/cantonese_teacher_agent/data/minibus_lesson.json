@@ -1,0 +1,142 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – Green Minibus 綠色小巴",
+  "image_caption": "A green public light bus (16 seats) on Hong Kong Island, route 8 to Central (Exchange Square). 香港島綠色專線小巴8號線，前往中環交易廣場。",
+  "sentences": [
+    {
+      "cantonese": "呢架係綠色專線小巴。",
+      "jyutping": "ni1 gaa3 hai6 luk6 sik1 zyun1 sin3 siu2 baa1.",
+      "english": "This is a green minibus.",
+      "segments": [
+        {"chinese": "呢架", "jyutping": "ni1 gaa3", "english": "This"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "綠色", "jyutping": "luk6 sik1", "english": "green"},
+        {"chinese": "專線小巴", "jyutping": "zyun1 sin3 siu2 baa1", "english": "(fixed-route) minibus"}
+      ]
+    },
+    {
+      "cantonese": "我哋搭小巴去中環。",
+      "jyutping": "ngo5 dei6 daap3 siu2 baa1 heoi3 zung1 waan4.",
+      "english": "We are taking the minibus to Central.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "We"},
+        {"chinese": "搭", "jyutping": "daap3", "english": "take"},
+        {"chinese": "小巴", "jyutping": "siu2 baa1", "english": "the minibus"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "to"},
+        {"chinese": "中環", "jyutping": "zung1 waan4", "english": "Central"}
+      ]
+    },
+    {
+      "cantonese": "呢班車去唔去交易廣場㗎？",
+      "jyutping": "ni1 baan1 ce1 heoi3 m4 heoi3 gaau1 jik6 gwong2 coeng4 gaa3?",
+      "english": "Does this bus go to Exchange Square?",
+      "segments": [
+        {"chinese": "呢班車", "jyutping": "ni1 baan1 ce1", "english": "This bus"},
+        {"chinese": "去唔去", "jyutping": "heoi3 m4 heoi3", "english": "does it go (or not)"},
+        {"chinese": "交易廣場", "jyutping": "gaau1 jik6 gwong2 coeng4", "english": "to Exchange Square"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(question particle)"}
+      ]
+    },
+    {
+      "cantonese": "車費係七個五，記得拍八達通。",
+      "jyutping": "ce1 fai3 hai6 cat1 go3 ng5, gei3 dak1 paak3 baat3 daat6 tung1.",
+      "english": "The fare is $7.50 — remember to tap your Octopus card.",
+      "segments": [
+        {"chinese": "車費", "jyutping": "ce1 fai3", "english": "The fare"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "七個五", "jyutping": "cat1 go3 ng5", "english": "$7.50"},
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "拍", "jyutping": "paak3", "english": "to tap"},
+        {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "english": "your Octopus card"}
+      ]
+    },
+    {
+      "cantonese": "司機，前面有落，唔該！",
+      "jyutping": "si1 gei1, cin4 min6 jau5 lok6, m4 goi1!",
+      "english": "Driver, I want to get off up ahead, please!",
+      "segments": [
+        {"chinese": "司機", "jyutping": "si1 gei1", "english": "Driver"},
+        {"chinese": "前面", "jyutping": "cin4 min6", "english": "up ahead"},
+        {"chinese": "有落", "jyutping": "jau5 lok6", "english": "getting off"},
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "please"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "呢架小巴去邊度㗎？",
+      "question_jyutping": "ni1 gaa3 siu2 baa1 heoi3 bin1 dou6 gaa3?",
+      "question_english": "Where does this minibus go?",
+      "question_segments": [
+        {"chinese": "呢架小巴", "jyutping": "ni1 gaa3 siu2 baa1", "english": "This minibus"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "goes"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "佢去中環交易廣場。",
+      "answer_jyutping": "keoi5 heoi3 zung1 waan4 gaau1 jik6 gwong2 coeng4.",
+      "answer_english": "It goes to Exchange Square in Central.",
+      "answer_segments": [
+        {"chinese": "佢", "jyutping": "keoi5", "english": "It"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "goes to"},
+        {"chinese": "中環", "jyutping": "zung1 waan4", "english": "Central"},
+        {"chinese": "交易廣場", "jyutping": "gaau1 jik6 gwong2 coeng4", "english": "Exchange Square"}
+      ]
+    },
+    {
+      "question_cantonese": "小巴有幾多個座位呀？",
+      "question_jyutping": "siu2 baa1 jau5 gei2 do1 go3 zo6 wai2 aa3?",
+      "question_english": "How many seats does the minibus have?",
+      "question_segments": [
+        {"chinese": "小巴", "jyutping": "siu2 baa1", "english": "The minibus"},
+        {"chinese": "有", "jyutping": "jau5", "english": "has"},
+        {"chinese": "幾多個", "jyutping": "gei2 do1 go3", "english": "how many"},
+        {"chinese": "座位", "jyutping": "zo6 wai2", "english": "seats"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "有十六個座位。",
+      "answer_jyutping": "jau5 sap6 luk6 go3 zo6 wai2.",
+      "answer_english": "It has sixteen seats.",
+      "answer_segments": [
+        {"chinese": "有", "jyutping": "jau5", "english": "(It) has"},
+        {"chinese": "十六個", "jyutping": "sap6 luk6 go3", "english": "sixteen"},
+        {"chinese": "座位", "jyutping": "zo6 wai2", "english": "seats"}
+      ]
+    },
+    {
+      "question_cantonese": "落車嗰陣要講咩呀？",
+      "question_jyutping": "lok6 ce1 go2 zan6 jiu3 gong2 me1 aa3?",
+      "question_english": "What should you say when you want to get off?",
+      "question_segments": [
+        {"chinese": "落車", "jyutping": "lok6 ce1", "english": "getting off"},
+        {"chinese": "嗰陣", "jyutping": "go2 zan6", "english": "when"},
+        {"chinese": "要", "jyutping": "jiu3", "english": "should"},
+        {"chinese": "講", "jyutping": "gong2", "english": "say"},
+        {"chinese": "咩", "jyutping": "me1", "english": "what"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "可以大聲講「有落」。",
+      "answer_jyutping": "ho2 ji5 daai6 seng1 gong2 \"jau5 lok6\".",
+      "answer_english": "You can say \"jau5 lok6\" (I'm getting off) out loud.",
+      "answer_segments": [
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "You can"},
+        {"chinese": "大聲", "jyutping": "daai6 seng1", "english": "loudly"},
+        {"chinese": "講", "jyutping": "gong2", "english": "say"},
+        {"chinese": "「有落」", "jyutping": "\"jau5 lok6\"", "english": "\"getting off!\""}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "小巴", "jyutping": "siu2 baa1", "pos": "noun 名詞", "english": "minibus", "example": "我哋搭小巴去中環。"},
+    {"chinese": "專線小巴", "jyutping": "zyun1 sin3 siu2 baa1", "pos": "noun 名詞", "english": "green minibus (fixed route)", "example": "呢架係綠色專線小巴。"},
+    {"chinese": "搭", "jyutping": "daap3", "pos": "verb 動詞", "english": "to take (transport)", "example": "我哋搭小巴去中環。"},
+    {"chinese": "車費", "jyutping": "ce1 fai3", "pos": "noun 名詞", "english": "fare", "example": "車費係七個五。"},
+    {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "pos": "noun 名詞", "english": "Octopus card", "example": "記得拍八達通。"},
+    {"chinese": "拍", "jyutping": "paak3", "pos": "verb 動詞", "english": "to tap (a card)", "example": "記得拍八達通。"},
+    {"chinese": "司機", "jyutping": "si1 gei1", "pos": "noun 名詞", "english": "driver", "example": "司機，前面有落！"},
+    {"chinese": "落車", "jyutping": "lok6 ce1", "pos": "verb 動詞", "english": "to get off (a vehicle)", "example": "落車嗰陣要講咩呀？"},
+    {"chinese": "有落", "jyutping": "jau5 lok6", "pos": "phrase 短語", "english": "\"getting off!\" (said to the driver)", "example": "司機，前面有落，唔該！"},
+    {"chinese": "座位", "jyutping": "zo6 wai2", "pos": "noun 名詞", "english": "seat", "example": "有十六個座位。"},
+    {"chinese": "中環", "jyutping": "zung1 waan4", "pos": "noun 名詞", "english": "Central (district of Hong Kong)", "example": "佢去中環交易廣場。"},
+    {"chinese": "唔該", "jyutping": "m4 goi1", "pos": "phrase 短語", "english": "please / thank you", "example": "前面有落，唔該！"}
+  ]
+}

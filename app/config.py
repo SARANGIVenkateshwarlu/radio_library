@@ -85,6 +85,9 @@ else:
 
 OPENAI_BASE_URL = _setting("OPENAI_BASE_URL", "XAI_BASE_URL", default=_base_default)
 LLM_MODEL = _setting("LLM_MODEL", "XAI_MODEL", default=_model_default)
+# Cantonese Teacher worksheet: model used for the vision description + lesson
+# generation (leave default to use the same LLM_MODEL).
+CANTONESE_TEACHER_MODEL = _setting("CANTONESE_TEACHER_MODEL", default=LLM_MODEL)
 
 # ffmpeg binary (on PATH by default; override if it is not).
 FFMPEG_BINARY = _setting("FFMPEG_BINARY", default="ffmpeg")

@@ -1,0 +1,209 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – Eating at McDonald's 喺麥當勞食嘢",
+  "image_caption": "Situation: a person goes to this 24-hour McDonald's in Hong Kong, orders a meal and eats. 情境：一個人去呢間廿四小時麥當勞叫嘢食。",
+  "sentences": [
+    {
+      "cantonese": "我今日想去麥當勞食晏。",
+      "jyutping": "ngo5 gam1 jat6 soeng2 heoi3 mak6 dong1 lou4 sik6 aan3.",
+      "english": "I want to go to McDonald's for lunch today.",
+      "segments": [
+        {"chinese": "我", "jyutping": "ngo5", "english": "I"},
+        {"chinese": "今日", "jyutping": "gam1 jat6", "english": "today"},
+        {"chinese": "想去", "jyutping": "soeng2 heoi3", "english": "want to go to"},
+        {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "english": "McDonald's"},
+        {"chinese": "食晏", "jyutping": "sik6 aan3", "english": "eat lunch"}
+      ]
+    },
+    {
+      "cantonese": "唔該，我要一個巨無霸套餐。",
+      "jyutping": "m4 goi1, ngo5 jiu3 jat1 go3 geoi6 mou4 baa3 taai3 caan1.",
+      "english": "Excuse me, I'd like a Big Mac meal, please.",
+      "segments": [
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "excuse me / please"},
+        {"chinese": "我要", "jyutping": "ngo5 jiu3", "english": "I want"},
+        {"chinese": "一個", "jyutping": "jat1 go3", "english": "one"},
+        {"chinese": "巨無霸", "jyutping": "geoi6 mou4 baa3", "english": "Big Mac"},
+        {"chinese": "套餐", "jyutping": "taai3 caan1", "english": "set meal"}
+      ]
+    },
+    {
+      "cantonese": "可唔可以俾多包茄汁我呀？",
+      "jyutping": "ho2 m4 ho2 ji5 bei2 do1 baau1 ke4 zap1 ngo5 aa3?",
+      "english": "Can you give me one more packet of ketchup, please?",
+      "segments": [
+        {"chinese": "可唔可以", "jyutping": "ho2 m4 ho2 ji5", "english": "can you"},
+        {"chinese": "俾", "jyutping": "bei2", "english": "give"},
+        {"chinese": "多包", "jyutping": "do1 baau1", "english": "one more packet"},
+        {"chinese": "茄汁", "jyutping": "ke4 zap1", "english": "ketchup"},
+        {"chinese": "我", "jyutping": "ngo5", "english": "me"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(question particle)"}
+      ]
+    },
+    {
+      "cantonese": "薯條啱啱炸起，好脆好好食。",
+      "jyutping": "syu4 tiu4 ngaam1 ngaam1 zaa3 hei2, hou2 ceui3 hou2 hou2 sik6.",
+      "english": "The fries are freshly fried — very crispy and tasty.",
+      "segments": [
+        {"chinese": "薯條", "jyutping": "syu4 tiu4", "english": "fries"},
+        {"chinese": "啱啱", "jyutping": "ngaam1 ngaam1", "english": "just now"},
+        {"chinese": "炸起", "jyutping": "zaa3 hei2", "english": "freshly fried"},
+        {"chinese": "好脆", "jyutping": "hou2 ceui3", "english": "very crispy"},
+        {"chinese": "好好食", "jyutping": "hou2 hou2 sik6", "english": "very tasty"}
+      ]
+    },
+    {
+      "cantonese": "食完記得自己執好個餐盤呀。",
+      "jyutping": "sik6 jyun4 gei3 dak1 zi6 gei2 zap1 hou2 go3 caan1 pun4 aa3.",
+      "english": "Remember to clear your own tray after eating.",
+      "segments": [
+        {"chinese": "食完", "jyutping": "sik6 jyun4", "english": "after eating"},
+        {"chinese": "記得", "jyutping": "gei3 dak1", "english": "remember"},
+        {"chinese": "自己", "jyutping": "zi6 gei2", "english": "yourself"},
+        {"chinese": "執好", "jyutping": "zap1 hou2", "english": "tidy up"},
+        {"chinese": "個餐盤", "jyutping": "go3 caan1 pun4", "english": "the tray"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(soft particle)"}
+      ]
+    },
+    {
+      "cantonese": "我用八達通俾錢。",
+      "jyutping": "ngo5 jung6 baat3 daat6 tung1 bei2 cin2.",
+      "english": "I'll pay with my Octopus card.",
+      "segments": [
+        {"chinese": "我", "jyutping": "ngo5", "english": "I"},
+        {"chinese": "用", "jyutping": "jung6", "english": "use"},
+        {"chinese": "八達通", "jyutping": "baat3 daat6 tung1", "english": "Octopus card"},
+        {"chinese": "俾錢", "jyutping": "bei2 cin2", "english": "to pay"}
+      ]
+    },
+    {
+      "cantonese": "我哋搵張枱坐低先。",
+      "jyutping": "ngo5 dei6 wan2 zoeng1 toi2 co5 dai1 sin1.",
+      "english": "Let's find a table and sit down first.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "搵", "jyutping": "wan2", "english": "look for"},
+        {"chinese": "張枱", "jyutping": "zoeng1 toi2", "english": "a table"},
+        {"chinese": "坐低", "jyutping": "co5 dai1", "english": "sit down"},
+        {"chinese": "先", "jyutping": "sin1", "english": "first"}
+      ]
+    },
+    {
+      "cantonese": "唔該俾張紙巾我。",
+      "jyutping": "m4 goi1 bei2 zoeng1 zi2 gan1 ngo5.",
+      "english": "Please give me a napkin.",
+      "segments": [
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "please"},
+        {"chinese": "俾", "jyutping": "bei2", "english": "give"},
+        {"chinese": "張", "jyutping": "zoeng1", "english": "(measure word)"},
+        {"chinese": "紙巾", "jyutping": "zi2 gan1", "english": "napkin / tissue"},
+        {"chinese": "我", "jyutping": "ngo5", "english": "me"}
+      ]
+    },
+    {
+      "cantonese": "我可以坐喺度慢慢食。",
+      "jyutping": "ngo5 ho2 ji5 co5 hai2 dou6 maan6 maan2 sik6.",
+      "english": "I can sit here and eat slowly.",
+      "segments": [
+        {"chinese": "我", "jyutping": "ngo5", "english": "I"},
+        {"chinese": "可以", "jyutping": "ho2 ji5", "english": "can"},
+        {"chinese": "坐喺度", "jyutping": "co5 hai2 dou6", "english": "sit here"},
+        {"chinese": "慢慢", "jyutping": "maan6 maan2", "english": "slowly"},
+        {"chinese": "食", "jyutping": "sik6", "english": "eat"}
+      ]
+    },
+    {
+      "cantonese": "食飽喇，我哋走喇。",
+      "jyutping": "sik6 baau2 laa3, ngo5 dei6 zau2 laa1.",
+      "english": "We're full — let's go.",
+      "segments": [
+        {"chinese": "食飽", "jyutping": "sik6 baau2", "english": "eaten full"},
+        {"chinese": "喇", "jyutping": "laa3", "english": "(done particle)"},
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "走", "jyutping": "zau2", "english": "leave"},
+        {"chinese": "喇", "jyutping": "laa1", "english": "(let's particle)"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "你去邊度食晏呀？",
+      "question_jyutping": "nei5 heoi3 bin1 dou6 sik6 aan3 aa3?",
+      "question_english": "Where are you going for lunch?",
+      "question_segments": [
+        {"chinese": "你", "jyutping": "nei5", "english": "you"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "go"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "食晏", "jyutping": "sik6 aan3", "english": "eat lunch"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "我去麥當勞食個包。",
+      "answer_jyutping": "ngo5 heoi3 mak6 dong1 lou4 sik6 go3 baau1.",
+      "answer_english": "I'm going to McDonald's for a burger.",
+      "answer_segments": [
+        {"chinese": "我去", "jyutping": "ngo5 heoi3", "english": "I'm going to"},
+        {"chinese": "麥當勞", "jyutping": "mak6 dong1 lou4", "english": "McDonald's"},
+        {"chinese": "食", "jyutping": "sik6", "english": "to eat"},
+        {"chinese": "個包", "jyutping": "go3 baau1", "english": "a burger/bun"}
+      ]
+    },
+    {
+      "question_cantonese": "你想堂食定係外賣呀？",
+      "question_jyutping": "nei5 soeng2 tong4 sik6 ding6 hai6 ngoi6 maai6 aa3?",
+      "question_english": "Would you like to dine in or take away?",
+      "question_segments": [
+        {"chinese": "你想", "jyutping": "nei5 soeng2", "english": "you want"},
+        {"chinese": "堂食", "jyutping": "tong4 sik6", "english": "dine in"},
+        {"chinese": "定係", "jyutping": "ding6 hai6", "english": "or"},
+        {"chinese": "外賣", "jyutping": "ngoi6 maai6", "english": "takeaway"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "堂食，唔該。",
+      "answer_jyutping": "tong4 sik6, m4 goi1.",
+      "answer_english": "Dine in, please.",
+      "answer_segments": [
+        {"chinese": "堂食", "jyutping": "tong4 sik6", "english": "dine in"},
+        {"chinese": "唔該", "jyutping": "m4 goi1", "english": "please"}
+      ]
+    },
+    {
+      "question_cantonese": "個餐跟咩飲品呀？",
+      "question_jyutping": "go3 caan1 gan1 me1 jam2 ban2 aa3?",
+      "question_english": "What drink comes with the meal?",
+      "question_segments": [
+        {"chinese": "個餐", "jyutping": "go3 caan1", "english": "the meal"},
+        {"chinese": "跟", "jyutping": "gan1", "english": "comes with"},
+        {"chinese": "咩", "jyutping": "me1", "english": "what"},
+        {"chinese": "飲品", "jyutping": "jam2 ban2", "english": "drink"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "跟一杯凍檸茶。",
+      "answer_jyutping": "gan1 jat1 bui1 dung3 ning4 caa4.",
+      "answer_english": "It comes with an iced lemon tea.",
+      "answer_segments": [
+        {"chinese": "跟", "jyutping": "gan1", "english": "comes with"},
+        {"chinese": "一杯", "jyutping": "jat1 bui1", "english": "a cup of"},
+        {"chinese": "凍檸茶", "jyutping": "dung3 ning4 caa4", "english": "iced lemon tea"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "套餐", "jyutping": "taai3 caan1", "pos": "noun 名詞", "english": "set meal / combo", "example": "我要一個巨無霸套餐。"},
+    {"chinese": "巨無霸", "jyutping": "geoi6 mou4 baa3", "pos": "noun 名詞", "english": "Big Mac", "example": "我要一個巨無霸套餐。"},
+    {"chinese": "薯條", "jyutping": "syu4 tiu4", "pos": "noun 名詞", "english": "french fries", "example": "薯條啱啱炸起，好脆好好食。"},
+    {"chinese": "茄汁", "jyutping": "ke4 zap1", "pos": "noun 名詞", "english": "ketchup", "example": "可唔可以俾多包茄汁我呀？"},
+    {"chinese": "堂食", "jyutping": "tong4 sik6", "pos": "verb/noun 動詞", "english": "to dine in", "example": "你想堂食定係外賣呀？"},
+    {"chinese": "外賣", "jyutping": "ngoi6 maai6", "pos": "noun 名詞", "english": "takeaway", "example": "你想堂食定係外賣呀？"},
+    {"chinese": "食晏", "jyutping": "sik6 aan3", "pos": "verb 動詞", "english": "to eat lunch (colloquial HK)", "example": "我今日想去麥當勞食晏。"},
+    {"chinese": "飲品", "jyutping": "jam2 ban2", "pos": "noun 名詞", "english": "drink / beverage", "example": "個餐跟咩飲品呀？"},
+    {"chinese": "凍檸茶", "jyutping": "dung3 ning4 caa4", "pos": "noun 名詞", "english": "iced lemon tea", "example": "跟一杯凍檸茶。"},
+    {"chinese": "餐盤", "jyutping": "caan1 pun4", "pos": "noun 名詞", "english": "tray", "example": "食完記得自己執好個餐盤呀。"},
+    {"chinese": "好脆", "jyutping": "hou2 ceui3", "pos": "adj 形容詞", "english": "very crispy", "example": "薯條啱啱炸起，好脆好好食。"},
+    {"chinese": "俾", "jyutping": "bei2", "pos": "verb 動詞", "english": "to give", "example": "可唔可以俾多包茄汁我呀？"},
+    {"chinese": "紙巾", "jyutping": "zi2 gan1", "pos": "noun 名詞", "english": "napkin / tissue", "example": "唔該俾張紙巾我。"},
+    {"chinese": "枱", "jyutping": "toi2", "pos": "noun 名詞", "english": "table", "example": "我哋搵張枱坐低先。"},
+    {"chinese": "坐低", "jyutping": "co5 dai1", "pos": "verb 動詞", "english": "to sit down", "example": "我哋搵張枱坐低先。"},
+    {"chinese": "俾錢", "jyutping": "bei2 cin2", "pos": "verb 動詞", "english": "to pay", "example": "我用八達通俾錢。"},
+    {"chinese": "慢慢", "jyutping": "maan6 maan2", "pos": "adv 副詞", "english": "slowly / take your time", "example": "我可以坐喺度慢慢食。"},
+    {"chinese": "食飽", "jyutping": "sik6 baau2", "pos": "verb 動詞", "english": "to eat until full", "example": "食飽喇，我哋走喇。"}
+  ]
+}

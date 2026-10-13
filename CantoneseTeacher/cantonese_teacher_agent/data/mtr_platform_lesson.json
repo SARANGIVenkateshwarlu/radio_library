@@ -1,0 +1,198 @@
+{
+  "title": "Cantonese Class 廣東話課堂 – MTR Platform 港鐵月台",
+  "image_caption": "Situation: passengers wait on platform 1 for the train to Tsuen Wan (往荃灣). 情境：乘客喺一號月台等往荃灣嘅列車。",
+  "sentences": [
+    {
+      "cantonese": "我哋喺月台等緊車。",
+      "jyutping": "ngo5 dei6 hai2 jyut6 toi4 dang2 gan2 ce1.",
+      "english": "We are waiting for the train on the platform.",
+      "segments": [
+        {"chinese": "我哋", "jyutping": "ngo5 dei6", "english": "we"},
+        {"chinese": "喺月台", "jyutping": "hai2 jyut6 toi4", "english": "on the platform"},
+        {"chinese": "等緊", "jyutping": "dang2 gan2", "english": "are waiting"},
+        {"chinese": "車", "jyutping": "ce1", "english": "for the train"}
+      ]
+    },
+    {
+      "cantonese": "呢邊係往荃灣方向。",
+      "jyutping": "ni1 bin1 hai6 wong5 cyun4 waan1 fong1 hoeng3.",
+      "english": "This side is for trains towards Tsuen Wan.",
+      "segments": [
+        {"chinese": "呢邊", "jyutping": "ni1 bin1", "english": "this side"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "往荃灣", "jyutping": "wong5 cyun4 waan1", "english": "towards Tsuen Wan"},
+        {"chinese": "方向", "jyutping": "fong1 hoeng3", "english": "direction"}
+      ]
+    },
+    {
+      "cantonese": "幕門開咗先入去。",
+      "jyutping": "mok6 mun4 hoi1 zo2 sin1 jap6 heoi3.",
+      "english": "Go in only after the screen doors have opened.",
+      "segments": [
+        {"chinese": "幕門", "jyutping": "mok6 mun4", "english": "screen doors"},
+        {"chinese": "開咗", "jyutping": "hoi1 zo2", "english": "have opened"},
+        {"chinese": "先", "jyutping": "sin1", "english": "only then"},
+        {"chinese": "入去", "jyutping": "jap6 heoi3", "english": "go in"}
+      ]
+    },
+    {
+      "cantonese": "畀啲乘客出咗先上車。",
+      "jyutping": "bei2 di1 sing4 haak3 ceot1 zo2 sin1 soeng5 ce1.",
+      "english": "Let the passengers get out first, then board.",
+      "segments": [
+        {"chinese": "畀啲乘客", "jyutping": "bei2 di1 sing4 haak3", "english": "let the passengers"},
+        {"chinese": "出咗", "jyutping": "ceot1 zo2", "english": "get out"},
+        {"chinese": "先", "jyutping": "sin1", "english": "first"},
+        {"chinese": "上車", "jyutping": "soeng5 ce1", "english": "board"}
+      ]
+    },
+    {
+      "cantonese": "企黃線後面，唔好企太出。",
+      "jyutping": "kei5 wong4 sin3 hau6 min6, m4 hou2 kei5 taai3 ceot1.",
+      "english": "Stand behind the yellow line — don't stand too close to the edge.",
+      "segments": [
+        {"chinese": "企", "jyutping": "kei5", "english": "stand"},
+        {"chinese": "黃線", "jyutping": "wong4 sin3", "english": "the yellow line"},
+        {"chinese": "後面", "jyutping": "hau6 min6", "english": "behind"},
+        {"chinese": "唔好企太出", "jyutping": "m4 hou2 kei5 taai3 ceot1", "english": "don't stand too far out"}
+      ]
+    },
+    {
+      "cantonese": "班車啱啱走咗，要等下一班。",
+      "jyutping": "baan1 ce1 ngaam1 ngaam1 zau2 zo2, jiu3 dang2 haa6 jat1 baan1.",
+      "english": "The train just left — we have to wait for the next one.",
+      "segments": [
+        {"chinese": "班車", "jyutping": "baan1 ce1", "english": "the train"},
+        {"chinese": "啱啱走咗", "jyutping": "ngaam1 ngaam1 zau2 zo2", "english": "just left"},
+        {"chinese": "要等", "jyutping": "jiu3 dang2", "english": "must wait for"},
+        {"chinese": "下一班", "jyutping": "haa6 jat1 baan1", "english": "the next one"}
+      ]
+    },
+    {
+      "cantonese": "下一班車兩分鐘後到。",
+      "jyutping": "haa6 jat1 baan1 ce1 loeng5 fan1 zung1 hau6 dou3.",
+      "english": "The next train arrives in two minutes.",
+      "segments": [
+        {"chinese": "下一班車", "jyutping": "haa6 jat1 baan1 ce1", "english": "the next train"},
+        {"chinese": "兩分鐘", "jyutping": "loeng5 fan1 zung1", "english": "two minutes"},
+        {"chinese": "後", "jyutping": "hau6", "english": "later"},
+        {"chinese": "到", "jyutping": "dou3", "english": "arrives"}
+      ]
+    },
+    {
+      "cantonese": "聽到廣播就知班車去邊。",
+      "jyutping": "teng1 dou3 gwong2 bo3 zau6 zi1 baan1 ce1 heoi3 bin1.",
+      "english": "When you hear the announcement, you'll know where the train is going.",
+      "segments": [
+        {"chinese": "聽到", "jyutping": "teng1 dou3", "english": "when you hear"},
+        {"chinese": "廣播", "jyutping": "gwong2 bo3", "english": "the announcement"},
+        {"chinese": "就知", "jyutping": "zau6 zi1", "english": "you'll know"},
+        {"chinese": "班車去邊", "jyutping": "baan1 ce1 heoi3 bin1", "english": "where the train goes"}
+      ]
+    },
+    {
+      "cantonese": "一號月台係去荃灣㗎。",
+      "jyutping": "jat1 hou6 jyut6 toi4 hai6 heoi3 cyun4 waan1 gaa3.",
+      "english": "Platform 1 is for trains to Tsuen Wan.",
+      "segments": [
+        {"chinese": "一號月台", "jyutping": "jat1 hou6 jyut6 toi4", "english": "Platform 1"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "去荃灣", "jyutping": "heoi3 cyun4 waan1", "english": "to Tsuen Wan"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(assertion particle)"}
+      ]
+    },
+    {
+      "cantonese": "上車之前睇清楚方向，咪搭錯車。",
+      "jyutping": "soeng5 ce1 zi1 cin4 tai2 cing1 co2 fong1 hoeng3, mai5 daap3 co3 ce1.",
+      "english": "Check the direction clearly before boarding — don't take the wrong train.",
+      "segments": [
+        {"chinese": "上車之前", "jyutping": "soeng5 ce1 zi1 cin4", "english": "before boarding"},
+        {"chinese": "睇清楚", "jyutping": "tai2 cing1 co2", "english": "check clearly"},
+        {"chinese": "方向", "jyutping": "fong1 hoeng3", "english": "the direction"},
+        {"chinese": "咪", "jyutping": "mai5", "english": "don't"},
+        {"chinese": "搭錯車", "jyutping": "daap3 co3 ce1", "english": "take the wrong train"}
+      ]
+    }
+  ],
+  "qa": [
+    {
+      "question_cantonese": "呢個月台去邊度㗎？",
+      "question_jyutping": "ni1 go3 jyut6 toi4 heoi3 bin1 dou6 gaa3?",
+      "question_english": "Where do the trains from this platform go?",
+      "question_segments": [
+        {"chinese": "呢個月台", "jyutping": "ni1 go3 jyut6 toi4", "english": "this platform"},
+        {"chinese": "去", "jyutping": "heoi3", "english": "goes"},
+        {"chinese": "邊度", "jyutping": "bin1 dou6", "english": "where"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "呢個月台係往荃灣㗎。",
+      "answer_jyutping": "ni1 go3 jyut6 toi4 hai6 wong5 cyun4 waan1 gaa3.",
+      "answer_english": "This platform is for trains towards Tsuen Wan.",
+      "answer_segments": [
+        {"chinese": "呢個月台", "jyutping": "ni1 go3 jyut6 toi4", "english": "this platform"},
+        {"chinese": "係", "jyutping": "hai6", "english": "is"},
+        {"chinese": "往荃灣", "jyutping": "wong5 cyun4 waan1", "english": "towards Tsuen Wan"},
+        {"chinese": "㗎", "jyutping": "gaa3", "english": "(particle)"}
+      ]
+    },
+    {
+      "question_cantonese": "下班車幾時到呀？",
+      "question_jyutping": "haa6 baan1 ce1 gei2 si4 dou3 aa3?",
+      "question_english": "When does the next train arrive?",
+      "question_segments": [
+        {"chinese": "下班車", "jyutping": "haa6 baan1 ce1", "english": "the next train"},
+        {"chinese": "幾時", "jyutping": "gei2 si4", "english": "when"},
+        {"chinese": "到", "jyutping": "dou3", "english": "arrive"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "兩分鐘後就到。",
+      "answer_jyutping": "loeng5 fan1 zung1 hau6 zau6 dou3.",
+      "answer_english": "It arrives in two minutes.",
+      "answer_segments": [
+        {"chinese": "兩分鐘", "jyutping": "loeng5 fan1 zung1", "english": "two minutes"},
+        {"chinese": "後", "jyutping": "hau6", "english": "later"},
+        {"chinese": "就到", "jyutping": "zau6 dou3", "english": "then arrives"}
+      ]
+    },
+    {
+      "question_cantonese": "幕門冇開，點算呀？",
+      "question_jyutping": "mok6 mun4 mou5 hoi1, dim2 syun3 aa3?",
+      "question_english": "The screen doors didn't open — what should we do?",
+      "question_segments": [
+        {"chinese": "幕門", "jyutping": "mok6 mun4", "english": "the screen doors"},
+        {"chinese": "冇開", "jyutping": "mou5 hoi1", "english": "didn't open"},
+        {"chinese": "點算", "jyutping": "dim2 syun3", "english": "what to do"},
+        {"chinese": "呀", "jyutping": "aa3", "english": "(particle)"}
+      ],
+      "answer_cantonese": "等下一班車到就會開㗎喇。",
+      "answer_jyutping": "dang2 haa6 jat1 baan1 ce1 dou3 zau6 wui5 hoi1 gaa3 laa1.",
+      "answer_english": "When the next train arrives, they will open.",
+      "answer_segments": [
+        {"chinese": "等", "jyutping": "dang2", "english": "wait for"},
+        {"chinese": "下一班車到", "jyutping": "haa6 jat1 baan1 ce1 dou3", "english": "the next train to arrive"},
+        {"chinese": "就會開", "jyutping": "zau6 wui5 hoi1", "english": "then they will open"},
+        {"chinese": "㗎喇", "jyutping": "gaa3 laa1", "english": "(reassuring particles)"}
+      ]
+    }
+  ],
+  "vocabulary": [
+    {"chinese": "月台", "jyutping": "jyut6 toi4", "pos": "noun 名詞", "english": "platform", "example": "我哋喺月台等緊車。"},
+    {"chinese": "幕門", "jyutping": "mok6 mun4", "pos": "noun 名詞", "english": "platform screen doors", "example": "幕門開咗先入去。"},
+    {"chinese": "往", "jyutping": "wong5", "pos": "prep 介詞", "english": "towards (on signs)", "example": "呢邊係往荃灣方向。"},
+    {"chinese": "荃灣", "jyutping": "cyun4 waan1", "pos": "noun 名詞", "english": "Tsuen Wan", "example": "呢邊係往荃灣方向。"},
+    {"chinese": "等", "jyutping": "dang2", "pos": "verb 動詞", "english": "to wait", "example": "我哋喺月台等緊車。"},
+    {"chinese": "黃線", "jyutping": "wong4 sin3", "pos": "noun 名詞", "english": "yellow line", "example": "企黃線後面。"},
+    {"chinese": "乘客", "jyutping": "sing4 haak3", "pos": "noun 名詞", "english": "passenger", "example": "畀啲乘客出咗先上車。"},
+    {"chinese": "上車", "jyutping": "soeng5 ce1", "pos": "verb 動詞", "english": "to board / get on", "example": "畀啲乘客出咗先上車。"},
+    {"chinese": "下一班", "jyutping": "haa6 jat1 baan1", "pos": "phrase 短語", "english": "the next (train/bus)", "example": "要等下一班。"},
+    {"chinese": "分鐘", "jyutping": "fan1 zung1", "pos": "noun 名詞", "english": "minute", "example": "兩分鐘後就到。"},
+    {"chinese": "到", "jyutping": "dou3", "pos": "verb 動詞", "english": "to arrive", "example": "下一班車兩分鐘後到。"},
+    {"chinese": "廣播", "jyutping": "gwong2 bo3", "pos": "noun 名詞", "english": "announcement / broadcast", "example": "聽到廣播就知班車去邊。"},
+    {"chinese": "先", "jyutping": "sin1", "pos": "adv 副詞", "english": "first / only then", "example": "幕門開咗先入去。"},
+    {"chinese": "方向", "jyutping": "fong1 hoeng3", "pos": "noun 名詞", "english": "direction", "example": "睇清楚方向。"},
+    {"chinese": "搭錯車", "jyutping": "daap3 co3 ce1", "pos": "phrase 短語", "english": "to take the wrong train/bus", "example": "咪搭錯車。"},
+    {"chinese": "點算", "jyutping": "dim2 syun3", "pos": "phrase 短語", "english": "what to do?", "example": "幕門冇開，點算呀？"},
+    {"chinese": "幾時", "jyutping": "gei2 si4", "pos": "phrase 短語", "english": "when", "example": "下班車幾時到呀？"},
+    {"chinese": "清楚", "jyutping": "cing1 co2", "pos": "adj 形容詞", "english": "clear", "example": "上車之前睇清楚方向。"}
+  ]
+}

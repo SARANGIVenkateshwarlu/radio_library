@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from app import (  # noqa: E402
     audio_util,
+    cantonese_teacher,
     cleanup,
     config,
     library,
@@ -42,9 +43,9 @@ else:
         "then restart the app. See README."
     )
 
-tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron = st.tabs(
+tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron, tab_teacher = st.tabs(
     ["🗓️ Radio Time Table", "🔴 Record radio", "⚙️ Process recording",
-     "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations"]
+     "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations", "🎓 Cantonese Teacher"]
 )
 
 
@@ -732,3 +733,54 @@ with tab_pron:
                         for path in saved[:20]:
                             st.caption(Path(path).name)
                             st.audio(Path(path).read_bytes(), format="audio/wav")
+
+
+with tab_teacher:
+    st.subheader("🎓 Cantonese Teacher — photo worksheet")
+    st.caption(
+        "Upload a photo of a Hong Kong scene → a colour-coded Cantonese "
+        "worksheet PDF in the CantoneseTeacher style "
+        "(10 sentences · Q&A · vocabulary · 圖像教學工作紙)."
+    )
+    tt_cam, tt_up = st.tabs(["📷 Camera", "🖼️ Upload"])
+    photo = None
+    with tt_cam:
+        cam = st.camera_input("Point at a Hong Kong scene 影低香港日常景象")
+        if cam:
+            photo = cam
+    with tt_up:
+        up = st.file_uploader("Image JPG/PNG/HEIC",
+                              type=["jpg", "jpeg", "png", "heic"], key="teacher_up")
+        if up:
+            photo = up
+    if photo is not None:
+        st.image(photo.getvalue(), caption="Your photo 你嘅相")
+
+    with st.expander("⚙️ Options 選項"):
+        theme = st.text_input("Theme 主題 (optional)", value="", key="teacher_theme")
+        num_qa = st.slider("Q&A pairs 問答數量", 2, 5, 3, key="teacher_qa")
+        manual = st.text_area(
+            "Manual description (optional — skips the vision model)",
+            value="", key="teacher_manual")
+        use_demo = st.checkbox(
+            "Use built-in demo lesson (no AI generation)", value=False,
+            key="teacher_demo")
+
+    if st.button("✨ Generate worksheet PDF 生成工作紙", type="primary",
+                 disabled=photo is None, key="teacher_gen"):
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as f:
+            f.write(photo.getvalue())
+            img_path = f.name
+        with st.spinner("Analysing photo & building PDF… 分析緊張相，整緊PDF"):
+            pdf_path, warning = cantonese_teacher.generate_worksheet(
+                img_path, theme=theme, num_qa=num_qa,
+                description=manual, use_demo=use_demo)
+        if warning:
+            st.warning(warning)
+        st.success("Worksheet ready! 工作紙整好喇！")
+        st.download_button("⬇️ Download PDF 下載",
+                           data=Path(pdf_path).read_bytes(),
+                           file_name=Path(pdf_path).name,
+                           mime="application/pdf")

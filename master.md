@@ -55,6 +55,8 @@ radio_library/
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
+│   ├── cantonese_teacher.py  ← photo → Cantonese worksheet (agent wrapper)
+│   ├── cantonese_pdf.py      ← worksheet PDF renderer (CantoneseTeacher style)
 │   ├── nodes.py              ← LangGraph node functions
 │   └── graph.py              ← graph builder
 ├── audio/                    ← input MP3s (YYYY-MM-DD_station_duration.mp3)
@@ -362,6 +364,23 @@ Two sub-tabs. Data is local (`metadata/phrase_bank.json`,
   original clip with your recording side by side. Recordings are saved for
   later review.
 
+### Cantonese Teacher (🎓 tab)
+
+Integration of the standalone `CantoneseTeacher` project (kept under
+`CantoneseTeacher/cantonese_teacher_agent/`, sources tracked, generated
+output/assets git-ignored):
+
+- **Pipeline A (photo worksheet):** snap 📷 or upload 🖼️ a Hong Kong scene →
+  vision description → teacher LLM → validated lesson JSON → **colour-coded A4
+  PDF** (10 sentences · Q&A · vocabulary table), word-colour-matched across
+  Cantonese/Jyutping/English. Live generation uses the configured endpoint
+  (`CANTONESE_TEACHER_MODEL`); a built-in demo lesson is the offline fallback.
+- Follows the locked `RULES.md` layout (title → image → ten sentences → Q&A →
+  vocabulary; fonts 21/15/16/13/11.5; footer `Page 第 N 頁`).
+- Implementation: `app/cantonese_teacher.py` (vision + lesson JSON + validation)
+  and `app/cantonese_pdf.py` (renderer; falls back to reportlab's built-in
+  STSong-Light CID font so it runs on Windows with no TrueType CJK fonts).
+
 ## 9. Quality Controls (from the source plan)
 
 - Never overwrite original MP3s.
@@ -378,7 +397,7 @@ Two sub-tabs. Data is local (`metadata/phrase_bank.json`,
 |------|--------|
 | Stream recorder → 60 s MP3 | ✅ `2026-10-07_rthk-radio-5_1min_2.mp3` — 60.03 s @ 320 kbps, no noise (direct stream) |
 | LangGraph pipeline on recording | ✅ JSON + SRT + bilingual PDF generated, saved to SQLite |
-| Streamlit app (6 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes, phrase bank and shadowing working |
+| Streamlit app (7 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations, Cantonese Teacher) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes, phrase bank/shadowing, and photo→worksheet PDF working |
 | Live RTHK stream from sandbox | ⚠️ `stm1.rthk.hk` unreachable from this sandbox network; verified with local stream instead — works on a normal network |
 
 ## 11. Roadmap
