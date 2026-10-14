@@ -23,6 +23,7 @@ from . import config
 
 HISTORY_PATH = config.METADATA_DIR / "quiz_history.json"
 STATS_PATH = config.METADATA_DIR / "vocab_stats.json"
+SNAPSHOT_PATH = config.METADATA_DIR / "vocabbank.json"
 
 REVIEW_RATIO = 0.7
 MIN_QUESTIONS = 6
@@ -131,12 +132,50 @@ def collect_vocab() -> list[dict]:
     return list(seen.values())
 
 
-def groups() -> dict[str, list[dict]]:
+def groups(entries: list[dict] | None = None) -> dict[str, list[dict]]:
     """Vocabulary grouped by recording (one recorded session)."""
     out: dict[str, list[dict]] = {}
-    for e in collect_vocab():
+    for e in (collect_vocab() if entries is None else entries):
         out.setdefault(e["recording_id"], []).append(e)
     return out
+
+
+def _entry_key(e: dict) -> tuple:
+    return (e.get("recording_id"), e.get("word"), e.get("jyutping", ""))
+
+
+def load_snapshot() -> list[dict] | None:
+    """The last recorded VocabBank snapshot, or None if never refreshed."""
+    data = _read_json(SNAPSHOT_PATH, None)
+    if isinstance(data, dict) and isinstance(data.get("entries"), list):
+        return data["entries"]
+    return None
+
+
+def snapshot_meta() -> dict:
+    data = _read_json(SNAPSHOT_PATH, {})
+    if isinstance(data, dict) and isinstance(data.get("entries"), list):
+        return {"refreshed_at": data.get("refreshed_at"),
+                "total": len(data["entries"])}
+    return {}
+
+
+def refresh_snapshot() -> dict:
+    """Record all current vocab (from library + transcripts) into the snapshot.
+
+    Any newly processed/updated recordings are picked up; returns a summary
+    with the total and how many entries are new since the previous refresh.
+    """
+    entries = collect_vocab()
+    prev = load_snapshot() or []
+    prev_keys = {_entry_key(e) for e in prev}
+    new = sum(1 for e in entries if _entry_key(e) not in prev_keys)
+    snapshot = {
+        "refreshed_at": datetime.now().isoformat(timespec="seconds"),
+        "entries": entries,
+    }
+    _write_json(SNAPSHOT_PATH, snapshot)
+    return {"total": len(entries), "new": new, "refreshed_at": snapshot["refreshed_at"]}
 
 
 def group_label(entries: list[dict]) -> str:

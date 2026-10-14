@@ -2,6 +2,7 @@
 
 Run:  streamlit run streamlit_app.py
 """
+import io
 import json
 import sys
 import time
@@ -24,6 +25,7 @@ from app import (  # noqa: E402
     recorder,
     schedule,
     vocab,
+    vocab_pdf,
 )
 from app.graph import run  # noqa: E402
 
@@ -509,11 +511,28 @@ def _render_history(hist):
 
 with tab_vocab:
     st.subheader("VocabBank — vocabulary by session & quick quiz")
-    all_vocab = vocab.collect_vocab()
-    by_group = vocab.groups()
+
+    rc1, rc2 = st.columns([1, 4])
+    if rc1.button("🔄 Refresh list", type="primary", key="vocab_refresh_btn"):
+        st.session_state["vocab_refresh"] = vocab.refresh_snapshot()
+    snap = vocab.load_snapshot()
+    all_vocab = snap if snap is not None else vocab.collect_vocab()
+    by_group = vocab.groups(all_vocab)
+    meta = vocab.snapshot_meta()
+    if meta.get("refreshed_at"):
+        rc2.caption(f"Last refreshed: {meta['refreshed_at']} · {meta['total']} words "
+                    "recorded.")
+    else:
+        rc2.caption("**Pending updates** — click **🔄 Refresh list** to record "
+                    "new/updated recordings into the vocabulary list.")
+    msg = st.session_state.pop("vocab_refresh", None)
+    if msg:
+        st.success(f"List refreshed — {msg['total']} words total, "
+                   f"{msg['new']} new/updated since last refresh.")
 
     if not all_vocab:
-        st.info("No vocabulary yet — process a recording in the ⚙️ tab first.")
+        st.info("No vocabulary yet — process a recording in the ⚙️ tab, then "
+                "Refresh list.")
     else:
         hist = vocab.load_history()
         m1, m2, m3 = st.columns(3)
@@ -532,7 +551,7 @@ with tab_vocab:
                 reverse=True,
             )
             chosen = st.selectbox("Session (group = one recording)", order,
-                                  format_func=lambda g: labels[g])
+                                  format_func=lambda g, _l=labels: _l.get(g, g))
             entries = by_group[chosen]
             table_rows = []
             for e in entries:
@@ -559,11 +578,18 @@ with tab_vocab:
                 },
                 width='stretch',
             )
-            d1, d2 = st.columns(2)
+            st.markdown("**Download the whole bank**")
+            d1, d2, d3 = st.columns(3)
             d1.download_button("⬇️ This session (CSV)", vocab.vocab_csv(entries),
                                file_name=f"{chosen}_vocab.csv", mime="text/csv")
             d2.download_button("⬇️ All sessions (CSV)", vocab.vocab_csv(all_vocab),
                                file_name="vocabbank_all.csv", mime="text/csv")
+            buf = io.BytesIO()
+            vocab_pdf.build_vocab_pdf(all_vocab, buf)
+            d3.download_button(
+                "⬇️ Dictionary PDF (all words)", buf.getvalue(),
+                file_name=f"vocabbank_dictionary_{datetime.now().strftime('%Y-%m-%d')}.pdf",
+                mime="application/pdf")
 
         with quiz_tab:
             _render_quiz()
@@ -666,9 +692,9 @@ with tab_pron:
             d1.download_button("⬇️ Export Anki/CSV", phrases.export_csv(cards),
                                file_name="phrase_bank.csv", mime="text/csv")
             pick_del = d2.selectbox("Delete a card", [c["id"] for c in cards],
-                                    format_func=lambda cid: next(
+                                    format_func=lambda cid, _cards=cards: next(
                                         (f"{(c.get('jyutping') or c.get('english'))[:40]}"
-                                         for c in cards if c["id"] == cid), cid),
+                                         for c in _cards if c["id"] == cid), cid),
                                     key="pb_del")
             if d2.button("🗑️ Delete selected"):
                 phrases.delete_card(pick_del)

@@ -53,6 +53,7 @@ radio_library/
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
+│   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── cantonese_teacher.py  ← photo → Cantonese worksheet (agent wrapper)
@@ -318,13 +319,19 @@ Two sub-tabs:
 ### VocabBank (🗂️ tab)
 
 Vocabulary is pooled across every processed session (group = one recording),
-read from the SQLite library and transcript JSON files. Sections:
+read from the SQLite library and transcript JSON files. A **🔄 Refresh list**
+button records any **pending new/updated recordings** into the VocabBank
+snapshot (`metadata/vocabbank.json`), shows the last-refreshed time, and reports
+how many entries were new since the previous refresh. Sections:
 
 - **Browse by session** — dropdown of groups (labelled by MP3 file name); a
   table of word / Jyutping / meaning / in-context for the selected session,
   plus **three dictionary links** per word (words.hk, jyutdictionary.com,
-  cantowords.com) for meaning, Jyutping and examples. CSV export for one
-  session or all.
+  cantowords.com) for meaning, Jyutping and examples. Export any session or all
+  as **CSV**, or download the **whole bank as a dictionary-style PDF**
+  (`app/vocab_pdf.py`: Word | Jyutping | Meaning, de-duplicated and sorted by
+  Jyutping, repeating header + page numbers — printable as a study-mate
+  dictionary).
 - **Quick quiz** — **character-free**, Jyutping-only (the learner cannot read
   hanzi). Two mixed types: *Jyutping → meaning* and its reverse
   *meaning → Jyutping*. 6–10 questions, **~70% reviewed words + ~30% new**, one

@@ -50,6 +50,7 @@ radio_library/
 │   ├── pdf_gen.py            ← bilingual PDF generator (reportlab)
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank: word banks + quiz builder
+│   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── recorder.py           ← ffmpeg stream recorder
@@ -289,12 +290,15 @@ pipeline** as radio recordings.
 
 ### VocabBank
 
-The 🗂️ **VocabBank** tab pools vocabulary from every processed session:
+The 🗂️ **VocabBank** tab pools vocabulary from every processed session. A
+**🔄 Refresh list** button records pending new/updated recordings into the list
+(snapshot), showing the last-refreshed time and how many entries are new:
 
 - **Browse by session** — pick a recording from a dropdown and see its words
-  (word / Jyutping / meaning / context), each with **three dictionary links** to
-  check meaning, Jyutping and examples: **words.hk**, **jyutdictionary.com** and
-  **cantowords.com**; CSV export.
+  (word / Jyutping / meaning / context), each with **three dictionary links**
+  (words.hk, jyutdictionary.com, cantowords.com); export a session or all as
+  **CSV**, or download the **whole bank as a dictionary-style PDF**
+  (Word | Jyutping | Meaning, sorted by Jyutping).
 - **Quick quiz** — Jyutping-only (no Chinese characters). 6–10 questions mixing
   *Jyutping → meaning* and *meaning → Jyutping*, at ~70% reviewed + ~30% new,
   one idea per question, plausible distractors. Immediate feedback includes the
