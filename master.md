@@ -322,7 +322,10 @@ Vocabulary is pooled across every processed session (group = one recording),
 read from the SQLite library and transcript JSON files. A **🔄 Refresh list**
 button records any **pending new/updated recordings** into the VocabBank
 snapshot (`metadata/vocabbank.json`), shows the last-refreshed time, and reports
-how many entries were new since the previous refresh. Sections:
+how many entries were new since the previous refresh. The header shows
+**Unique words** (distinct word + Jyutping — the same total as the dictionary
+PDF) alongside raw **Entries** (word mentions across sessions, duplicates
+counted). Sections:
 
 - **Browse by session** — dropdown of groups (labelled by MP3 file name); a
   table of word / Jyutping / meaning / in-context for the selected session,

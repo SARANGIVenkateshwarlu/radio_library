@@ -132,6 +132,16 @@ def collect_vocab() -> list[dict]:
     return list(seen.values())
 
 
+def unique_words(entries: list[dict] | None = None) -> list[dict]:
+    """Distinct vocabulary (dedup by word + Jyutping) — the dictionary set."""
+    seen: dict[tuple, dict] = {}
+    for e in (collect_vocab() if entries is None else entries):
+        word = (e.get("word") or "").strip()
+        if word:
+            seen.setdefault((word, e.get("jyutping", "")), e)
+    return list(seen.values())
+
+
 def groups(entries: list[dict] | None = None) -> dict[str, list[dict]]:
     """Vocabulary grouped by recording (one recorded session)."""
     out: dict[str, list[dict]] = {}

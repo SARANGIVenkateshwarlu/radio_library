@@ -292,7 +292,9 @@ pipeline** as radio recordings.
 
 The 🗂️ **VocabBank** tab pools vocabulary from every processed session. A
 **🔄 Refresh list** button records pending new/updated recordings into the list
-(snapshot), showing the last-refreshed time and how many entries are new:
+(snapshot), showing the last-refreshed time and how many entries are new. The
+header reports **Unique words** (distinct word+Jyutping — matches the dictionary
+PDF) and **Entries** (mentions across sessions):
 
 - **Browse by session** — pick a recording from a dropdown and see its words
   (word / Jyutping / meaning / context), each with **three dictionary links**

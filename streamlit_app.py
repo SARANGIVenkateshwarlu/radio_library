@@ -535,10 +535,13 @@ with tab_vocab:
                 "Refresh list.")
     else:
         hist = vocab.load_history()
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Total words", len(all_vocab))
-        m2.metric("Sessions", len(by_group))
-        m3.metric("Quiz attempts", len(hist))
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Unique words", len(vocab.unique_words(all_vocab)),
+                  help="Distinct word + Jyutping — same total as the dictionary PDF.")
+        m2.metric("Entries", len(all_vocab),
+                  help="Word mentions across sessions (duplicates counted).")
+        m3.metric("Sessions", len(by_group))
+        m4.metric("Quiz attempts", len(hist))
 
         bank_tab, quiz_tab, hist_tab = st.tabs(
             ["📖 Browse by session", "🎯 Quick quiz", "📈 Quiz history"])
