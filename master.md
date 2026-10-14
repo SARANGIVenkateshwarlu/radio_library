@@ -254,6 +254,14 @@ python run_pipeline.py --audio "audio/2026-10-07_RTHK_5min.mp3" --mock-asr
 streamlit run streamlit_app.py
 ```
 
+### UI theme (classic)
+
+The app uses a **classic "paper & serif" theme**: cream paper background, serif
+typography, deep-maroon accent, double-rule headings and bordered metric cards.
+Set in `.streamlit/config.toml` (`[theme]` base light, `primaryColor #7c2d12`,
+`backgroundColor #fbf7ef`, `font serif`) plus a small global CSS block in
+`streamlit_app.py`. Theme changes apply when the app (re)starts.
+
 ### Radio Time Table (🗓️ tab)
 
 Today's RTHK schedule for the five FM channels (Radio 1–5), read live from the

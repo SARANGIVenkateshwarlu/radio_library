@@ -34,6 +34,69 @@ from app import (  # noqa: E402
 from app.graph import run  # noqa: E402
 
 st.set_page_config(page_title="HK Radio Cantonese Library", page_icon="📻", layout="wide")
+
+# ---- Classic "paper & serif" theme (complements .streamlit/config.toml) ----
+st.markdown(
+    """
+    <style>
+    :root {
+        --classic-ink: #2a2a2a;
+        --classic-paper: #fbf7ef;
+        --classic-parchment: #f1eadb;
+        --classic-accent: #7c2d12;
+        --classic-rule: #d9cdb8;
+    }
+    [data-testid="stAppViewContainer"] { background: var(--classic-paper); }
+    [data-testid="stHeader"] { background: transparent; }
+    [data-testid="stSidebar"] { background: var(--classic-parchment); }
+    html, body, [class*="st-"], .stMarkdown, p, li, span, label,
+    input, textarea, select, button {
+        font-family: Georgia, "Times New Roman", "Songti SC",
+                     "Microsoft JhengHei", serif !important;
+        color: var(--classic-ink);
+    }
+    h1, h2, h3, h4 {
+        font-family: Georgia, "Times New Roman", "Songti SC",
+                     "Microsoft JhengHei", serif !important;
+        color: #3a2a1a !important;
+        letter-spacing: .2px;
+    }
+    h1 { border-bottom: 3px double var(--classic-accent); padding-bottom: .35rem; }
+    h2 { border-bottom: 1px solid var(--classic-rule); padding-bottom: .25rem; }
+    .stButton > button, .stDownloadButton > button {
+        border: 1px solid var(--classic-accent) !important;
+        border-radius: 6px !important;
+        background: #fffaf0 !important;
+        color: #5b2d0c !important;
+        font-weight: 600;
+        box-shadow: 0 1px 2px rgb(60 40 20 / 8%);
+    }
+    .stButton > button:hover, .stDownloadButton > button:hover {
+        background: var(--classic-accent) !important; color: #fff !important;
+    }
+    .stTabs [data-baseweb="tab"] { font-weight: 600; }
+    .stTabs [aria-selected="true"] {
+        color: var(--classic-accent) !important;
+        border-bottom-color: var(--classic-accent) !important;
+    }
+    [data-testid="stMetric"] {
+        background: #fffaf0;
+        border: 1px solid var(--classic-rule);
+        border-radius: 8px;
+        padding: 10px 14px;
+    }
+    [data-testid="stMetricValue"] { color: #3a2a1a; }
+    [data-testid="stExpander"] {
+        border: 1px solid var(--classic-rule) !important;
+        border-radius: 8px;
+    }
+    code, pre, kbd { font-family: "Consolas", "Courier New", monospace !important; }
+    hr { border-color: var(--classic-rule); }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("📻 HK Radio → Cantonese Learning Library")
 
 if config.LLM_ENABLED:

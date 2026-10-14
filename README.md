@@ -384,6 +384,12 @@ starter API from
 [`AI_CantoneVoice/production_blueprint/`](AI_CantoneVoice/production_blueprint/)
 (`REPORT.md`, `src/service.py`, `Dockerfile`, `docker-compose.yml`).
 
+## UI theme
+
+The Streamlit app uses a **classic "paper & serif"** theme (cream background,
+serif type, maroon accent), defined in `.streamlit/config.toml` plus a small CSS
+block — applied on app restart.
+
 ## Output Format Rules
 
 The PDF groups sentences into blocks of **3–6**, split on a topic change or

@@ -1,0 +1,12 @@
+# Classic ("paper & serif") theme for the app.
+# Takes effect when the Streamlit app (re)starts.
+[theme]
+base = "light"
+primaryColor = "#7c2d12"                 # deep maroon / rust accent
+backgroundColor = "#fbf7ef"              # cream paper
+secondaryBackgroundColor = "#f1eadb"     # warm parchment (sidebar / widgets)
+textColor = "#2a2a2a"                    # ink
+font = "serif"                           # classic serif typography
+
+[client]
+toolbarMode = "minimal"
