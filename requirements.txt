@@ -32,6 +32,11 @@ faster-whisper>=1.2.1
 # Pulls in torch; the htdemucs model (~300MB) downloads on first use.
 demucs>=4.1.0
 
+# Cantonese text-to-speech (AI CantoneVoice tab) — free Microsoft Edge zh-HK
+# neural voices, no GPU/API key. Production engine: CosyVoice2-Yue (see
+# AI_CantoneVoice/REPORT.md).
+edge-tts>=6.1
+
 # Optional — only for the transformers ASR backend or converting a Hugging Face
 # Whisper model to CTranslate2 (see README "Cantonese ASR"). torch/accelerate
 # usually come with demucs already.

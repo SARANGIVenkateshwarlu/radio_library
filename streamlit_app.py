@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from app import (  # noqa: E402
     audio_util,
+    cantonevoice,
     cantonese_teacher,
     cleanup,
     config,
@@ -45,9 +46,11 @@ else:
         "then restart the app. See README."
     )
 
-tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron, tab_teacher = st.tabs(
+(tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron,
+ tab_teacher, tab_voice) = st.tabs(
     ["🗓️ Radio Time Table", "🔴 Record radio", "⚙️ Process recording",
-     "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations", "🎓 Cantonese Teacher"]
+     "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations", "🎓 Cantonese Teacher",
+     "🎙️ AI CantoneVoice"]
 )
 
 
@@ -866,3 +869,47 @@ with tab_teacher:
                 fc2.download_button("PDF", l["pdf"].read_bytes(),
                                     file_name=l["pdf"].name, mime="application/pdf",
                                     key=f"dlprev_{l['name']}")
+
+
+with tab_voice:
+    st.subheader("🎙️ AI CantoneVoice — Cantonese transcript → AI voice")
+    st.caption(
+        "Turn written Cantonese into natural Hong Kong Cantonese speech. "
+        "Baseline engine: free Microsoft Edge `zh-HK` neural voices "
+        "(no GPU, no key). Recommended production engine: CosyVoice 2 "
+        "fine-tuned on Cantonese (CosyVoice2-Yue) — see the Blueprint."
+    )
+    if not cantonevoice.available():
+        st.error("`edge-tts` is not installed. Run: `pip install edge-tts`.")
+    voz_tab, rep_tab = st.tabs(["🔊 Synthesize", "📄 Blueprint (report)"])
+
+    with voz_tab:
+        text = st.text_area(
+            "Cantonese text 粵語文字", value="今日天氣好好，不如我哋去飲茶？",
+            height=120, key="cv_text")
+        c1, c2, c3 = st.columns(3)
+        voice = c1.selectbox("Voice 聲音", list(cantonevoice.VOICES),
+                             format_func=lambda v: cantonevoice.VOICES[v], key="cv_voice")
+        rate_label = c2.selectbox("Speed 速度", list(cantonevoice.RATES), index=2,
+                                  key="cv_rate")
+        pitch_label = c3.selectbox("Pitch 音高", list(cantonevoice.PITCHES), index=1,
+                                   key="cv_pitch")
+        if text.strip():
+            st.caption(f"Jyutping: `{cantonevoice.reading(text)}`")
+        if st.button("🔊 Generate Cantonese voice", type="primary", key="cv_gen",
+                     disabled=not cantonevoice.available()):
+            with st.spinner("Synthesising…"):
+                try:
+                    audio = cantonevoice.synthesize(
+                        text, voice, rate=cantonevoice.RATES[rate_label],
+                        pitch=cantonevoice.PITCHES[pitch_label])
+                except Exception as exc:
+                    audio = b""
+                    st.error(f"Synthesis failed: {exc}")
+            if audio:
+                st.audio(audio, format="audio/mpeg")
+                st.download_button("⬇️ Download MP3", audio,
+                                   file_name="cantonevoice.mp3", mime="audio/mpeg")
+
+    with rep_tab:
+        st.markdown(cantonevoice.report_text())

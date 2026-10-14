@@ -1,0 +1,13 @@
+# Core (working baseline: Edge zh-HK neural voices, free)
+edge-tts>=6.1
+pycantonese>=3.4          # LSHK Jyutping G2P
+
+# API service
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2.7
+
+# Heavy TTS engines (optional; install when you adopt them)
+# cosyvoice is installed from source (FunAudioLLM/CosyVoice) — needs torch +
+#   a GPU for practical use. See REPORT.md §3.
+# f5-tts, llasa, StyleTTS2 — see each project's own requirements.

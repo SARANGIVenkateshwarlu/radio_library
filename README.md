@@ -51,6 +51,7 @@ radio_library/
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank: word banks + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
+│   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── recorder.py           ← ffmpeg stream recorder
@@ -60,6 +61,8 @@ radio_library/
 ├── transcripts/              ← JSON transcript records (git-ignored)
 ├── pdf/                      ← generated bilingual PDFs (git-ignored)
 ├── subtitles/                ← SRT subtitles (git-ignored)
+├── CantoneseTeacher/         ← photo→worksheet agent (sources tracked)
+├── AI_CantoneVoice/          ← Cantonese TTS project (REPORT.md + src/)
 └── metadata/library.db       ← SQLite index (git-ignored)
 ```
 
@@ -352,6 +355,17 @@ multimodal or generation fails it falls back to a built-in demo lesson (or your
 manual description). The tab's **📚 Previous lessons** sub-tab reviews every
 worksheet saved as `YYYY-MM-DD_lesson_N.pdf` (lesson JSON alongside), listed
 newest-first, with download and an in-app review of the sentences and Q&A.
+
+### AI CantoneVoice
+
+The 🎙️ **AI CantoneVoice** tab turns written Cantonese into natural Hong Kong
+Cantonese speech. A working **free baseline** uses Microsoft Edge `zh-HK`
+neural voices (HiuGaai / HiuMaan / WanLung) via `edge-tts` — **no GPU, no API
+key** — with speed/pitch control and MP3 download; the LSHK Jyutping reading is
+shown. The tab also renders the full project blueprint. The recommended
+production engine is **CosyVoice 2** fine-tuned on Cantonese (CosyVoice2-Yue),
+with F5-TTS / Llasa-1B / commercial API as fallbacks; see
+[`AI_CantoneVoice/REPORT.md`](AI_CantoneVoice/REPORT.md).
 
 ## Output Format Rules
 

@@ -54,6 +54,7 @@ radio_library/
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
+│   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── cantonese_teacher.py  ← photo → Cantonese worksheet (agent wrapper)
@@ -64,6 +65,7 @@ radio_library/
 ├── transcripts/              ← JSON transcript records
 ├── pdf/                      ← generated bilingual PDFs
 ├── subtitles/                ← SRT subtitles
+├── AI_CantoneVoice/          ← Cantonese TTS project (REPORT.md + src/)
 └── metadata/library.db       ← SQLite index
 ```
 
@@ -394,6 +396,26 @@ output/assets git-ignored):
   and `app/cantonese_pdf.py` (renderer; falls back to reportlab's built-in
   STSong-Light CID font so it runs on Windows with no TrueType CJK fonts).
 
+### AI CantoneVoice (🎙️ tab)
+
+Cantonese **transcript → AI voice** (text-to-speech). The full project
+blueprint lives in `AI_CantoneVoice/REPORT.md` (research review, model
+comparison, architecture, data strategy, training, evaluation, deployment,
+12-week roadmap, risks, components/recommendations). The tab has two sub-tabs:
+
+- **🔊 Synthesize** — type Cantonese, pick a **free Microsoft Edge `zh-HK`
+  neural voice** (HiuGaai/HiuMaan/WanLung), adjust speed/pitch, generate and
+  download an MP3; shows the LSHK Jyutping reading. Baseline engine needs **no
+  GPU and no API key** (`edge-tts`, `app/cantonevoice.py`).
+- **📄 Blueprint (report)** — renders `REPORT.md`.
+
+**Recommended production engine:** **CosyVoice 2** continued-trained on
+Cantonese (**CosyVoice2-Yue**-style) with LSHK-Jyutping G2P, a
+statement/question classifier and prosody/emotion conditioning; fallbacks
+F5-TTS / Llasa-1B / commercial API. Evaluate as
+`MOS + tone-accuracy + speaker-similarity + latency`. The starter FastAPI
+service is at `AI_CantoneVoice/src/service.py`.
+
 ## 9. Quality Controls (from the source plan)
 
 - Never overwrite original MP3s.
@@ -410,7 +432,7 @@ output/assets git-ignored):
 |------|--------|
 | Stream recorder → 60 s MP3 | ✅ `2026-10-07_rthk-radio-5_1min_2.mp3` — 60.03 s @ 320 kbps, no noise (direct stream) |
 | LangGraph pipeline on recording | ✅ JSON + SRT + bilingual PDF generated, saved to SQLite |
-| Streamlit app (7 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations, Cantonese Teacher) | ✅ no exceptions; timetable, play toggle, record start/stop, library list, quizzes, phrase bank/shadowing, and photo→worksheet PDF working |
+| Streamlit app (8 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations, Cantonese Teacher, AI CantoneVoice) | ✅ no exceptions; timetable, play toggle, record start/stop, library, quizzes, phrase bank/shadowing, photo→worksheet PDF, and Cantonese TTS (Edge zh-HK) working |
 | Live RTHK stream from sandbox | ⚠️ `stm1.rthk.hk` unreachable from this sandbox network; verified with local stream instead — works on a normal network |
 
 ## 11. Roadmap

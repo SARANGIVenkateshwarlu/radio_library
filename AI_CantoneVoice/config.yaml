@@ -1,0 +1,17 @@
+# AI_CantoneVoice configuration
+engine: edge            # edge | cosyvoice2 | f5 | llasa | azure  (only `edge` ships working)
+voice: zh-HK-HiuGaaiNeural
+language: yue           # Cantonese
+rate: "+0%"
+pitch: "+0Hz"
+sample_rate: 24000
+output_format: mp3
+
+# Engine-specific (fill when adopting; see REPORT.md)
+cosyvoice2:
+  model_dir: ""         # path to CosyVoice2 / CosyVoice2-Yue weights
+  device: cuda
+  prompt_wav: ""        # zero-shot speaker prompt
+azure:
+  region: ""
+  key: ""               # env: AZURE_SPEECH_KEY
