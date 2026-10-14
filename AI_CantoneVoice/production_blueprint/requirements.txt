@@ -1,0 +1,10 @@
+# CantoneVoice Production — API service (Edge zh-HK baseline)
+edge-tts>=6.1
+pycantonese>=3.4
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.7
+
+# Optional heavy engines (install with a GPU when adopting — see REPORT.md §3):
+#   cosyvoice (from source: FunAudioLLM/CosyVoice), f5-tts, llasa
+# torch, torchaudio, onnxruntime, soundfile

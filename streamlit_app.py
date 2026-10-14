@@ -5,6 +5,7 @@ Run:  streamlit run streamlit_app.py
 import io
 import json
 import sys
+import tempfile
 import time
 import uuid
 from datetime import datetime
@@ -23,10 +24,12 @@ from app import (  # noqa: E402
     config,
     library,
     phrases,
+    pronunciation,
     recorder,
     schedule,
     vocab,
     vocab_pdf,
+    voice_graph,
 )
 from app.graph import run  # noqa: E402
 
@@ -781,9 +784,16 @@ with tab_teacher:
         tt_cam, tt_up = st.tabs(["📷 Camera", "🖼️ Upload"])
         photo = None
         with tt_cam:
-            cam = st.camera_input("Point at a Hong Kong scene 影低香港日常景象")
-            if cam:
-                photo = cam
+            cam_on = st.toggle("📷 Turn on camera 開啟鏡頭", value=False,
+                               key="teacher_cam_on")
+            if cam_on:
+                cam = st.camera_input("Point at a Hong Kong scene 影低香港日常景象",
+                                      key="teacher_cam")
+                if cam:
+                    photo = cam
+            else:
+                st.info("Camera is **off**. Turn it on above, or use the "
+                        "🖼️ Upload tab. 鏡頭已關閉，可開啟或改用上載。")
         with tt_up:
             up = st.file_uploader("Image JPG/PNG/HEIC",
                                   type=["jpg", "jpeg", "png", "heic"], key="teacher_up")
@@ -881,7 +891,9 @@ with tab_voice:
     )
     if not cantonevoice.available():
         st.error("`edge-tts` is not installed. Run: `pip install edge-tts`.")
-    voz_tab, rep_tab = st.tabs(["🔊 Synthesize", "📄 Blueprint (report)"])
+    (voz_tab, test_tab, graph_tab, rep_tab, prod_tab) = st.tabs(
+        ["🔊 Synthesize", "🎤 Pronunciation test", "📈 Tone graph",
+         "📄 Blueprint (report)", "🏭 Production blueprint"])
 
     with voz_tab:
         text = st.text_area(
@@ -911,5 +923,147 @@ with tab_voice:
                 st.download_button("⬇️ Download MP3", audio,
                                    file_name="cantonevoice.mp3", mime="audio/mpeg")
 
+    with graph_tab:
+        st.markdown("**Pitch-monitor dashboard** — a live frequency readout, a "
+                    "learner-vs-reference contour aligned by syllable, and a "
+                    "relative-deviation meter. Cantonese is tonal, so the "
+                    "*contour shape* (not a fixed musical note) carries meaning.")
+        g_target = st.text_area("Target sentence 目標句子",
+                                value="今日天氣好好，不如我哋去飲茶？", height=90,
+                                key="vg_text")
+        gc1, gc2 = st.columns(2)
+        g_voice = gc1.selectbox("Reference voice 參考聲音", list(cantonevoice.VOICES),
+                                format_func=lambda v: cantonevoice.VOICES[v],
+                                key="vg_voice")
+        g_mode = gc2.radio("Graph mode 模式",
+                           ["Speaker-normalised (semitones)", "Raw (Hz)"],
+                           key="vg_mode")
+        mode = "semitones" if "semitones" in g_mode else "hz"
+        st.caption(f"Jyutping: `{cantonevoice.reading(g_target)}`")
+
+        grec = st.audio_input("🎤 Record your attempt 錄低你嘅讀音", key="vg_rec")
+        if grec is not None:
+            data = grec.getvalue() if hasattr(grec, "getvalue") else grec.read()
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                f.write(data)
+                vg_path = f.name
+            ref_path = None
+            try:
+                if cantonevoice.available():
+                    ref_audio = cantonevoice.synthesize(g_target, g_voice)
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as rf:
+                        rf.write(ref_audio)
+                        ref_path = rf.name
+            except Exception:
+                ref_path = None
+            try:
+                with st.spinner("Building the dashboard (first run loads the "
+                                "Whisper model)…"):
+                    windows = None
+                    try:
+                        windows = voice_graph.expand_word_windows(
+                            pronunciation.transcribe_words(vg_path))
+                    except Exception:
+                        windows = None
+                    result, png = voice_graph.build_dashboard(
+                        g_target, vg_path, reference_audio=ref_path,
+                        windows=windows, mode=mode)
+
+                m1, m2, m3 = st.columns(3)
+                m1.metric("Current pitch 目前音高",
+                          f"{result['current_hz']} Hz" if result["current_hz"] else "—")
+                m2.metric("Syllables", len(result["syllables"]))
+                dev = result["overall_deviation"]
+                unit = "st" if mode == "semitones" else "Hz"
+                m3.metric("Overall deviation",
+                          f"{dev:+.1f} {unit}" if dev is not None else "—",
+                          help="learner − reference (relative)")
+
+                st.image(png, caption="Pitch monitor 音高監測")
+                ap1, ap2 = st.columns(2)
+                if ref_path:
+                    ap1.markdown("**Reference 參考**")
+                    ap1.audio(Path(ref_path).read_bytes(), format="audio/mpeg")
+                ap2.markdown("**Your voice 你嘅聲音**")
+                ap2.audio(data, format="audio/wav")
+
+                rows = []
+                for s in result["syllables"]:
+                    d = s["deviation"]
+                    rows.append({
+                        "Char": s["char"], "Jyutping": s["jyutping"],
+                        "Tone": s["tone"], "Name": s["tone_name"],
+                        "Deviation": f"{d:+.1f} {unit}" if d is not None else "—",
+                        "Verdict": s["verdict"],
+                    })
+                st.dataframe(rows, width="stretch")
+                st.caption("The meter shows a **relative pitch difference**, not a "
+                           "complete pronunciation judgment; tone, rhythm and "
+                           "segmental quality are separate.")
+                st.download_button("⬇️ Download dashboard (PNG)", png,
+                                   file_name="pitch_monitor.png", mime="image/png")
+            except Exception as exc:
+                st.error(f"Could not build the dashboard: {exc}")
+
+    with test_tab:
+        st.markdown("Practice a sentence and get an instant **pronunciation "
+                    "score** — the local Whisper model transcribes your speech, "
+                    "then we compare characters **and tones** (LSHK Jyutping).")
+        presets = [
+            "今日天氣好好，不如我哋去飲茶？",
+            "唔該，呢班車去唔去中環？",
+            "我聽日有時間，我哋再傾。",
+            "多謝你嘅幫忙，真係唔好意思。",
+        ]
+        t1, t2 = st.columns([2, 1])
+        example = t2.selectbox("Examples 例子", presets, key="pt_example")
+        t2.button("Use example 用例子", key="pt_use_example",
+                  on_click=lambda e=example: st.session_state.update({"pt_text": e}))
+        target = t1.text_area("Target sentence 目標句子", value=presets[0],
+                              height=100, key="pt_text")
+
+        vc = st.selectbox("Reference voice 參考聲音", list(cantonevoice.VOICES),
+                          format_func=lambda v: cantonevoice.VOICES[v], key="pt_voice")
+        ref_c1, ref_c2 = st.columns(2)
+        if ref_c1.button("🔊 Hear reference 聽範例", key="pt_ref",
+                         disabled=not cantonevoice.available()):
+            with st.spinner("Synthesising reference…"):
+                st.session_state["pt_ref_audio"] = cantonevoice.synthesize(target, vc)
+        if st.session_state.get("pt_ref_audio"):
+            ref_c2.audio(st.session_state["pt_ref_audio"], format="audio/mpeg")
+        st.caption(f"Target Jyutping 目標粵拼: `{cantonevoice.reading(target)}`")
+
+        rec = st.audio_input("🎤 Record your reading 錄低你嘅讀音", key="pt_rec")
+        if rec is not None:
+            data = rec.getvalue() if hasattr(rec, "getvalue") else rec.read()
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                f.write(data)
+                rec_path = f.name
+            try:
+                with st.spinner("Scoring your pronunciation (first run loads the "
+                                "Whisper model)…"):
+                    result = pronunciation.evaluate(target, rec_path)
+            except Exception as exc:
+                result = None
+                st.error(f"Could not score: {exc}")
+            if result:
+                s1, s2, s3 = st.columns(3)
+                s1.metric("Overall score", f"{result['score']}%")
+                s2.metric("Character accuracy", f"{result['char_accuracy']}%")
+                s3.metric("Tone accuracy", f"{result['tone_accuracy']}%")
+                st.markdown(f"**Heard (ASR):** {result['spoken']}")
+                st.caption(f"Target tones: `{result['target_tones']}`  ·  "
+                           f"Heard tones: `{result['spoken_tones']}`")
+                if result["differences"]:
+                    st.dataframe(result["differences"], width="stretch")
+                else:
+                    st.success("Perfect match! 完全正確！")
+
     with rep_tab:
         st.markdown(cantonevoice.report_text())
+
+    with prod_tab:
+        st.caption("Production-grade blueprint — the full project development "
+                   "report and starter service (`AI_CantoneVoice/"
+                   "production_blueprint/`).")
+        st.markdown(cantonevoice.production_report_text())

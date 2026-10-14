@@ -14,6 +14,8 @@ from . import config
 from .jyutping_tool import to_jyutping
 
 REPORT_PATH = config.BASE_DIR / "AI_CantoneVoice" / "REPORT.md"
+PRODUCTION_REPORT_PATH = (config.BASE_DIR / "AI_CantoneVoice"
+                          / "production_blueprint" / "REPORT.md")
 
 VOICES = {
     "zh-HK-HiuGaaiNeural": "HiuGaai 曉佳 (Female)",
@@ -56,3 +58,11 @@ def report_text() -> str:
         return REPORT_PATH.read_text(encoding="utf-8")
     except OSError:
         return "_Report not found._"
+
+
+def production_report_text() -> str:
+    """Full production blueprint (`AI_CantoneVoice/production_blueprint/`)."""
+    try:
+        return PRODUCTION_REPORT_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return "_Production report not found._"

@@ -55,6 +55,7 @@ radio_library/
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
+│   ├── pronunciation.py      ← pronunciation/voice test scoring
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── cantonese_teacher.py  ← photo → Cantonese worksheet (agent wrapper)
@@ -65,7 +66,9 @@ radio_library/
 ├── transcripts/              ← JSON transcript records
 ├── pdf/                      ← generated bilingual PDFs
 ├── subtitles/                ← SRT subtitles
-├── AI_CantoneVoice/          ← Cantonese TTS project (REPORT.md + src/)
+├── AI_CantoneVoice/          ← Cantonese TTS project
+│   ├── REPORT.md  src/       ←   baseline report + starter service
+│   └── production_blueprint/ ←   production report + FastAPI + Docker
 └── metadata/library.db       ← SQLite index
 ```
 
@@ -382,6 +385,8 @@ Integration of the standalone `CantoneseTeacher` project (kept under
 `CantoneseTeacher/cantonese_teacher_agent/`, sources tracked, generated
 output/assets git-ignored):
 
+- **Camera is OFF by default** (a **📷 Turn on camera** toggle) so the device
+  camera is not activated when the app starts; use **🖼️ Upload** any time.
 - **Pipeline A (photo worksheet):** snap 📷 or upload 🖼️ a Hong Kong scene →
   vision description → teacher LLM → validated lesson JSON → **colour-coded A4
   PDF** (10 sentences · Q&A · vocabulary table), word-colour-matched across
@@ -407,7 +412,23 @@ comparison, architecture, data strategy, training, evaluation, deployment,
   neural voice** (HiuGaai/HiuMaan/WanLung), adjust speed/pitch, generate and
   download an MP3; shows the LSHK Jyutping reading. Baseline engine needs **no
   GPU and no API key** (`edge-tts`, `app/cantonevoice.py`).
+- **🎤 Pronunciation test** — read a target sentence; hear the reference (Edge
+  zh-HK), record yourself, and get an instant score: **character accuracy**
+  (local Whisper ASR vs target), **tone accuracy** (LSHK Jyutping tones 1–6),
+  and an overall score, with a character-difference table. Logic in
+  `app/pronunciation.py`.
+- **📈 Tone graph (pitch-monitor dashboard)** — record a sentence and see a
+  **live frequency readout**, a **learner-vs-reference contour aligned by
+  syllable**, and a **relative-deviation meter** (learner − reference). Two
+  modes: **speaker-normalised semitones** (`12·log2(F0/baseline)`) and **raw
+  Hz**. Per-syllable results table (target tone, deviation, verdict). Reference
+  contour comes from the Edge TTS reading; learner pitch via an autocorrelation
+  F0 tracker (`app/voice_graph.py`). The meter is a relative pitch difference,
+  **not** a validated tone-accuracy score.
 - **📄 Blueprint (report)** — renders `REPORT.md`.
+- **🏭 Production blueprint** — renders the production-grade report from the
+  sub-project `AI_CantoneVoice/production_blueprint/` (`REPORT.md`, plus a
+  starter FastAPI service `src/service.py`, `Dockerfile`, `docker-compose.yml`).
 
 **Recommended production engine:** **CosyVoice 2** continued-trained on
 Cantonese (**CosyVoice2-Yue**-style) with LSHK-Jyutping G2P, a

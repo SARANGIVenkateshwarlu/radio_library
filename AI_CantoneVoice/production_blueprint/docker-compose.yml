@@ -1,0 +1,14 @@
+services:
+  cantonevoice:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - CV_ENGINE=edge            # edge | cosyvoice2 | f5 | azure
+      - CV_DEFAULT_VOICE=zh-HK-HiuGaaiNeural
+    # For GPU engines, add:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices: [{ driver: nvidia, count: 1, capabilities: [gpu] }]
+    restart: unless-stopped

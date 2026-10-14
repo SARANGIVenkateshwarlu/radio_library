@@ -52,6 +52,7 @@ radio_library/
 │   ├── vocab.py              ← VocabBank: word banks + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
+│   ├── pronunciation.py      ← pronunciation/voice test scoring
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── recorder.py           ← ffmpeg stream recorder
@@ -348,7 +349,8 @@ The 🎓 **Cantonese Teacher** tab turns a photo of any Hong Kong scene into a
 **colour-coded worksheet PDF** in the CantoneseTeacher style: 10 key sentences,
 Q&A, and a vocabulary table (Chinese | Jyutping | POS | English | Example) —
 the same colour marks the same word across the Cantonese, Jyutping and English
-lines. Snap 📷 or upload 🖼️ a photo → set options → **Generate worksheet PDF** →
+lines. The **camera is off by default** (there's a **📷 Turn on camera** toggle)
+so it doesn't auto-start; or just **Upload** a photo → set options → **Generate worksheet PDF** →
 download. Live generation uses the configured vision/LLM endpoint
 (`CANTONESE_TEACHER_MODEL`, default = the app LLM); if the vision model isn't
 multimodal or generation fails it falls back to a built-in demo lesson (or your
@@ -362,10 +364,19 @@ The 🎙️ **AI CantoneVoice** tab turns written Cantonese into natural Hong Ko
 Cantonese speech. A working **free baseline** uses Microsoft Edge `zh-HK`
 neural voices (HiuGaai / HiuMaan / WanLung) via `edge-tts` — **no GPU, no API
 key** — with speed/pitch control and MP3 download; the LSHK Jyutping reading is
-shown. The tab also renders the full project blueprint. The recommended
+shown. A **🎤 Pronunciation test** sub-tab scores your reading: hear the reference,
+record yourself, and get **character accuracy + tone accuracy + overall score**
+(local Whisper ASR + LSHK Jyutping tone comparison). A **📈 Tone graph** sub-tab
+is a **pitch-monitor dashboard**: live Hz readout, learner-vs-reference contour
+aligned by syllable, and a relative-deviation meter, in *speaker-normalised
+semitones* or *raw Hz*. The tab also renders the full project blueprint. The recommended
 production engine is **CosyVoice 2** fine-tuned on Cantonese (CosyVoice2-Yue),
 with F5-TTS / Llasa-1B / commercial API as fallbacks; see
-[`AI_CantoneVoice/REPORT.md`](AI_CantoneVoice/REPORT.md).
+[`AI_CantoneVoice/REPORT.md`](AI_CantoneVoice/REPORT.md). The tab also has a
+**🏭 Production blueprint** sub-tab rendering the production-grade report and
+starter API from
+[`AI_CantoneVoice/production_blueprint/`](AI_CantoneVoice/production_blueprint/)
+(`REPORT.md`, `src/service.py`, `Dockerfile`, `docker-compose.yml`).
 
 ## Output Format Rules
 
