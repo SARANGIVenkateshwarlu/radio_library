@@ -939,6 +939,9 @@ with tab_voice:
                            ["Speaker-normalised (semitones)", "Raw (Hz)"],
                            key="vg_mode")
         mode = "semitones" if "semitones" in g_mode else "hz"
+        g_view = st.radio("View 檢視",
+                          ["Pitch monitor", "Waveform + contour"],
+                          horizontal=True, key="vg_view")
         st.caption(f"Jyutping: `{cantonevoice.reading(g_target)}`")
 
         grec = st.audio_input("🎤 Record your attempt 錄低你嘅讀音", key="vg_rec")
@@ -965,11 +968,20 @@ with tab_voice:
                             pronunciation.transcribe_words(vg_path))
                     except Exception:
                         windows = None
-                    result, png = voice_graph.build_dashboard(
+                    ref_windows = None
+                    if ref_path:
+                        try:
+                            ref_windows = voice_graph.expand_word_windows(
+                                pronunciation.transcribe_words(ref_path))
+                        except Exception:
+                            ref_windows = None
+                    result, png_pitch = voice_graph.build_dashboard(
                         g_target, vg_path, reference_audio=ref_path,
-                        windows=windows, mode=mode)
+                        windows=windows, ref_windows=ref_windows, mode=mode)
+                    png = (voice_graph.render_wave(result)
+                           if g_view.startswith("Waveform") else png_pitch)
 
-                m1, m2, m3 = st.columns(3)
+                m1, m2, m3, m4 = st.columns(4)
                 m1.metric("Current pitch 目前音高",
                           f"{result['current_hz']} Hz" if result["current_hz"] else "—")
                 m2.metric("Syllables", len(result["syllables"]))
@@ -978,6 +990,11 @@ with tab_voice:
                 m3.metric("Overall deviation",
                           f"{dev:+.1f} {unit}" if dev is not None else "—",
                           help="learner − reference (relative)")
+                acc = result.get("accuracy")
+                m4.metric("Accuracy 準確度",
+                          f"{acc}/100" if acc is not None else "—",
+                          help="wave + contour match vs reference (per syllable, "
+                               "averaged). Full sentence or single word → 100 max.")
 
                 st.image(png, caption="Pitch monitor 音高監測")
                 ap1, ap2 = st.columns(2)
@@ -990,10 +1007,12 @@ with tab_voice:
                 rows = []
                 for s in result["syllables"]:
                     d = s["deviation"]
+                    a = s.get("accuracy")
                     rows.append({
                         "Char": s["char"], "Jyutping": s["jyutping"],
                         "Tone": s["tone"], "Name": s["tone_name"],
                         "Deviation": f"{d:+.1f} {unit}" if d is not None else "—",
+                        "Accuracy": f"{a}/100" if a is not None else "—",
                         "Verdict": s["verdict"],
                     })
                 st.dataframe(rows, width="stretch")

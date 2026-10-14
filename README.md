@@ -369,7 +369,13 @@ record yourself, and get **character accuracy + tone accuracy + overall score**
 (local Whisper ASR + LSHK Jyutping tone comparison). A **📈 Tone graph** sub-tab
 is a **pitch-monitor dashboard**: live Hz readout, learner-vs-reference contour
 aligned by syllable, and a relative-deviation meter, in *speaker-normalised
-semitones* or *raw Hz*. The tab also renders the full project blueprint. The recommended
+semitones* or *raw Hz*. A **Waveform + contour** view compares the **wave
+distribution** (amplitude vs time, reference vs you) with the **tone-modulation**
+contour over high/mid/low registers, to make tone variation visible for
+practice. An **Accuracy (X/100)** metric shows how well your wave + contour
+matches the reference — **per syllable** (single word) and **overall** (full
+sentence), aligned syllable-by-syllable. The tab also renders the full project
+blueprint. The recommended
 production engine is **CosyVoice 2** fine-tuned on Cantonese (CosyVoice2-Yue),
 with F5-TTS / Llasa-1B / commercial API as fallbacks; see
 [`AI_CantoneVoice/REPORT.md`](AI_CantoneVoice/REPORT.md). The tab also has a

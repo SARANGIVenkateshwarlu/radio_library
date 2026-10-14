@@ -421,7 +421,14 @@ comparison, architecture, data strategy, training, evaluation, deployment,
   **live frequency readout**, a **learner-vs-reference contour aligned by
   syllable**, and a **relative-deviation meter** (learner − reference). Two
   modes: **speaker-normalised semitones** (`12·log2(F0/baseline)`) and **raw
-  Hz**. Per-syllable results table (target tone, deviation, verdict). Reference
+  Hz**. A **Waveform + contour** view shows the **wave distribution** (amplitude
+  vs time, reference dashed vs learner solid) above the **tone-modulation**
+  contour with **high / mid / low registers**, so the high/low/mid tone
+  variation is visible for practice. **Accuracy (X/100)** measures how well your
+  wave + pitch contour matches the reference — **per syllable** (one word → its
+  own /100) and **overall** (full sentence → averaged /100); identical audio
+  scores 100. Per-syllable results table (target tone, deviation, accuracy,
+  verdict). Reference
   contour comes from the Edge TTS reading; learner pitch via an autocorrelation
   F0 tracker (`app/voice_graph.py`). The meter is a relative pitch difference,
   **not** a validated tone-accuracy score.

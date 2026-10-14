@@ -28,6 +28,21 @@ TONES = {1: (5, 5), 2: (3, 5), 3: (3, 3), 4: (2, 1), 5: (2, 3), 6: (2, 2)}
 TONE_NAMES = {1: "陰平", 2: "陰上", 3: "陰去", 4: "陽平", 5: "陽上", 6: "陽去"}
 
 
+def _envelope(x: np.ndarray, sr: int = 16000, frame: float = 0.02,
+              hop: float = 0.01):
+    """Short-time RMS amplitude envelope (normalised 0..1)."""
+    n, h = int(frame * sr), int(hop * sr)
+    t, r = [], []
+    for i in range(0, max(0, len(x) - n), h):
+        seg = x[i:i + n]
+        t.append((i + n / 2) / sr)
+        r.append(float(np.sqrt((seg ** 2).mean())))
+    r = np.array(r)
+    if r.size and r.max() > 0:
+        r = r / r.max()
+    return np.array(t), r
+
+
 def _decode(audio_path: str, sr: int = 16000) -> np.ndarray:
     raw = subprocess.run(
         [config.FFMPEG_BINARY, "-v", "quiet", "-i", audio_path,
@@ -186,6 +201,15 @@ def to_semitones(f0: np.ndarray, base: float | None) -> np.ndarray:
         return 12.0 * np.log2(f0 / base)
 
 
+def _corr(a, b) -> float | None:
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    m = np.isfinite(a) & np.isfinite(b)
+    a, b = a[m], b[m]
+    if a.size < 3 or a.std() < 1e-6 or b.std() < 1e-6:
+        return None
+    return float(np.corrcoef(a, b)[0, 1])
+
+
 def _spans(ts: np.ndarray, n: int, windows: list[dict] | None, t0: float, t1: float):
     if windows and len(windows) >= n:
         return [(float(windows[i]["start"]), float(windows[i]["end"])) for i in range(n)]
@@ -220,6 +244,7 @@ def _sample(times, y, a, b, k=10):
 def build_dashboard(target_text: str, learner_audio: str,
                     reference_audio: str | None = None,
                     windows: list[dict] | None = None,
+                    ref_windows: list[dict] | None = None,
                     mode: str = "semitones", meter_range: float = 6.0) -> tuple[dict, bytes]:
     """Full attempt analysis + dashboard PNG. ``mode`` = semitones | hz."""
     syl = _syllables(target_text)
@@ -228,24 +253,34 @@ def build_dashboard(target_text: str, learner_audio: str,
         syl, chars = [{"jyutping": "", "tone": 0}], [""]
     n = len(syl)
 
-    lt, lf0 = extract_f0(_decode(learner_audio))
+    lsamples = _decode(learner_audio)
+    lt, lf0 = extract_f0(lsamples)
     lb = baseline(lf0)
-    lseries = to_semitones(lf0, lb) if mode == "semitones" else lf0
+    lsem = to_semitones(lf0, lb)
+    lseries = lsem if mode == "semitones" else lf0
     l0, l1 = _voiced_span(lt, lseries)
     lspans = _spans(lt, n, windows, l0, l1)
     lx, lyv = _aligned_points(lt, lseries, lspans)
+    lt_env, l_env = _envelope(lsamples)
+    lwx, lwy = _aligned_points(lt_env, l_env, lspans)
 
     rx, ryv, rspans = [], [], None
+    rwx, rwy = [], []
     if reference_audio:
-        rt, rf0 = extract_f0(_decode(reference_audio))
+        rsamples = _decode(reference_audio)
+        rt, rf0 = extract_f0(rsamples)
         rb = baseline(rf0)
-        rseries = to_semitones(rf0, rb) if mode == "semitones" else rf0
+        rsem = to_semitones(rf0, rb)
+        rseries = rsem if mode == "semitones" else rf0
         r0, r1 = _voiced_span(rt, rseries)
-        rspans = _spans(rt, n, None, r0, r1)
+        rspans = _spans(rt, n, ref_windows, r0, r1)
         rx, ryv = _aligned_points(rt, rseries, rspans)
+        rt_env, r_env = _envelope(rsamples)
+        rwx, rwy = _aligned_points(rt_env, r_env, rspans)
 
     syllables = []
     devs = []
+    accs = []
     for i, s in enumerate(syl):
         lpts = _sample(lt, lseries, lspans[i][0], lspans[i][1], 10)
         if reference_audio:
@@ -258,6 +293,37 @@ def build_dashboard(target_text: str, learner_audio: str,
         dev = float(np.mean(lpts[ok] - rpts[ok])) if ok.any() else None
         if dev is not None:
             devs.append(dev)
+
+        # accuracy for this syllable: contour match (semitones) + wave match
+        lp = _sample(lt, lsem, lspans[i][0], lspans[i][1], 12)
+        if reference_audio:
+            rp = _sample(rt, rsem, rspans[i][0], rspans[i][1], 12)
+        else:
+            tpl = tone_template_semitones(s["tone"])
+            rp = np.linspace(tpl[0], tpl[1], 12) if tpl else np.full(12, np.nan)
+        m = np.isfinite(lp) & np.isfinite(rp)
+        pitch_score = None
+        if m.sum() >= 3:
+            dev_st = float(np.mean(lp[m] - rp[m]))
+            level_pen = min(1.0, abs(dev_st) / 6.0)
+            c = _corr(lp, rp)
+            pitch_score = 100 * (0.6 * (1 - level_pen) + 0.4 * max(0, c)) \
+                if c is not None else 100 * (1 - level_pen)
+        wave_score = None
+        if reference_audio and rspans:
+            lwv = _sample(lt_env, l_env, lspans[i][0], lspans[i][1], 12)
+            rwv = _sample(rt_env, r_env, rspans[i][0], rspans[i][1], 12)
+            c = _corr(lwv, rwv)
+            if c is not None:
+                wave_score = 100 * max(0, c)
+        parts = [(pitch_score, 0.7)] if pitch_score is not None else []
+        if wave_score is not None:
+            parts.append((wave_score, 0.3))
+        acc = round(sum(v * w for v, w in parts) / sum(w for _, w in parts)) \
+            if parts else None
+        if acc is not None:
+            accs.append(acc)
+
         if dev is None:
             verdict = "—"
         elif abs(dev) <= meter_range * 0.33:
@@ -273,19 +339,96 @@ def build_dashboard(target_text: str, learner_audio: str,
         syllables.append({
             "char": chars[i] if i < len(chars) else "", "jyutping": s["jyutping"],
             "tone": s["tone"], "tone_name": TONE_NAMES.get(s["tone"], ""),
-            "deviation": dev, "verdict": verdict,
+            "deviation": dev, "verdict": verdict, "accuracy": acc,
         })
 
     overall = float(np.mean(devs)) if devs else None
+    accuracy = round(float(np.mean(accs))) if accs else None
     result = {
         "mode": mode, "meter_range": meter_range,
         "current_hz": round(lb, 1) if lb else None,
         "syllables": syllables, "overall_deviation": overall,
+        "accuracy": accuracy,
         "learner": {"x": lx, "y": lyv}, "reference": {"x": rx, "y": ryv},
+        "learner_wave": {"x": lwx, "y": lwy},
+        "reference_wave": {"x": rwx, "y": rwy},
         "labels": [f"{chars[i] if i < len(chars) else ''}\n{syl[i]['jyutping']}"
                    for i in range(n)],
     }
     return result, render_dashboard(result)
+
+
+def render_wave(result: dict) -> bytes:
+    """Waveform-distribution view: amplitude (ref vs learner) + pitch contour
+    with high/mid/low tone registers, aligned by syllable."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.gridspec import GridSpec
+
+    matplotlib.rcParams["font.sans-serif"] = [
+        "Microsoft JhengHei", "Microsoft YaHei", "SimHei", "DejaVu Sans"]
+    matplotlib.rcParams["axes.unicode_minus"] = False
+
+    mode = result.get("mode", "semitones")
+    ylabel = "Relative pitch (semitones)" if mode == "semitones" else "Pitch (Hz)"
+    n = len(result["labels"])
+
+    fig = plt.figure(figsize=(10.5, 6.2), dpi=130)
+    gs = GridSpec(2, 1, height_ratios=[1, 1.25], hspace=0.5)
+    axw = fig.add_subplot(gs[0])
+    axp = fig.add_subplot(gs[1])
+
+    # ---- waveform distribution (X = syllable position, Y = amplitude) ----
+    rw = result["reference_wave"]
+    lw = result["learner_wave"]
+    if rw["x"]:
+        axw.plot(rw["x"], rw["y"], color="#555555", lw=1.4, ls="--",
+                 label="Reference 參考")
+    if lw["x"]:
+        axw.plot(lw["x"], lw["y"], color="#1f618d", lw=1.6,
+                 label="Your voice 你嘅聲音")
+        axw.fill_between(lw["x"], 0, lw["y"], color="#1f618d", alpha=0.18)
+    for i in range(n):
+        axw.axvline(i, color="#e5e7eb", lw=0.8, zorder=0)
+    axw.set_xticks([i + 0.5 for i in range(n)])
+    axw.set_xticklabels(result["labels"], fontsize=9)
+    axw.set_ylabel("Amplitude (norm.)")
+    axw.set_ylim(0, 1.05)
+    axw.set_title("Waveform distribution — reference vs your voice", fontsize=11)
+    axw.legend(loc="upper right", fontsize=9, frameon=False)
+    axw.margins(x=0.01)
+
+    # ---- pitch contour with tone registers (high / mid / low) ----
+    if mode == "semitones":
+        axp.axhspan(2, 6, color="#eef5ff")     # high register
+        axp.axhspan(-1, 2, color="#f3f7f3")    # mid register
+        axp.axhspan(-6, -1, color="#fff5ee")   # low register
+        axp.axhline(0, color="#cccccc", lw=0.8, ls=":")
+        axp.set_ylim(-6, 6)
+    ref = result["reference"]
+    if ref["x"]:
+        axp.plot(ref["x"], ref["y"], color="#555555", lw=2, ls="--",
+                 label="Reference 參考")
+    learner = result["learner"]
+    if learner["x"]:
+        axp.plot(learner["x"], learner["y"], color="#1f618d", lw=2.8,
+                 label="Your voice 你嘅聲音")
+    for i in range(n):
+        axp.axvline(i, color="#e5e7eb", lw=0.8, zorder=0)
+    axp.set_xticks([i + 0.5 for i in range(n)])
+    axp.set_xticklabels(result["labels"], fontsize=9)
+    axp.set_ylabel(ylabel)
+    axp.set_title("Tone modulation — contour vs reference (high / mid / low)",
+                  fontsize=11)
+    axp.legend(loc="upper right", fontsize=9, frameon=False)
+    axp.margins(x=0.01)
+
+    buf = io.BytesIO()
+    fig.subplots_adjust(left=0.08, right=0.98, top=0.93, bottom=0.10)
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    return buf.getvalue()
 
 
 def render_dashboard(result: dict) -> bytes:
