@@ -56,6 +56,7 @@ radio_library/
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── pronunciation.py      ← pronunciation/voice test scoring
+│   ├── ai_tutor.py           ← Cantonese speaking coach (port of AI_tutor/)
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── cantonese_teacher.py  ← photo → Cantonese worksheet (agent wrapper)
@@ -66,6 +67,7 @@ radio_library/
 ├── transcripts/              ← JSON transcript records
 ├── pdf/                      ← generated bilingual PDFs
 ├── subtitles/                ← SRT subtitles
+├── AI_tutor/                 ← React voice-tutor (sources tracked; ported to a tab)
 ├── AI_CantoneVoice/          ← Cantonese TTS project
 │   ├── REPORT.md  src/       ←   baseline report + starter service
 │   └── production_blueprint/ ←   production report + FastAPI + Docker
@@ -452,6 +454,18 @@ F5-TTS / Llasa-1B / commercial API. Evaluate as
 `MOS + tone-accuracy + speaker-similarity + latency`. The starter FastAPI
 service is at `AI_CantoneVoice/src/service.py`.
 
+### AI Tutor (🧑🏫 tab)
+
+A Python port of the `AI_tutor/` project (React + Hono voice tutor) as a Streamlit
+tab: an **English → Hong Kong Cantonese speaking coach**. Three personas (阿Wing,
+陳太, 霞姐) with spoken intros, eight scenarios (greetings, cha chaan teng,
+transport, shopping, workplace, social, emergency, free talk), a **strict-JSON
+Lesson Agent** (colloquial HK Cantonese only, 1–2 sentences, Traditional Chinese +
+LSHK Jyutping + English + correction + saved-phrase + next prompt), Cantonese TTS
+playback, a **pronunciation check** (reuses `app/pronunciation`), and a local
+**phrasebook** (SM-2-lite). If the LLM is unavailable it falls back to a scripted
+reply (degradation contract). Logic in `app/ai_tutor.py`.
+
 ## 9. Quality Controls (from the source plan)
 
 - Never overwrite original MP3s.
@@ -468,7 +482,7 @@ service is at `AI_CantoneVoice/src/service.py`.
 |------|--------|
 | Stream recorder → 60 s MP3 | ✅ `2026-10-07_rthk-radio-5_1min_2.mp3` — 60.03 s @ 320 kbps, no noise (direct stream) |
 | LangGraph pipeline on recording | ✅ JSON + SRT + bilingual PDF generated, saved to SQLite |
-| Streamlit app (8 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations, Cantonese Teacher, AI CantoneVoice) | ✅ no exceptions; timetable, play toggle, record start/stop, library, quizzes, phrase bank/shadowing, photo→worksheet PDF, and Cantonese TTS (Edge zh-HK) working |
+| Streamlit app (9 tabs: Radio Time Table, record, process, library, VocabBank, Pronunciations, Cantonese Teacher, AI CantoneVoice, AI Tutor) | ✅ no exceptions; timetable, record, library, quizzes, phrase bank/shadowing, photo→worksheet, Cantonese TTS (Edge zh-HK), and the Cantonese speaking coach working |
 | Live RTHK stream from sandbox | ⚠️ `stm1.rthk.hk` unreachable from this sandbox network; verified with local stream instead — works on a normal network |
 
 ## 11. Roadmap

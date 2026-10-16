@@ -40,6 +40,12 @@ CantoneseTeacher/cantonese_teacher_agent/lessons/*.html
 CantoneseTeacher/cantonese_teacher_agent/assets/
 CantoneseTeacher/ipython_*.png
 
+# AI_tutor (integrated as a tab) — keep sources, ignore bulky/binary assets
+AI_tutor/app/public/avatars/
+AI_tutor/app/package-lock.json
+AI_tutor/shots/
+AI_tutor/app/node_modules/
+
 # Screenshots / scratch
 screenshots/
 

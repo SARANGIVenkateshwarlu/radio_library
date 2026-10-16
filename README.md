@@ -53,6 +53,7 @@ radio_library/
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── pronunciation.py      ← pronunciation/voice test scoring
+│   ├── ai_tutor.py           ← Cantonese speaking coach (port of AI_tutor/)
 │   ├── schedule.py           ← RTHK 1–5 daily timetable
 │   ├── phrases.py            ← phrase bank + shadowing helpers
 │   ├── recorder.py           ← ffmpeg stream recorder
@@ -63,6 +64,7 @@ radio_library/
 ├── pdf/                      ← generated bilingual PDFs (git-ignored)
 ├── subtitles/                ← SRT subtitles (git-ignored)
 ├── CantoneseTeacher/         ← photo→worksheet agent (sources tracked)
+├── AI_tutor/                 ← React voice-tutor (sources tracked; ported to a tab)
 ├── AI_CantoneVoice/          ← Cantonese TTS project (REPORT.md + src/)
 └── metadata/library.db       ← SQLite index (git-ignored)
 ```
@@ -389,6 +391,17 @@ starter API from
 The Streamlit app uses a **classic "paper & serif"** theme (cream background,
 serif type, maroon accent), defined in `.streamlit/config.toml` plus a small CSS
 block — applied on app restart.
+
+### AI Tutor
+
+The 🧑🏫 **AI Tutor** tab is a Cantonese speaking coach (a Python port of the
+`AI_tutor/` React project): pick a **persona** (阿Wing / 陳太 / 霞姐) and a
+**scenario** (greetings, cha chaan teng, transport, shopping, workplace, social,
+emergency, free talk), then chat in English or Cantonese. Every tutor reply is
+colloquial HK Cantonese with **Jyutping + English**, audio playback, an optional
+correction, and a "next try" prompt; a **pronunciation check** scores your
+reading and a **phrasebook** saves phrases. Scripted fallback keeps the tab
+working when the LLM is unavailable.
 
 ## Output Format Rules
 

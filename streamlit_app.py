@@ -17,6 +17,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from app import (  # noqa: E402
+    ai_tutor,
     audio_util,
     cantonevoice,
     cantonese_teacher,
@@ -113,10 +114,10 @@ else:
     )
 
 (tab_sched, tab_record, tab_process, tab_library, tab_vocab, tab_pron,
- tab_teacher, tab_voice) = st.tabs(
+ tab_teacher, tab_voice, tab_tutor) = st.tabs(
     ["🗓️ Radio Time Table", "🔴 Record radio", "⚙️ Process recording",
      "📚 Library", "🗂️ VocabBank", "🗣️ Pronunciations", "🎓 Cantonese Teacher",
-     "🎙️ AI CantoneVoice"]
+     "🎙️ AI CantoneVoice", "🧑‍🏫 AI Tutor"]
 )
 
 
@@ -1149,3 +1150,114 @@ with tab_voice:
                    "report and starter service (`AI_CantoneVoice/"
                    "production_blueprint/`).")
         st.markdown(cantonevoice.production_report_text())
+
+
+with tab_tutor:
+    st.subheader("🧑‍🏫 AI Tutor — Cantonese speaking coach")
+
+    # --- persona + scenario + level -------------------------------------------------
+    pc1, pc2, pc3 = st.columns([2, 2, 1])
+    persona_id = pc1.selectbox(
+        "Tutor persona 導師", [p["id"] for p in ai_tutor.PERSONAS],
+        format_func=lambda pid: (f"{ai_tutor.get_persona(pid)['avatar']} "
+                                 f"{ai_tutor.get_persona(pid)['name']} "
+                                 f"({ai_tutor.get_persona(pid)['cantonese']}) — "
+                                 f"{ai_tutor.get_persona(pid)['role']}"),
+        key="tutor_persona")
+    scenario_id = pc2.selectbox(
+        "Scenario 情境", [s["id"] for s in ai_tutor.SCENARIOS],
+        format_func=lambda sid: (f"{ai_tutor.get_scenario(sid)['icon']} "
+                                 f"{ai_tutor.get_scenario(sid)['title']}"),
+        key="tutor_scenario")
+    level = pc3.selectbox("Level 程度", ["Beginner", "Intermediate"], key="tutor_level")
+
+    persona = ai_tutor.get_persona(persona_id)
+    scenario = ai_tutor.get_scenario(scenario_id)
+
+    # persona intro card
+    with st.container():
+        st.markdown(f"### {persona['avatar']} {persona['name']} · {persona['style']}")
+        st.markdown(f"**{persona['intro']['cantonese']}**")
+        st.caption(f"{persona['intro']['jyutping']}  ·  {persona['intro']['english']}")
+    st.caption(f"Scenario: {scenario['setting']}")
+
+    # --- chat state ------------------------------------------------------------------
+    if "tutor_chat" not in st.session_state:
+        st.session_state.tutor_chat = []
+
+    # target phrases (curated where available)
+    if scenario["phrases"]:
+        with st.expander("📚 Target phrases 目標句子", expanded=False):
+            for p in scenario["phrases"]:
+                st.markdown(f"- **{p['cantonese']}** · `{p['jyutping']}` — {p['english']}")
+
+    # --- input + send ----------------------------------------------------------------
+    with st.form("tutor_send", clear_on_submit=True):
+        user_text = st.text_input("Type in English or Cantonese…", key="tutor_input")
+        sent = st.form_submit_button("Send 送出")
+    if sent and user_text.strip():
+        st.session_state.tutor_chat.append({"role": "user", "text": user_text.strip()})
+        with st.spinner("Tutor thinking…"):
+            reply = ai_tutor.tutor_reply(persona_id, scenario_id, level, user_text.strip())
+        st.session_state.tutor_chat.append({"role": "tutor", "reply": reply})
+        if reply.get("saved_phrase"):
+            ai_tutor.save_phrase(reply["saved_phrase"])
+
+    # --- render history --------------------------------------------------------------
+    for i, msg in enumerate(st.session_state.tutor_chat):
+        if msg["role"] == "user":
+            st.markdown(f"**You 你:** {msg['text']}")
+        else:
+            r = msg["reply"]
+            with st.container(border=True):
+                st.markdown(f"**{persona['avatar']} {persona['name']}:** "
+                            f"{r.get('cantonese_reply', '')}")
+                st.caption(f"`{r.get('jyutping', '')}`")
+                st.markdown(f"*{r.get('english_translation', '')}*")
+                if r.get("correction"):
+                    st.warning(f"✏️ {r['correction'].get('issue', '')} — "
+                               f"{r['correction'].get('explanation', '')}")
+                if r.get("next_user_prompt"):
+                    st.caption(f"👉 {r['next_user_prompt']}")
+                if r.get("fallback"):
+                    st.caption("ℹ️ (scripted fallback — LLM unavailable)")
+                if r.get("saved_phrase"):
+                    sp = r["saved_phrase"]
+                    st.info(f"💾 Saved phrase: **{sp.get('cantonese')}** · "
+                            f"`{sp.get('jyutping')}` — {sp.get('english')}")
+                if st.button("🔊 Hear reply", key=f"tutor_hear_{i}") and \
+                        cantonevoice.available():
+                    st.audio(cantonevoice.synthesize(
+                        r.get("cantonese_reply", ""), voice="zh-HK-HiuGaaiNeural"),
+                        format="audio/mpeg")
+
+    # --- pronunciation check against the last tutor reply ---------------------------
+    if st.session_state.tutor_chat:
+        last_tutor = next((m for m in reversed(st.session_state.tutor_chat)
+                           if m["role"] == "tutor"), None)
+        if last_tutor and last_tutor["reply"].get("cantonese_reply"):
+            with st.expander("🎤 Check my pronunciation 檢查讀音", expanded=False):
+                target = last_tutor["reply"]["cantonese_reply"]
+                st.caption(f"Read this aloud: **{target}**")
+                rec = st.audio_input("Record your attempt", key="tutor_rec")
+                if rec is not None:
+                    data = rec.getvalue() if hasattr(rec, "getvalue") else rec.read()
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                        f.write(data)
+                        rp = f.name
+                    with st.spinner("Scoring (first run loads Whisper)…"):
+                        r = pronunciation.evaluate(target, rp)
+                    s1, s2, s3 = st.columns(3)
+                    s1.metric("Score", f"{r['score']}%")
+                    s2.metric("Character", f"{r['char_accuracy']}%")
+                    s3.metric("Tone", f"{r['tone_accuracy']}%")
+                    st.markdown(f"**Heard:** {r['spoken']}")
+
+    # --- phrasebook ------------------------------------------------------------------
+    with st.expander("📖 Phrasebook 詞彙簿", expanded=False):
+        phrases = ai_tutor.load_phrases()
+        if not phrases:
+            st.caption("Saved phrases from tutor turns will appear here.")
+        for p in phrases:
+            st.markdown(f"- **{p.get('cantonese')}** · `{p.get('jyutping')}` — "
+                        f"{p.get('english')}")
