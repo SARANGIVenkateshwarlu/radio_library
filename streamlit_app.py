@@ -40,6 +40,9 @@ st.set_page_config(page_title="HK Radio Cantonese Library", page_icon="📻", la
 st.markdown(
     """
     <style>
+    /* Classic "paper & serif" palette. Only colours/spacing are overridden here;
+       the serif typeface is applied via .streamlit/config.toml (font = "serif")
+       so Streamlit keeps its own layout (no arrow/label overlap). */
     :root {
         --classic-ink: #2a2a2a;
         --classic-paper: #fbf7ef;
@@ -50,20 +53,19 @@ st.markdown(
     [data-testid="stAppViewContainer"] { background: var(--classic-paper); }
     [data-testid="stHeader"] { background: transparent; }
     [data-testid="stSidebar"] { background: var(--classic-parchment); }
-    html, body, [class*="st-"], .stMarkdown, p, li, span, label,
-    input, textarea, select, button {
-        font-family: Georgia, "Times New Roman", "Songti SC",
-                     "Microsoft JhengHei", serif !important;
-        color: var(--classic-ink);
-    }
-    h1, h2, h3, h4 {
-        font-family: Georgia, "Times New Roman", "Songti SC",
-                     "Microsoft JhengHei", serif !important;
-        color: #3a2a1a !important;
-        letter-spacing: .2px;
-    }
+
+    h1, h2, h3, h4 { color: #3a2a1a !important; }
     h1 { border-bottom: 3px double var(--classic-accent); padding-bottom: .35rem; }
     h2 { border-bottom: 1px solid var(--classic-rule); padding-bottom: .25rem; }
+
+    /* Keep expander/tab toggle arrows clear of their labels (no overlap). */
+    svg { flex: 0 0 auto; }
+    [data-testid="stExpander"] summary {
+        display: flex !important;
+        align-items: center !important;
+        column-gap: 8px !important;
+    }
+
     .stButton > button, .stDownloadButton > button {
         border: 1px solid var(--classic-accent) !important;
         border-radius: 6px !important;
@@ -75,7 +77,6 @@ st.markdown(
     .stButton > button:hover, .stDownloadButton > button:hover {
         background: var(--classic-accent) !important; color: #fff !important;
     }
-    .stTabs [data-baseweb="tab"] { font-weight: 600; }
     .stTabs [aria-selected="true"] {
         color: var(--classic-accent) !important;
         border-bottom-color: var(--classic-accent) !important;
