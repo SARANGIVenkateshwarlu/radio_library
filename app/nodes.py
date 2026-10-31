@@ -10,7 +10,7 @@ from pathlib import Path
 
 from . import asr, cleanup, config, jyutping_validate, library, pdf_gen
 from .grouping import assign_blocks
-from .jyutping_tool import space_syllables, to_jyutping
+from .jyutping_tool import authoritative_jyutping, space_syllables, to_jyutping
 from .llm import (
     correct_chain,
     is_pronoun,
@@ -124,7 +124,11 @@ def translate(state: RadioState) -> dict:
         for line in raw.splitlines():
             parts = [p.strip() for p in line.split("|")]
             if len(parts) >= 3:
-                word, jyut = parts[0], space_syllables(parts[1])
+                word = parts[0]
+                # authoritative HK-Cantonese reading (fixes Mandarin-influenced
+                # readings like 髒 zang1 -> zong1); falls back to the LLM for
+                # mixed Chinese/English phrases.
+                jyut = authoritative_jyutping(word, parts[1])
                 pos, meaning = (parts[2], parts[3]) if len(parts) >= 4 else ("", parts[2])
                 # skip pronouns and duplicate phrases
                 if not word or is_pronoun(word) or word in seen:

@@ -20,7 +20,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from . import config
-from .jyutping_tool import space_syllables
+from .jyutping_tool import correct_jyutping
 
 HISTORY_PATH = config.METADATA_DIR / "quiz_history.json"
 STATS_PATH = config.METADATA_DIR / "vocab_stats.json"
@@ -119,7 +119,7 @@ def _entries_from_record(rec: dict) -> list[dict]:
                 "station": rec.get("station"),
                 "recorded_at": rec.get("recorded_at"),
                 "word": word,
-                "jyutping": space_syllables(v.get("jyutping", "")),
+                "jyutping": correct_jyutping(v.get("jyutping", "")),
                 "pos": v.get("pos", "") or _pos_of(word),
                 "meaning": v.get("meaning", ""),
                 "sentence": sentence,

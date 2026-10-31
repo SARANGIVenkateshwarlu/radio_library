@@ -19,7 +19,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-from .jyutping_tool import space_syllables
+from .jyutping_tool import correct_jyutping
 
 PAGE_W, PAGE_H = A4
 MARGIN = 15 * mm
@@ -111,7 +111,7 @@ def _dedup_vocab(segments: list[dict]) -> list[dict]:
             if w and w not in seen and not _is_pronoun(w):
                 seen.add(w)
                 v = dict(v)
-                v["jyutping"] = space_syllables(v.get("jyutping", ""))
+                v["jyutping"] = correct_jyutping(v.get("jyutping", ""))
                 v.setdefault("pos", _pos_of(w) or "—")
                 out.append(v)
     return out

@@ -47,6 +47,8 @@ OVERRIDES = {
     "岑": "sam4",
     "欖": "laam5",
     "磡": "ham3",
+    "髒": "zong1",   # HK spoken Cantonese, not Mandarin zang1
+    "骯": "ong1",    # colloquial ong1 (骯髒), not the literary kong3
 }
 
 
@@ -65,20 +67,54 @@ def space_syllables(text: str) -> str:
     return re.sub(r"([1-6])(?=[a-z])", r"\1 ", text or "").strip()
 
 
+# Known Mandarin-influenced readings to correct to the Hong Kong spoken reading.
+READING_FIXES = {
+    "zang1": "zong1",   # 髒 — HK spoken Cantonese is zong1, not Mandarin zang1
+}
+
+
+def correct_jyutping(text: str) -> str:
+    """Space syllables and fix known Mandarin-influenced readings."""
+    return " ".join(READING_FIXES.get(t, t) for t in space_syllables(text).split())
+
+
+def authoritative_jyutping(word: str, llm_jyut: str = "") -> str:
+    """Dictionary-derived LSHK Jyutping for a Chinese word.
+
+    For pure-Chinese words we trust pycantonese (+ OVERRIDES) — the correct Hong
+    Kong spoken reading — and ignore the LLM's romanisation. For mixed
+    Chinese/English phrases we keep the LLM's romanisation (space-normalised +
+    reading-fixed).
+    """
+    chars = [c for c in (word or "") if c.strip()]
+    if chars and all("\u3400" <= c <= "\u9fff" for c in chars):
+        return to_jyutping(word)
+    return correct_jyutping(llm_jyut)
+
+
 def to_jyutping(text: str) -> str:
-    """Convert Cantonese text to Jyutping, one romanisation per character."""
+    """Convert Cantonese text to LSHK Jyutping, one romanisation per character.
+
+    Re-splits pycantonese's word-level segments back into per-character
+    syllables and applies ``OVERRIDES`` per character, so a colloquial reading
+    (e.g. 骯 ong1, 髒 zong1) wins over a literary/Mandarin one (kong3 / zang1).
+    """
     toks = []
     if _HAS_PYCT:
-        pairs = pycantonese.characters_to_jyutping(text)
-        for ch, jyut in pairs:
-            if ch in OVERRIDES:
-                toks.append(OVERRIDES[ch])
-            elif jyut:
-                toks.append(jyut)
-            elif _IS_CJK.match(ch):
-                toks.append("〔?〕")
+        for seg, jyut in pycantonese.characters_to_jyutping(text):
+            chars = list(seg)
+            sylls = space_syllables(jyut).split() if jyut else []
+            if len(chars) == len(sylls) and len(chars) > 1:
+                for c, s in zip(chars, sylls):
+                    toks.append(OVERRIDES.get(c, s))
             else:
-                toks.append(ch)
+                for c in chars:
+                    if c in OVERRIDES:
+                        toks.append(OVERRIDES[c])
+                    elif _IS_CJK.match(c):
+                        toks.append(jyut or "〔?〕")
+                    elif c.strip():
+                        toks.append(c)
     else:
         for ch in text:
             if _IS_CJK.match(ch):
