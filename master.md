@@ -54,6 +54,7 @@ radio_library/
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank word bank + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
+│   ├── shadow_pdf.py         ← shadowing notes PDF (1-min parts + vocab)
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── pronunciation.py      ← pronunciation/voice test scoring
 │   ├── ai_tutor.py           ← Cantonese speaking coach (port of AI_tutor/)
@@ -387,7 +388,9 @@ Two sub-tabs. Data is local (`metadata/phrase_bank.json`,
   play the clip at your chosen speed (listen → pause → repeat, matching tone
   contour and speed), **record yourself** with the microphone, and compare the
   original clip with your recording side by side. Recordings are saved for
-  later review.
+  later review. Also: **⬇️ Download PDF notes** — the whole transcript split
+  into ~1-minute parts, each a **Cantonese | Jyutping | English** table, ending
+  with a **vocabulary table** (`app/shadow_pdf.py`).
 
 ### Cantonese Teacher (🎓 tab)
 

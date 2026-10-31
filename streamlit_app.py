@@ -28,6 +28,7 @@ from app import (  # noqa: E402
     pronunciation,
     recorder,
     schedule,
+    shadow_pdf,
     vocab,
     vocab_pdf,
     voice_graph,
@@ -800,6 +801,17 @@ with tab_pron:
             if not segs:
                 st.info("No transcript for this recording yet — process it first.")
             else:
+                # Download the transcript as PDF notes, split into ~1-min parts,
+                # each part a Cantonese | Jyutping | English table, plus a vocab
+                # table at the end.
+                buf = io.BytesIO()
+                shadow_pdf.build_shadow_pdf(segs, chosen, buf)
+                st.download_button(
+                    "⬇️ Download PDF notes (1-min parts + vocab)",
+                    buf.getvalue(),
+                    file_name=f"{Path(chosen).stem}_shadow_notes.pdf",
+                    mime="application/pdf",
+                    key="shadow_pdf_dl")
                 labels = [
                     f"{i + 1}. {s.get('normalized_cantonese') or s.get('corrected') or s.get('cantonese', '')}"
                     for i, s in enumerate(segs)

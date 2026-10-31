@@ -51,6 +51,7 @@ radio_library/
 │   ├── library.py            ← SQLite metadata store
 │   ├── vocab.py              ← VocabBank: word banks + quiz builder
 │   ├── vocab_pdf.py          ← dictionary-style PDF of all vocabulary
+│   ├── shadow_pdf.py         ← shadowing notes PDF (1-min parts + vocab)
 │   ├── cantonevoice.py       ← Cantonese TTS (Edge zh-HK baseline)
 │   ├── pronunciation.py      ← pronunciation/voice test scoring
 │   ├── ai_tutor.py           ← Cantonese speaking coach (port of AI_tutor/)
@@ -333,7 +334,9 @@ The 🗣️ **Pronunciations** tab has two parts:
   (days with ≥10 reviews, target 6–7/week).
 - **🎧 Shadowing studio** — a play station for every MP3 plus sentence
   shadowing: play a sentence clip at 0.5–2x, **record yourself**, and compare
-  side by side.
+  side by side. **⬇️ Download PDF notes** splits the transcript into ~1-minute
+  parts as **Cantonese | Jyutping | English** tables, ending with a vocabulary
+  table.
 
 ## Standard Task Procedure
 
