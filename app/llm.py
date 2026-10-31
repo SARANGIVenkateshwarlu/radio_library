@@ -100,14 +100,16 @@ TRANSLATE_PROMPT = ChatPromptTemplate.from_messages([
 VOCAB_PROMPT = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
     ("human",
-     "From the Cantonese sentence below, extract up to 4 useful vocabulary items "
-     "for a learner. Cover the main word classes: verbs, adverbs, prepositions, "
-     "conjunctions, nouns, adjectives, particles, and common spoken Hong Kong "
-     "phrases/idioms. Use LSHK Jyutping (tone numbers 1-6 at the end of every "
-     "syllable). Output one item per line, exactly in this format: "
-     "word | jyutping | part_of_speech | english meaning. part_of_speech is a "
-     "short English label (verb, adverb, preposition, conjunction, noun, "
-     "adjective, particle, phrase). No other text.\n\n句子：{text}"),
+     "From the Cantonese sentence below, extract vocabulary items covering ALL "
+     "the word classes that are present, up to 6 items. Include every distinct "
+     "verb (including coverbs/phrasal verbs like 出去, 着, 玩), adverb, "
+     "preposition, conjunction, particle, noun and adjective, plus any spoken "
+     "Hong Kong phrase/idiom. Do NOT skip common verbs such as 'play', 'put on', "
+     "'go out', 'like' just because they are short or common. Use LSHK Jyutping "
+     "(tone numbers 1-6 at the end of every syllable). Output one item per line, "
+     "exactly in this format: word | jyutping | part_of_speech | english meaning. "
+     "part_of_speech is a short English label (verb, adverb, preposition, "
+     "conjunction, noun, adjective, particle, phrase). No other text.\n\n句子：{text}"),
 ])
 
 GROUP_PROMPT = ChatPromptTemplate.from_template(
@@ -252,6 +254,39 @@ LEXICON = {
     "室外": ("sat1 ngoi6", "outdoors / outdoor"),
     "還有": ("waan4 jau5", "and also / in addition"),
     "來到": ("loi4 dou3", "coming to / arriving at"),
+    # common verbs / function words / spoken phrases (so these are never missed)
+    "玩": ("waan2", "to play"),
+    "着": ("zoek3", "to put on / wear"),
+    "出": ("ceot1", "to go out / come out"),
+    "出去": ("ceot1 heoi3", "to go out"),
+    "鍾意": ("zung1 ji3", "to like / love"),
+    "返": ("faan1", "to return / back"),
+    "返嚟": ("faan1 lai4", "to come back"),
+    "埋": ("maai4", "to close / also"),
+    "喺": ("hai2", "at / in"),
+    "同": ("tung4", "with / and"),
+    "同埋": ("tung4 maai4", "and also"),
+    "但係": ("daan6 hai6", "but / however"),
+    "所以": ("so2 ji5", "so / therefore"),
+    "因為": ("jan1 wai6", "because"),
+    "如果": ("jyu4 gwo2", "if"),
+    "好": ("hou2", "very / good"),
+    "咗": ("zo2", "(perfective aspect particle)"),
+    "緊": ("gan2", "(progressive aspect particle)"),
+    "嘅": ("ge3", "(possessive / attributive particle)"),
+}
+
+# Part-of-speech labels for the mock (offline) vocab fallback, so the POS column
+# is populated even without an LLM.
+LEXICON_POS = {
+    "玩": "verb", "着": "verb", "出": "verb", "出去": "verb", "鍾意": "verb",
+    "返": "verb", "返嚟": "verb", "埋": "verb",
+    "喺": "preposition", "同": "preposition/conjunction", "同埋": "conjunction",
+    "但係": "conjunction", "所以": "conjunction", "因為": "conjunction",
+    "如果": "conjunction", "好": "adverb", "咗": "particle", "緊": "particle",
+    "嘅": "particle", "收聽": "verb", "記得": "verb", "帶": "verb", "去": "verb",
+    "有": "verb", "係": "verb", "冇": "verb", "睇": "verb", "食": "verb",
+    "飲": "verb", "講": "verb", "聽": "verb", "做": "verb", "嚟": "verb",
 }
 
 
@@ -283,9 +318,10 @@ def _mock_vocab(source_text: str) -> str:
             continue
         seen.add(w)
         jyut, eng = LEXICON[w]
-        # offline mock keeps the 4-field format (POS left blank -> shown as "—")
-        lines.append(f"{w} | {jyut} |  | {eng}")
-        if len(lines) >= 4:
+        pos = LEXICON_POS.get(w, "")
+        # offline mock keeps the 4-field format (word | jyutping | pos | meaning)
+        lines.append(f"{w} | {jyut} | {pos} | {eng}")
+        if len(lines) >= 6:
             break
     return "\n".join(lines) or "（無）"
 
