@@ -25,6 +25,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import config
+from .jyutping_tool import authoritative_jyutping
 
 # --------------------------------------------------------------------------- #
 # Personas (ported from AI_tutor/app/contracts/personas.ts)
@@ -231,6 +232,13 @@ def tutor_reply(persona_id: str, scenario_id: str, level: str,
         )
         data = _json(resp.choices[0].message.content)
         if data and data.get("cantonese_reply"):
+            # HARD RULE: dictionary-derived Jyutping, not the LLM's romanisation.
+            data["jyutping"] = authoritative_jyutping(
+                data["cantonese_reply"], data.get("jyutping", ""))
+            if data.get("saved_phrase"):
+                data["saved_phrase"]["jyutping"] = authoritative_jyutping(
+                    data["saved_phrase"].get("cantonese", ""),
+                    data["saved_phrase"].get("jyutping", ""))
             data.setdefault("fallback", False)
             return data
     except Exception:

@@ -78,17 +78,18 @@ def correct_jyutping(text: str) -> str:
     return " ".join(READING_FIXES.get(t, t) for t in space_syllables(text).split())
 
 
-def authoritative_jyutping(word: str, llm_jyut: str = "") -> str:
-    """Dictionary-derived LSHK Jyutping for a Chinese word.
+def authoritative_jyutping(text: str, llm_jyut: str = "") -> str:
+    """Dictionary-derived LSHK Jyutping — the authoritative Hong Kong reading.
 
-    For pure-Chinese words we trust pycantonese (+ OVERRIDES) — the correct Hong
-    Kong spoken reading — and ignore the LLM's romanisation. For mixed
-    Chinese/English phrases we keep the LLM's romanisation (space-normalised +
-    reading-fixed).
+    HARD RULE: Jyutping is always taken from the dictionary (pycantonese +
+    OVERRIDES), never from the LLM's romanisation, to avoid teaching wrong
+    readings. This covers pure Cantonese text (CJK + punctuation). Only
+    mixed Chinese/English input (Latin letters/digits) falls back to the LLM's
+    romanisation (space-normalised + reading-fixed), since the dictionary
+    cannot romanise English words.
     """
-    chars = [c for c in (word or "") if c.strip()]
-    if chars and all("\u3400" <= c <= "\u9fff" for c in chars):
-        return to_jyutping(word)
+    if text and not re.search(r"[A-Za-z0-9]", text):
+        return to_jyutping(text)
     return correct_jyutping(llm_jyut)
 
 

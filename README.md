@@ -442,6 +442,10 @@ The project follows the recommended staged, structured-output design:
   (audio/transcription/jyutping/translation), `uncertain_tokens`,
   `alternative_readings`, `needs_human_review` and `review_reason`, plus an
   English `quality_review`; flagged segments show a ⚠ in the app and PDF.
+- **Hardbound Jyutping rule** — every generated PDF/transcript uses **HK spoken
+  Cantonese** readings **derived from the dictionary** (pycantonese + overrides),
+  never the LLM's romanisation, to avoid teaching wrong readings (髒 `zong1`, 骯
+  `ong1`); enforced in the pipeline, AI Tutor and Cantonese Teacher.
 - **Quality tuning** — the reviewer is strict-but-fair (ignores legitimate
   dialectal variant readings; only flags genuinely invalid Jyutping), and
   translation is **context-aware** (neighboring sentences included) so radio

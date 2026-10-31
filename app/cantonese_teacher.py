@@ -18,6 +18,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import config
+from .jyutping_tool import authoritative_jyutping
 
 CT_ROOT = config.BASE_DIR / "CantoneseTeacher" / "cantonese_teacher_agent"
 SYSTEM_PROMPT_PATH = CT_ROOT / "prompts" / "cantonese_teacher_system.md"
@@ -115,6 +116,25 @@ def build_image_pdf(lesson: dict, image_path: str, out_path: str) -> str:
     return cantonese_pdf.build_pdf(lesson, image_path, out_path)
 
 
+def correct_lesson_jyutping(lesson: dict) -> dict:
+    """HARD RULE: derive every Jyutping in a worksheet lesson from the
+    dictionary (authoritative HK reading), never the LLM's romanisation."""
+    for s in lesson.get("sentences", []) or []:
+        s["jyutping"] = authoritative_jyutping(s.get("cantonese", ""), s.get("jyutping", ""))
+        for seg in s.get("segments", []) or []:
+            seg["jyutping"] = authoritative_jyutping(seg.get("chinese", ""), seg.get("jyutping", ""))
+    for q in lesson.get("qa", []) or []:
+        q["question_jyutping"] = authoritative_jyutping(q.get("question_cantonese", ""), q.get("question_jyutping", ""))
+        q["answer_jyutping"] = authoritative_jyutping(q.get("answer_cantonese", ""), q.get("answer_jyutping", ""))
+        for seg in q.get("question_segments", []) or []:
+            seg["jyutping"] = authoritative_jyutping(seg.get("chinese", ""), seg.get("jyutping", ""))
+        for seg in q.get("answer_segments", []) or []:
+            seg["jyutping"] = authoritative_jyutping(seg.get("chinese", ""), seg.get("jyutping", ""))
+    for v in lesson.get("vocabulary", []) or []:
+        v["jyutping"] = authoritative_jyutping(v.get("chinese", ""), v.get("jyutping", ""))
+    return lesson
+
+
 def lesson_dir() -> Path:
     d = config.METADATA_DIR / "cantonese_teacher"
     d.mkdir(parents=True, exist_ok=True)
@@ -173,11 +193,13 @@ def generate_worksheet(image_path: str, theme: str = "", num_qa: int = 3,
         if theme.strip():
             lesson["title"] = f"Cantonese Class 廣東話課堂 – {theme.strip()}"
         lesson["qa"] = lesson["qa"][:num_qa]
+        lesson = correct_lesson_jyutping(lesson)
         build_image_pdf(lesson, image_path, str(pdf_path))
     except Exception as exc:  # LLM/vision failure → reproducible demo lesson
         warning = f"AI generation failed ({exc}); used the demo lesson instead."
         lesson = demo_lesson(theme)
         lesson["qa"] = lesson["qa"][:num_qa]
+        lesson = correct_lesson_jyutping(lesson)
         build_image_pdf(lesson, image_path, str(pdf_path))
 
     (out_dir / f"{name}.json").write_text(

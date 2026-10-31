@@ -183,6 +183,15 @@ meaning`). Every vocab table across the app (transcript PDF, VocabBank, dictiona
 PDF, shadowing notes) shows the POS column. Extend `LEXICON` whenever a new word
 appears in a transcript.
 
+**Jyutping rule (hardbound):** all Jyutping in every generated PDF/transcript is
+**HK spoken Cantonese** and **always derived from the dictionary** (pycantonese +
+`OVERRIDES`), **never from the LLM's romanisation** — to avoid teaching wrong
+readings (e.g. 髒 `zong1` not `zang1`, 骯 `ong1` not `kong3`). Enforced in the
+pipeline (`nodes`), the AI Tutor replies (`ai_tutor`), and the Cantonese Teacher
+worksheets (`correct_lesson_jyutping`). Only mixed Chinese/English spans fall back
+to the LLM's (corrected) romanisation, since the dictionary cannot romanise
+English words.
+
 **ASR rule:** real recordings use faster-whisper (`app/asr.py`,
 `WHISPER_MODEL=base` default; use `small`/`medium` for better Cantonese
 accuracy). Mock ASR is only for offline pipeline testing.
