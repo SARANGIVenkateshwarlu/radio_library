@@ -31,6 +31,14 @@ WARN = ParagraphStyle("warn", fontName="STSong-Light", fontSize=9.5, leading=13,
                       textColor="#aa2222")
 
 
+def _is_pronoun(word: str) -> bool:
+    try:
+        from .llm import is_pronoun
+    except Exception:
+        return False
+    return is_pronoun(word)
+
+
 def _fmt_ts(sec: float) -> str:
     m, s = divmod(int(sec), 60)
     h, m = divmod(m, 60)
@@ -127,7 +135,7 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
     seen, vocab = set(), []
     for s in record.get("segments", []):
         for v in s.get("vocabulary") or []:
-            if v.get("word") and v["word"] not in seen:
+            if v.get("word") and v["word"] not in seen and not _is_pronoun(v["word"]):
                 seen.add(v["word"])
                 vocab.append(v)
     if vocab:

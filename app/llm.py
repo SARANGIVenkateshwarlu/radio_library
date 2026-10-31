@@ -100,16 +100,17 @@ TRANSLATE_PROMPT = ChatPromptTemplate.from_messages([
 VOCAB_PROMPT = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
     ("human",
-     "From the Cantonese sentence below, extract vocabulary items covering ALL "
-     "the word classes that are present, up to 6 items. Include every distinct "
-     "verb (including coverbs/phrasal verbs like 出去, 着, 玩), adverb, "
-     "preposition, conjunction, particle, noun and adjective, plus any spoken "
-     "Hong Kong phrase/idiom. Do NOT skip common verbs such as 'play', 'put on', "
-     "'go out', 'like' just because they are short or common. Use LSHK Jyutping "
-     "(tone numbers 1-6 at the end of every syllable). Output one item per line, "
-     "exactly in this format: word | jyutping | part_of_speech | english meaning. "
-     "part_of_speech is a short English label (verb, adverb, preposition, "
-     "conjunction, noun, adjective, particle, phrase). No other text.\n\n句子：{text}"),
+     "From the Cantonese sentence below, extract 3-5 short, meaningful phrases "
+     "for a learner. Group words into natural chunks of 2-3 words (verb+object, "
+     "verb+noun, adjective+noun, verb+preposition, common expressions) so the "
+     "meaning is clear — e.g. 着水鞋 'wear rain boots'. Combine the Jyutping of "
+     "the whole phrase, separated by spaces, with tone numbers 1-6. Do NOT "
+     "extract pronouns (我/你/佢/他/她/它/我哋/你哋/佢哋), do NOT list single "
+     "particles or single function words unless they are part of a phrase, and "
+     "do NOT repeat the same phrase. Output one phrase per line, exactly: "
+     "phrase | jyutping | phrase_type | english meaning. phrase_type is a short "
+     "label (verb phrase, noun phrase, adjective phrase, expression). "
+     "No other text.\n\n句子：{text}"),
 ])
 
 GROUP_PROMPT = ChatPromptTemplate.from_template(
@@ -278,6 +279,18 @@ LEXICON = {
 
 # Part-of-speech labels for the mock (offline) vocab fallback, so the POS column
 # is populated even without an LLM.
+# Pronouns to exclude from vocabulary (never useful as standalone items).
+PRONOUNS = {
+    "我", "你", "佢", "他", "她", "它", "我哋", "你哋", "佢哋",
+    "我地", "你地", "佢地", "我們", "你們", "他們", "自己", "大家",
+    "呢個", "嗰個", "邊個", "乜嘢", "咩",
+}
+
+
+def is_pronoun(word: str) -> bool:
+    return (word or "").strip() in PRONOUNS
+
+
 LEXICON_POS = {
     "玩": "verb", "着": "verb", "出": "verb", "出去": "verb", "鍾意": "verb",
     "返": "verb", "返嚟": "verb", "埋": "verb",

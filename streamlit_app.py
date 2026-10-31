@@ -34,6 +34,7 @@ from app import (  # noqa: E402
     voice_graph,
 )
 from app.graph import run  # noqa: E402
+from app.llm import is_pronoun  # noqa: E402
 
 st.set_page_config(page_title="HK Radio Cantonese Library", page_icon="📻", layout="wide")
 
@@ -168,7 +169,7 @@ def show_segments(segments):
     seen, vocab = set(), []
     for s in segments:
         for v in s.get("vocabulary") or []:
-            if v.get("word") and v["word"] not in seen:
+            if v.get("word") and v["word"] not in seen and not is_pronoun(v["word"]):
                 seen.add(v["word"])
                 vocab.append(v)
     if vocab:

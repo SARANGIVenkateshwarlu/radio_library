@@ -84,6 +84,14 @@ def save_attempt(attempt: dict) -> None:
 # --------------------------------------------------------------------------- #
 # Vocabulary collection
 # --------------------------------------------------------------------------- #
+def _is_pronoun(word: str) -> bool:
+    try:
+        from .llm import is_pronoun
+    except Exception:
+        return False
+    return is_pronoun(word)
+
+
 def _pos_of(word: str) -> str:
     """Best-effort POS for a word (backfills old transcripts from the lexicon)."""
     try:
@@ -102,7 +110,7 @@ def _entries_from_record(rec: dict) -> list[dict]:
         sentence = s.get("corrected") or s.get("cantonese", "")
         for v in s.get("vocabulary") or []:
             word = (v.get("word") or "").strip()
-            if not word:
+            if not word or _is_pronoun(word):
                 continue
             out.append({
                 "recording_id": rid,

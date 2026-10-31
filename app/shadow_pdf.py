@@ -95,12 +95,20 @@ def _pos_of(word: str) -> str:
     return LEXICON_POS.get(word, "")
 
 
+def _is_pronoun(word: str) -> bool:
+    try:
+        from .llm import is_pronoun
+    except Exception:
+        return False
+    return is_pronoun(word)
+
+
 def _dedup_vocab(segments: list[dict]) -> list[dict]:
     seen, out = set(), []
     for s in segments:
         for v in s.get("vocabulary") or []:
             w = (v.get("word") or "").strip()
-            if w and w not in seen:
+            if w and w not in seen and not _is_pronoun(w):
                 seen.add(w)
                 v = dict(v)
                 v["jyutping"] = space_syllables(v.get("jyutping", ""))

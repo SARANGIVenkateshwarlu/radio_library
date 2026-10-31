@@ -13,6 +13,7 @@ from .grouping import assign_blocks
 from .jyutping_tool import space_syllables, to_jyutping
 from .llm import (
     correct_chain,
+    is_pronoun,
     polish_chain,
     review_chain,
     translate_chain,
@@ -119,12 +120,16 @@ def translate(state: RadioState) -> dict:
         s["english"] = t_chain.invoke(
             {"text": s["corrected"], "context": ctx}).content.strip()
         raw = v_chain.invoke({"text": s["corrected"]}).content.strip()
-        vocab = []
+        vocab, seen = [], set()
         for line in raw.splitlines():
             parts = [p.strip() for p in line.split("|")]
             if len(parts) >= 3:
                 word, jyut = parts[0], space_syllables(parts[1])
                 pos, meaning = (parts[2], parts[3]) if len(parts) >= 4 else ("", parts[2])
+                # skip pronouns and duplicate phrases
+                if not word or is_pronoun(word) or word in seen:
+                    continue
+                seen.add(word)
                 vocab.append({"word": word, "jyutping": jyut,
                               "pos": pos, "meaning": meaning})
         s["vocabulary"] = vocab
