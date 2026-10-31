@@ -10,7 +10,7 @@ from pathlib import Path
 
 from . import asr, cleanup, config, jyutping_validate, library, pdf_gen
 from .grouping import assign_blocks
-from .jyutping_tool import to_jyutping
+from .jyutping_tool import space_syllables, to_jyutping
 from .llm import (
     correct_chain,
     polish_chain,
@@ -123,7 +123,7 @@ def translate(state: RadioState) -> dict:
         for line in raw.splitlines():
             parts = [p.strip() for p in line.split("|")]
             if len(parts) >= 3:
-                word, jyut = parts[0], parts[1]
+                word, jyut = parts[0], space_syllables(parts[1])
                 pos, meaning = (parts[2], parts[3]) if len(parts) >= 4 else ("", parts[2])
                 vocab.append({"word": word, "jyutping": jyut,
                               "pos": pos, "meaning": meaning})

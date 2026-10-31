@@ -60,6 +60,11 @@ def _fallback_convert(text: str) -> str:
     return " ".join(t for t in out if t)
 
 
+def space_syllables(text: str) -> str:
+    """Insert spaces between concatenated LSHK syllables (e.g. giu3zou6 -> giu3 zou6)."""
+    return re.sub(r"([1-6])(?=[a-z])", r"\1 ", text or "").strip()
+
+
 def to_jyutping(text: str) -> str:
     """Convert Cantonese text to Jyutping, one romanisation per character."""
     toks = []

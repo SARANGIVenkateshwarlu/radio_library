@@ -20,6 +20,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from . import config
+from .jyutping_tool import space_syllables
 
 HISTORY_PATH = config.METADATA_DIR / "quiz_history.json"
 STATS_PATH = config.METADATA_DIR / "vocab_stats.json"
@@ -83,6 +84,15 @@ def save_attempt(attempt: dict) -> None:
 # --------------------------------------------------------------------------- #
 # Vocabulary collection
 # --------------------------------------------------------------------------- #
+def _pos_of(word: str) -> str:
+    """Best-effort POS for a word (backfills old transcripts from the lexicon)."""
+    try:
+        from .llm import LEXICON_POS
+    except Exception:
+        return ""
+    return LEXICON_POS.get(word, "")
+
+
 def _entries_from_record(rec: dict) -> list[dict]:
     rid = rec.get("recording_id") or "unknown"
     audio = rec.get("audio_file")
@@ -101,8 +111,8 @@ def _entries_from_record(rec: dict) -> list[dict]:
                 "station": rec.get("station"),
                 "recorded_at": rec.get("recorded_at"),
                 "word": word,
-                "jyutping": v.get("jyutping", ""),
-                "pos": v.get("pos", ""),
+                "jyutping": space_syllables(v.get("jyutping", "")),
+                "pos": v.get("pos", "") or _pos_of(word),
                 "meaning": v.get("meaning", ""),
                 "sentence": sentence,
                 "english": s.get("english", ""),

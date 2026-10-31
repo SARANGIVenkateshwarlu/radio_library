@@ -19,6 +19,8 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
+from .jyutping_tool import space_syllables
+
 PAGE_W, PAGE_H = A4
 MARGIN = 15 * mm
 FONT = "STSong-Light"
@@ -84,6 +86,15 @@ def _chunks(segments: list[dict], seconds: int = 60) -> list[list[dict]]:
     return chunks
 
 
+def _pos_of(word: str) -> str:
+    """Backfill POS for old transcripts from the curated lexicon."""
+    try:
+        from .llm import LEXICON_POS
+    except Exception:
+        return ""
+    return LEXICON_POS.get(word, "")
+
+
 def _dedup_vocab(segments: list[dict]) -> list[dict]:
     seen, out = set(), []
     for s in segments:
@@ -91,6 +102,9 @@ def _dedup_vocab(segments: list[dict]) -> list[dict]:
             w = (v.get("word") or "").strip()
             if w and w not in seen:
                 seen.add(w)
+                v = dict(v)
+                v["jyutping"] = space_syllables(v.get("jyutping", ""))
+                v.setdefault("pos", _pos_of(w) or "—")
                 out.append(v)
     return out
 
