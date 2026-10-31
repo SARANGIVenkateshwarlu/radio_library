@@ -51,6 +51,13 @@ def _styles():
                                textColor=colors.HexColor("#111111")),
         "head": ParagraphStyle("head", fontName=FONT, fontSize=11, leading=14,
                                textColor=colors.HexColor("#2244aa")),
+        # three-line (stacked) segment styles: Cantonese / Jyutping / English
+        "canto": ParagraphStyle("canto", fontName=FONT, fontSize=12, leading=16,
+                                textColor=colors.HexColor("#111111")),
+        "jyut": ParagraphStyle("jyut", fontName=FONT, fontSize=10, leading=13,
+                               textColor=colors.HexColor("#2244aa")),
+        "eng": ParagraphStyle("eng", fontName=FONT, fontSize=10.5, leading=13.5,
+                              textColor=colors.HexColor("#226622")),
     }
 
 
@@ -115,34 +122,35 @@ def build_shadow_pdf(segments: list[dict], audio_name: str, out,
         Spacer(1, 2 * mm),
     ]
 
-    header = [Paragraph("Cantonese 廣東話", st["head"]),
-              Paragraph("Jyutping 粵拼", st["head"]),
-              Paragraph("English 英文", st["head"])]
-
     for i, part in enumerate(parts, 1):
         start = part[0].get("start", 0.0)
         end = max(s.get("end", 0.0) for s in part)
         story.append(Paragraph(f"Part {i} · {_ts(start)} – {_ts(end)}", st["section"]))
-        rows = [header]
+
+        # One segment = three stacked rows (Cantonese / Jyutping / English),
+        # with a thick rule between segments — compact and easy to follow.
+        rows: list[list] = []
         for s in part:
             canto = (s.get("normalized_cantonese") or s.get("corrected")
                      or s.get("cantonese") or "")
-            rows.append([
-                Paragraph(canto, st["cell"]),
-                Paragraph(s.get("jyutping", "") or "", st["cell"]),
-                Paragraph(s.get("english", "") or "", st["cell"]),
-            ])
-        t = Table(rows, colWidths=[40 * mm, 46 * mm, 74 * mm], repeatRows=1)
-        t.setStyle(TableStyle([
-            ("GRID", (0, 0), (-1, -1), 0.4, _RULE),
-            ("BACKGROUND", (0, 0), (-1, 0), _HEAD_BG),
-            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [None, _ALT]),
+            rows.append([Paragraph(canto, st["canto"])])            # row 1
+            rows.append([Paragraph(s.get("jyutping", "") or "", st["jyut"])])  # row 2
+            rows.append([Paragraph(s.get("english", "") or "", st["eng"])])    # row 3
+
+        t = Table(rows, colWidths=[160 * mm])
+        style = [
+            ("GRID", (0, 0), (-1, -1), 0.3, _RULE),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ("LEFTPADDING", (0, 0), (-1, -1), 5),
             ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-            ("TOPPADDING", (0, 0), (-1, -1), 3),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ]))
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("ROWBACKGROUNDS", (0, 0), (-1, -1), [colors.white, _ALT]),
+        ]
+        for j in range(len(part)):      # thick separator above each segment
+            style.append(("LINEABOVE", (0, j * 3), (-1, j * 3), 1.2,
+                          colors.HexColor("#7c2d12")))
+        t.setStyle(TableStyle(style))
         story.append(t)
         story.append(Spacer(1, 4 * mm))
 
