@@ -175,6 +175,7 @@ def show_segments(segments):
         st.markdown("**Vocabulary (全篇詞彙)**")
         st.table([
             {"Word": v["word"], "Jyutping": v.get("jyutping", ""),
+             "POS": v.get("pos", "") or "—",
              "Meaning": v.get("meaning", "")}
             for v in vocab
         ])
@@ -633,6 +634,7 @@ with tab_vocab:
                 links = dict(vocab.dictionary_links(e["word"]))
                 table_rows.append({
                     "Word": e["word"], "Jyutping": e["jyutping"],
+                    "POS": e.get("pos", "") or "—",
                     "Meaning": e["meaning"], "In context": e["sentence"],
                     "words.hk": links["words.hk"],
                     "jyutdictionary.com": links["jyutdictionary.com"],

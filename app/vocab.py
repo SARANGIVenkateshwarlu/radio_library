@@ -102,6 +102,7 @@ def _entries_from_record(rec: dict) -> list[dict]:
                 "recorded_at": rec.get("recorded_at"),
                 "word": word,
                 "jyutping": v.get("jyutping", ""),
+                "pos": v.get("pos", ""),
                 "meaning": v.get("meaning", ""),
                 "sentence": sentence,
                 "english": s.get("english", ""),
@@ -199,9 +200,9 @@ def group_label(entries: list[dict]) -> str:
 def vocab_csv(entries: list[dict]) -> str:
     buf = io.StringIO()
     w = csv.writer(buf)
-    w.writerow(["word", "jyutping", "meaning", "recording_id", "sentence", "english"])
+    w.writerow(["word", "jyutping", "pos", "meaning", "recording_id", "sentence", "english"])
     for e in entries:
-        w.writerow([e["word"], e["jyutping"], e["meaning"],
+        w.writerow([e["word"], e["jyutping"], e.get("pos", ""), e["meaning"],
                     e["recording_id"], e["sentence"], e["english"]])
     return buf.getvalue()
 

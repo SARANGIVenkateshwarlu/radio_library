@@ -122,8 +122,11 @@ def translate(state: RadioState) -> dict:
         vocab = []
         for line in raw.splitlines():
             parts = [p.strip() for p in line.split("|")]
-            if len(parts) == 3:
-                vocab.append({"word": parts[0], "jyutping": parts[1], "meaning": parts[2]})
+            if len(parts) >= 3:
+                word, jyut = parts[0], parts[1]
+                pos, meaning = (parts[2], parts[3]) if len(parts) >= 4 else ("", parts[2])
+                vocab.append({"word": word, "jyutping": jyut,
+                              "pos": pos, "meaning": meaning})
         s["vocabulary"] = vocab
         return s
 

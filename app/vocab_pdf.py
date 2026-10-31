@@ -91,16 +91,18 @@ def build_vocab_pdf(entries: list[dict], out, title: str = "VocabBank 詞彙表"
 
     header = [Paragraph("Word 詞彙", st["head"]),
               Paragraph("Jyutping 粵拼", st["head"]),
+              Paragraph("POS 詞性", st["head"]),
               Paragraph("Meaning 意思", st["head"])]
     data = [header]
     for e in rows_sorted:
         data.append([
             Paragraph(e["word"], st["cell"]),
             Paragraph(e.get("jyutping", ""), st["cell_b"]),
+            Paragraph(e.get("pos", "") or "—", st["cell"]),
             Paragraph(e.get("meaning", ""), st["cell"]),
         ])
 
-    table = Table(data, colWidths=[30 * mm, 46 * mm, 94 * mm], repeatRows=1)
+    table = Table(data, colWidths=[26 * mm, 40 * mm, 24 * mm, 70 * mm], repeatRows=1)
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.4, HexColor("#cccccc")),
         ("BACKGROUND", (0, 0), (-1, 0), HEADER_BG),

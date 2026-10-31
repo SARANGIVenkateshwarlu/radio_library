@@ -175,8 +175,13 @@ prints a red **mock-mode** note and the record stores
 real English.
 
 **Vocabulary rule:** extracted from `LEXICON` (55+ curated Cantonese words with
-Jyutping and meanings) or by the LLM when configured. Extend `LEXICON` whenever
-a new word appears in a transcript.
+Jyutping and meanings) or by the LLM when configured. The LLM is instructed to
+cover the main **word classes — verbs, adverbs, prepositions, conjunctions,
+nouns, adjectives, particles — plus common spoken Hong Kong phrases/idioms**,
+and to return a **part-of-speech (POS)** label per item (`word | jyutping | pos |
+meaning`). Every vocab table across the app (transcript PDF, VocabBank, dictionary
+PDF, shadowing notes) shows the POS column. Extend `LEXICON` whenever a new word
+appears in a transcript.
 
 **ASR rule:** real recordings use faster-whisper (`app/asr.py`,
 `WHISPER_MODEL=base` default; use `small`/`medium` for better Cantonese
@@ -344,7 +349,7 @@ PDF) alongside raw **Entries** (word mentions across sessions, duplicates
 counted). Sections:
 
 - **Browse by session** — dropdown of groups (labelled by MP3 file name); a
-  table of word / Jyutping / meaning / in-context for the selected session,
+  table of word / Jyutping / POS / meaning / in-context for the selected session,
   plus **three dictionary links** per word (words.hk, jyutdictionary.com,
   cantowords.com) for meaning, Jyutping and examples. Export any session or all
   as **CSV**, or download the **whole bank as a dictionary-style PDF**

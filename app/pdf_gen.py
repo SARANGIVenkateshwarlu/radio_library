@@ -135,9 +135,10 @@ def generate_pdf(record: dict, out_path: str | Path) -> str:
         story.append(Paragraph("<b>Vocabulary (全篇詞彙):</b>", TITLE.clone(
             "vocab_head", fontSize=13, leading=18)))
         story.append(Spacer(1, 2 * mm))
-        data = [["Word", "Jyutping", "Meaning"]]
-        data += [[v["word"], v.get("jyutping", ""), v.get("meaning", "")] for v in vocab]
-        table = Table(data, colWidths=[32 * mm, 38 * mm, 100 * mm], repeatRows=1)
+        data = [["Word", "Jyutping", "POS", "Meaning"]]
+        data += [[v["word"], v.get("jyutping", ""), v.get("pos", "") or "—",
+                  v.get("meaning", "")] for v in vocab]
+        table = Table(data, colWidths=[28 * mm, 36 * mm, 24 * mm, 72 * mm], repeatRows=1)
         table.setStyle(TableStyle([
             ("FONTNAME", (0, 0), (-1, -1), "STSong-Light"),
             ("FONTSIZE", (0, 0), (-1, -1), 10),

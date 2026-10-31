@@ -100,10 +100,14 @@ TRANSLATE_PROMPT = ChatPromptTemplate.from_messages([
 VOCAB_PROMPT = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
     ("human",
-     "From the Cantonese sentence below, extract up to 3 useful vocabulary items "
-     "for a learner. Use LSHK Jyutping (tone numbers 1-6 at the end of every "
-     "syllable). Output one per line, exactly: word | jyutping | english meaning. "
-     "No other text.\n\n句子：{text}"),
+     "From the Cantonese sentence below, extract up to 4 useful vocabulary items "
+     "for a learner. Cover the main word classes: verbs, adverbs, prepositions, "
+     "conjunctions, nouns, adjectives, particles, and common spoken Hong Kong "
+     "phrases/idioms. Use LSHK Jyutping (tone numbers 1-6 at the end of every "
+     "syllable). Output one item per line, exactly in this format: "
+     "word | jyutping | part_of_speech | english meaning. part_of_speech is a "
+     "short English label (verb, adverb, preposition, conjunction, noun, "
+     "adjective, particle, phrase). No other text.\n\n句子：{text}"),
 ])
 
 GROUP_PROMPT = ChatPromptTemplate.from_template(
@@ -279,7 +283,8 @@ def _mock_vocab(source_text: str) -> str:
             continue
         seen.add(w)
         jyut, eng = LEXICON[w]
-        lines.append(f"{w} | {jyut} | {eng}")
+        # offline mock keeps the 4-field format (POS left blank -> shown as "—")
+        lines.append(f"{w} | {jyut} |  | {eng}")
         if len(lines) >= 4:
             break
     return "\n".join(lines) or "（無）"

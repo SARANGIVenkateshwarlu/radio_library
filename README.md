@@ -304,10 +304,11 @@ header reports **Unique words** (distinct word+Jyutping — matches the dictiona
 PDF) and **Entries** (mentions across sessions):
 
 - **Browse by session** — pick a recording from a dropdown and see its words
-  (word / Jyutping / meaning / context), each with **three dictionary links**
-  (words.hk, jyutdictionary.com, cantowords.com); export a session or all as
-  **CSV**, or download the **whole bank as a dictionary-style PDF**
-  (Word | Jyutping | Meaning, sorted by Jyutping).
+  (word / Jyutping / **POS** / meaning / context), each with **three dictionary
+  links** (words.hk, jyutdictionary.com, cantowords.com); export a session or
+  all as **CSV**, or download the **whole bank as a dictionary-style PDF**
+  (Word | Jyutping | POS | Meaning, sorted by Jyutping). Vocabulary covers
+  verbs, adverbs, prepositions, conjunctions, particles and spoken phrases.
 - **Quick quiz** — Jyutping-only (no Chinese characters). 6–10 questions mixing
   *Jyutping → meaning* and *meaning → Jyutping*, at ~70% reviewed + ~30% new,
   one idea per question, plausible distractors. Immediate feedback includes the

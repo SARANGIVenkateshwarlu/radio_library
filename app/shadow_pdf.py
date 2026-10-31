@@ -159,15 +159,17 @@ def build_shadow_pdf(segments: list[dict], audio_name: str, out,
         story.append(Paragraph("Vocabulary 詞彙表", st["section"]))
         vheader = [Paragraph("Cantonese 中文", st["head"]),
                    Paragraph("Jyutping 粵拼", st["head"]),
+                   Paragraph("POS 詞性", st["head"]),
                    Paragraph("English 意思", st["head"])]
         vrows = [vheader]
         for v in vocab:
             vrows.append([
                 Paragraph(v.get("word", ""), st["cell"]),
                 Paragraph(v.get("jyutping", "") or "", st["cell"]),
+                Paragraph(v.get("pos", "") or "—", st["cell"]),
                 Paragraph(v.get("meaning", "") or "", st["cell"]),
             ])
-        vt = Table(vrows, colWidths=[40 * mm, 46 * mm, 74 * mm], repeatRows=1)
+        vt = Table(vrows, colWidths=[34 * mm, 42 * mm, 24 * mm, 60 * mm], repeatRows=1)
         vt.setStyle(TableStyle([
             ("GRID", (0, 0), (-1, -1), 0.4, _RULE),
             ("BACKGROUND", (0, 0), (-1, 0), _HEAD_BG),
