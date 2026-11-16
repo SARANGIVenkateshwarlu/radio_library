@@ -371,8 +371,9 @@ Cantonese speech. A working **free baseline** uses Microsoft Edge `zh-HK`
 neural voices (HiuGaai / HiuMaan / WanLung) via `edge-tts` — **no GPU, no API
 key** — with speed/pitch control and MP3 download; the LSHK Jyutping reading is
 shown. A **🎤 Pronunciation test** sub-tab scores your reading: hear the reference,
-record yourself, and get **character accuracy + tone accuracy + overall score**
-(local Whisper ASR + LSHK Jyutping tone comparison). A **📈 Tone graph** sub-tab
+record yourself, and get **character accuracy + tone accuracy + rhythm +
+fluency + overall score** (local Whisper ASR + LSHK Jyutping tones, compared only
+on characters that align with the target). A **📈 Tone graph** sub-tab
 is a **pitch-monitor dashboard**: live Hz readout, learner-vs-reference contour
 aligned by syllable, and a relative-deviation meter, in *speaker-normalised
 semitones* or *raw Hz*. A **Waveform + contour** view compares the **wave

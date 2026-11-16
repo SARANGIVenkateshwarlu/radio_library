@@ -1107,7 +1107,8 @@ with tab_voice:
     with test_tab:
         st.markdown("Practice a sentence and get an instant **pronunciation "
                     "score** — the local Whisper model transcribes your speech, "
-                    "then we compare characters **and tones** (LSHK Jyutping).")
+                    "then we compare characters **and tones** (LSHK Jyutping), "
+                    "plus **rhythm** and **fluency**.")
         presets = [
             "今日天氣好好，不如我哋去飲茶？",
             "唔該，呢班車去唔去中環？",
@@ -1146,13 +1147,19 @@ with tab_voice:
                 result = None
                 st.error(f"Could not score: {exc}")
             if result:
-                s1, s2, s3 = st.columns(3)
+                s1, s2, s3, s4, s5 = st.columns(5)
                 s1.metric("Overall score", f"{result['score']}%")
                 s2.metric("Character accuracy", f"{result['char_accuracy']}%")
                 s3.metric("Tone accuracy", f"{result['tone_accuracy']}%")
+                s4.metric("Rhythm", f"{result['rhythm']}%")
+                s5.metric("Fluency", f"{result['fluency']}%")
                 st.markdown(f"**Heard (ASR):** {result['spoken']}")
                 st.caption(f"Target tones: `{result['target_tones']}`  ·  "
-                           f"Heard tones: `{result['spoken_tones']}`")
+                           f"Heard tones: `{result['spoken_tones']}`  ·  "
+                           f"Duration: {result['duration_s']}s")
+                st.caption("Tone accuracy compares only the characters that "
+                           "**match** the target, so a small slip (one extra or "
+                           "missing word) no longer collapses the score.")
                 if result["differences"]:
                     st.dataframe(result["differences"], width="stretch")
                 else:
@@ -1263,11 +1270,15 @@ with tab_tutor:
                         rp = f.name
                     with st.spinner("Scoring (first run loads Whisper)…"):
                         r = pronunciation.evaluate(target, rp)
-                    s1, s2, s3 = st.columns(3)
+                    s1, s2, s3, s4, s5 = st.columns(5)
                     s1.metric("Score", f"{r['score']}%")
                     s2.metric("Character", f"{r['char_accuracy']}%")
                     s3.metric("Tone", f"{r['tone_accuracy']}%")
+                    s4.metric("Rhythm", f"{r['rhythm']}%")
+                    s5.metric("Fluency", f"{r['fluency']}%")
                     st.markdown(f"**Heard:** {r['spoken']}")
+                    st.caption(f"Duration: {r['duration_s']}s  ·  "
+                               f"tones: `{r['target_tones']}` → `{r['spoken_tones']}`")
 
     # --- phrasebook ------------------------------------------------------------------
     with st.expander("📖 Phrasebook 詞彙簿", expanded=False):

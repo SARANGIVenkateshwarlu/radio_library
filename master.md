@@ -441,9 +441,12 @@ comparison, architecture, data strategy, training, evaluation, deployment,
   GPU and no API key** (`edge-tts`, `app/cantonevoice.py`).
 - **🎤 Pronunciation test** — read a target sentence; hear the reference (Edge
   zh-HK), record yourself, and get an instant score: **character accuracy**
-  (local Whisper ASR vs target), **tone accuracy** (LSHK Jyutping tones 1–6),
-  and an overall score, with a character-difference table. Logic in
-  `app/pronunciation.py`.
+  (local Whisper ASR vs target), **tone accuracy** (LSHK Jyutping tones 1–6,
+  compared **only on characters that align** with the target so one extra or
+  missing word no longer collapses the score), **rhythm** (syllables/second
+  within a natural Cantonese band), **fluency** (pause ratio between ASR
+  segments) and a weighted overall score, with a character-difference table.
+  Logic in `app/pronunciation.py`.
 - **📈 Tone graph (pitch-monitor dashboard)** — record a sentence and see a
   **live frequency readout**, a **learner-vs-reference contour aligned by
   syllable**, and a **relative-deviation meter** (learner − reference). Two
