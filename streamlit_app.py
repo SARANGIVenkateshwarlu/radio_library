@@ -1139,27 +1139,81 @@ with tab_voice:
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
                 f.write(data)
                 rec_path = f.name
+            ref_path = None
+            ref_bytes = st.session_state.get("pt_ref_audio")
+            if ref_bytes:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f:
+                    f.write(ref_bytes)
+                    ref_path = f.name
             try:
                 with st.spinner("Scoring your pronunciation (first run loads the "
                                 "Whisper model)…"):
-                    result = pronunciation.evaluate(target, rec_path)
+                    result = pronunciation.evaluate(target, rec_path,
+                                                    reference_audio=ref_path)
             except Exception as exc:
                 result = None
                 st.error(f"Could not score: {exc}")
             if result:
-                s1, s2, s3, s4, s5 = st.columns(5)
+                s1, s2, s3, s4 = st.columns(4)
                 s1.metric("Overall score", f"{result['score']}%")
                 s2.metric("Character accuracy", f"{result['char_accuracy']}%")
                 s3.metric("Tone accuracy", f"{result['tone_accuracy']}%")
-                s4.metric("Rhythm", f"{result['rhythm']}%")
-                s5.metric("Fluency", f"{result['fluency']}%")
+                p = result["pitch_accuracy"]
+                s4.metric("Pitch (F0)", f"{p}%" if p is not None else "—")
+                t1, t2, t3 = st.columns(3)
+                t1.metric("Rhythm", f"{result['rhythm']}%")
+                t2.metric("Fluency", f"{result['fluency']}%")
+                t3.metric("Duration", f"{result['duration_s']}s")
                 st.markdown(f"**Heard (ASR):** {result['spoken']}")
                 st.caption(f"Target tones: `{result['target_tones']}`  ·  "
-                           f"Heard tones: `{result['spoken_tones']}`  ·  "
-                           f"Duration: {result['duration_s']}s")
+                           f"Heard tones: `{result['spoken_tones']}`")
                 st.caption("Tone accuracy compares only the characters that "
                            "**match** the target, so a small slip (one extra or "
                            "missing word) no longer collapses the score.")
+
+                if p is not None:
+                    if result["pitch_mode"] == "reference":
+                        src = "the reference voice you played above"
+                        unit_txt = ("in **semitones relative to each speaker's "
+                                    "median F0**")
+                    else:
+                        src = ("the ideal LSHK tone templates — click "
+                               "**🔊 Hear reference** first for a like-for-like "
+                               "comparison with the reference voice")
+                        unit_txt = ("on **your own 1–5 pitch range** (level "
+                                    "tones are judged on register, rising/falling "
+                                    "tones on direction)")
+                    lhz = result.get("learner_f0_hz")
+                    st.caption(
+                        f"**Pitch (F0) accuracy** compares the tone modulation "
+                        f"against {src}. Pitch is measured {unit_txt}"
+                        + (f" — your median F0 is {lhz} Hz" if lhz else "")
+                        + ", so a different voice type (male/female) is **not** "
+                        "penalised for a different absolute frequency.")
+                with st.expander("🎚️ Pitch (F0) detail 音高細節", expanded=False):
+                    if result.get("pitch_syllables"):
+                        unit = result.get("pitch_unit") or ""
+                        st.dataframe(
+                            [{"Char": r["char"], "Jyutping": r["jyutping"],
+                              "Tone": r["tone"],
+                              f"Expected ({unit})": r["expected"],
+                              f"Measured ({unit})": r["measured"],
+                              "Direction": r["measured_dir"],
+                              f"Offset ({unit})": r["deviation"],
+                              "Accuracy": (f"{r['accuracy']}/100"
+                                           if r["accuracy"] is not None else "—"),
+                              "Verdict": r["verdict"]}
+                             for r in result["pitch_syllables"]],
+                            width="stretch")
+                        st.caption(
+                            f"Median F0 — you: "
+                            f"{result.get('learner_f0_hz') or '—'} Hz · reference: "
+                            f"{result.get('reference_f0_hz') or '—'} Hz · register "
+                            f"shift: {result.get('register_shift_st') or '—'} st "
+                            f"(informational only; not penalised).")
+                    else:
+                        st.caption("Pitch could not be measured for this take "
+                                   "(too short, silent, or ffmpeg/numpy missing).")
                 if result["differences"]:
                     st.dataframe(result["differences"], width="stretch")
                 else:
@@ -1270,15 +1324,31 @@ with tab_tutor:
                         rp = f.name
                     with st.spinner("Scoring (first run loads Whisper)…"):
                         r = pronunciation.evaluate(target, rp)
-                    s1, s2, s3, s4, s5 = st.columns(5)
+                    s1, s2, s3, s4, s5, s6 = st.columns(6)
                     s1.metric("Score", f"{r['score']}%")
                     s2.metric("Character", f"{r['char_accuracy']}%")
                     s3.metric("Tone", f"{r['tone_accuracy']}%")
-                    s4.metric("Rhythm", f"{r['rhythm']}%")
-                    s5.metric("Fluency", f"{r['fluency']}%")
+                    pv = r["pitch_accuracy"]
+                    s4.metric("Pitch (F0)", f"{pv}%" if pv is not None else "—")
+                    s5.metric("Rhythm", f"{r['rhythm']}%")
+                    s6.metric("Fluency", f"{r['fluency']}%")
                     st.markdown(f"**Heard:** {r['spoken']}")
                     st.caption(f"Duration: {r['duration_s']}s  ·  "
                                f"tones: `{r['target_tones']}` → `{r['spoken_tones']}`")
+                    if r.get("pitch_syllables"):
+                        unit = r.get("pitch_unit") or ""
+                        with st.expander("🎚️ Pitch (F0) detail", expanded=False):
+                            st.dataframe(
+                                [{"Char": x["char"], "Tone": x["tone"],
+                                  f"Expected ({unit})": x["expected"],
+                                  f"Measured ({unit})": x["measured"],
+                                  f"Offset ({unit})": x["deviation"],
+                                  "Verdict": x["verdict"]}
+                                 for x in r["pitch_syllables"]],
+                                width="stretch")
+                            st.caption("Pitch is scored on your own pitch range "
+                                       "(levels) or in semitones vs the reference "
+                                       "— absolute Hz is never compared.")
 
     # --- phrasebook ------------------------------------------------------------------
     with st.expander("📖 Phrasebook 詞彙簿", expanded=False):

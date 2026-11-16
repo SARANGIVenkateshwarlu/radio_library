@@ -358,6 +358,164 @@ def build_dashboard(target_text: str, learner_audio: str,
     return result, render_dashboard(result)
 
 
+def _dir_name(a: float | None, b: float | None, deadband: float = 0.7) -> str:
+    if a is None or b is None:
+        return "—"
+    d = b - a
+    return "rising" if d > deadband else "falling" if d < -deadband else "flat"
+
+
+def pitch_accuracy(target_text: str, learner_audio: str,
+                   reference_audio: str | None = None,
+                   windows: list[dict] | None = None,
+                   ref_windows: list[dict] | None = None) -> dict:
+    """Speaker-normalised **pitch (F0) accuracy** for a spoken sentence.
+
+    Answers "is the tone modulation right?":
+
+    * Every speaker has a different absolute register (a male ~110 Hz, a female
+      ~210 Hz), so matching raw Hz is neither the goal nor meaningful. The
+      learner's F0 is compared with the reference in **semitones relative to
+      each speaker's median F0** (a male and a female voice can both score 100).
+    * Without ``reference_audio`` the learner's F0 is calibrated to their own
+      1–5 pitch range (10th–90th percentile, like the tone graph) and compared
+      with the ideal LSHK tone templates (T1 high level, T2 rising, T3 mid
+      level, T4 low falling, T5 low rising, T6 low level).
+    * Per syllable: level/register penalty + contour correlation + direction
+      agreement. Syllables are aligned proportionally over each recording's
+      voiced span, so the two takes line up without needing word timestamps.
+
+    Returns ``score`` (0–100 or None), ``mode`` (``reference`` /
+    ``tone-template``), ``unit`` (``st`` / ``level``), speaker medians in Hz,
+    the register shift between the two voices (information only — never
+    penalised) and per-syllable rows.
+    """
+    sr = 16000
+    syl = _syllables(target_text)
+    chars = [c for c in target_text if "\u3400" <= c <= "\u9fff"]
+    if not syl:
+        syl, chars = [{"jyutping": "", "tone": 0}], [""]
+    n = len(syl)
+
+    lsamples = _decode(learner_audio, sr)
+    lt, lf0 = extract_f0(lsamples, sr)
+    l_base = baseline(lf0)
+    l_sem = to_semitones(lf0, l_base)
+    l_lev = _levels(lf0)
+
+    use_ref = bool(reference_audio)
+    r_base = None
+    if use_ref:
+        try:
+            rsamples = _decode(reference_audio, sr)
+            rt, rf0 = extract_f0(rsamples, sr)
+            r_base = baseline(rf0)
+            r_sem = to_semitones(rf0, r_base)
+            r_lev = _levels(rf0)
+            if r_base is None:
+                use_ref = False
+        except Exception:
+            use_ref = False
+
+    # Align by proportion of each take's voiced span (never raw Hz/silence).
+    l0, l1 = _voiced_span(lt, l_sem if use_ref else l_lev)
+    lspans = _spans(lt, n, windows, l0, l1)
+    if use_ref:
+        r0, r1 = _voiced_span(rt, r_sem)
+        rspans = _spans(rt, n, ref_windows, r0, r1)
+
+    unit = "st" if use_ref else "level"
+    deadband = 0.7 if use_ref else 0.6
+    level_scale = 6.0 if use_ref else 2.5
+
+    # pass 1: sample per-syllable contours
+    sampled = []
+    for i, s in enumerate(syl):
+        if use_ref:
+            lp = _sample(lt, l_sem, lspans[i][0], lspans[i][1], 12)
+            rp = _sample(rt, r_sem, rspans[i][0], rspans[i][1], 12)
+        else:
+            lp = _sample(lt, l_lev, lspans[i][0], lspans[i][1], 12)
+            tpl = TONES.get(s["tone"])
+            rp = np.linspace(tpl[0], tpl[1], 12) if tpl else np.full(12, np.nan)
+        m = np.isfinite(lp) & np.isfinite(rp)
+        sampled.append((lp, rp, m))
+
+    # template mode: remove the sentence-wide offset (calibration / natural
+    # declination), so only the *relative* tone shape is judged
+    l_off = r_off = 0.0
+    if not use_ref:
+        lmeans = [float(lp[m].mean()) for lp, _rp, m in sampled if m.sum() >= 3]
+        rmeans = [float(rp[m].mean()) for _lp, rp, m in sampled if m.sum() >= 3]
+        l_off = float(np.mean(lmeans)) if lmeans else 0.0
+        r_off = float(np.mean(rmeans)) if rmeans else 0.0
+
+    rows, scores = [], []
+    for i, s in enumerate(syl):
+        lp, rp, m = sampled[i]
+        score = dev = ua = ub = ea = eb = None
+        if m.sum() >= 3:
+            k = max(1, int(m.sum()) // 3)
+            ua, ub = float(lp[m][:k].mean()), float(lp[m][-k:].mean())
+            ea, eb = float(rp[m][:k].mean()), float(rp[m][-k:].mean())
+            dev = float(lp[m].mean() - rp[m].mean()) - l_off + r_off
+            reg = max(0.0, 1.0 - abs(dev) / level_scale)
+            measured_dir = _dir_name(ua, ub, deadband)
+            expected_dir = _dir_name(ea, eb, deadband)
+            if use_ref:
+                c = _corr(lp, rp)
+                dir_match = 1.0 if measured_dir == expected_dir else 0.0
+                score = 100 * (0.5 * reg
+                               + 0.3 * max(0.0, c if c is not None else 0.0)
+                               + 0.2 * dir_match)
+            elif expected_dir == "flat":
+                # level tones (1/3/6) are judged on register, not on a flat line
+                score = 100 * reg
+            else:
+                dir_match = 1.0 if measured_dir == expected_dir else 0.0
+                score = 100 * (0.6 * reg + 0.4 * dir_match)
+            scores.append(score)
+        else:
+            measured_dir = expected_dir = "—"
+
+        if score is None:
+            verdict = "no voiced pitch"
+        elif expected_dir != "—" and measured_dir != expected_dir \
+                and expected_dir != "flat":
+            verdict = f"should be {expected_dir}"
+        elif abs(dev or 0) <= level_scale / 3:
+            verdict = "matches"
+        elif (dev or 0) > 0:
+            verdict = "too high"
+        else:
+            verdict = "too low"
+
+        rows.append({
+            "char": chars[i] if i < len(chars) else "", "jyutping": s["jyutping"],
+            "tone": s["tone"], "tone_name": TONE_NAMES.get(s["tone"], ""),
+            "expected": f"{ea:.1f} → {eb:.1f}" if ea is not None else "—",
+            "measured": f"{ua:.1f} → {ub:.1f}" if ua is not None else "—",
+            "measured_dir": measured_dir, "expected_dir": expected_dir,
+            "deviation": round(dev, 2) if dev is not None else None,
+            "accuracy": round(score) if score is not None else None,
+            "verdict": verdict,
+        })
+
+    shift = None
+    if l_base and r_base:
+        shift = round(12 * float(np.log2(l_base / r_base)), 1)
+
+    return {
+        "score": round(float(np.mean(scores))) if scores else None,
+        "mode": "reference" if use_ref else "tone-template",
+        "unit": unit,
+        "learner_hz": round(l_base, 1) if l_base else None,
+        "reference_hz": round(r_base, 1) if r_base else None,
+        "register_shift_st": shift,
+        "syllables": rows,
+    }
+
+
 def render_wave(result: dict) -> bytes:
     """Waveform-distribution view: amplitude (ref vs learner) + pitch contour
     with high/mid/low tone registers, aligned by syllable."""

@@ -443,10 +443,15 @@ comparison, architecture, data strategy, training, evaluation, deployment,
   zh-HK), record yourself, and get an instant score: **character accuracy**
   (local Whisper ASR vs target), **tone accuracy** (LSHK Jyutping tones 1–6,
   compared **only on characters that align** with the target so one extra or
-  missing word no longer collapses the score), **rhythm** (syllables/second
-  within a natural Cantonese band), **fluency** (pause ratio between ASR
-  segments) and a weighted overall score, with a character-difference table.
-  Logic in `app/pronunciation.py`.
+  missing word no longer collapses the score), **pitch/F0 accuracy** (the tone
+  **modulation**: the learner's F0 contour, normalised to semitones relative to
+  their own median pitch, compared syllable-by-syllable with the reference
+  voice — or with LSHK tone templates when no reference was played; absolute
+  Hz is reported but never required to match, since male/female registers
+  differ), **rhythm** (syllables/second within a natural Cantonese band),
+  **fluency** (pause ratio between ASR segments) and a weighted overall score,
+  with character-difference and per-syllable pitch tables. Logic in
+  `app/pronunciation.py` + `app/voice_graph.py`.
 - **📈 Tone graph (pitch-monitor dashboard)** — record a sentence and see a
   **live frequency readout**, a **learner-vs-reference contour aligned by
   syllable**, and a **relative-deviation meter** (learner − reference). Two

@@ -7,9 +7,18 @@ transcribes your speech and we compare it with the target:
 * **Tone accuracy** — LSHK Jyutping tones compared **only on matched
   characters** (character-aligned), so a single insertion/deletion no longer
   collapses the score (the old positional compare did).
+* **Pitch (F0) accuracy** — the tone **modulation**: the learner's pitch
+  contour is extracted (autocorrelation) and compared syllable by syllable
+  with the reference voice (`reference_audio`) in semitones relative to each
+  speaker's median F0, or — if no reference was played — with the ideal LSHK
+  tone templates on the learner's own 1–5 pitch range (level tones judged on
+  register, rising/falling tones on direction). Raw Hz is reported for
+  information only: a correct reading does **not** need to match the
+  reference's absolute frequency, only its relative rises/falls/levels.
 * **Rhythm** — speech rate (syllables/second) within a natural Cantonese band.
 * **Fluency** — proportion of silence/pauses between ASR segments.
-* **Overall** — weighted sub-scores (0.4 char + 0.4 tone + 0.1 rhythm + 0.1 fluency).
+* **Overall** — weighted sub-scores (0.35 char + 0.25 tone + 0.2 pitch
+  + 0.1 rhythm + 0.1 fluency; weights renormalise when pitch is unavailable).
 
 Tones come from the dictionary (authoritative HK reading) per the project's
 hardbound rule — never from the LLM.
@@ -92,8 +101,14 @@ def _aligned_tone_accuracy(target_chars: list[str],
     return (hits / total if total else 0.0), t_tones, s_tones
 
 
-def evaluate(target_text: str, audio_path: str) -> dict:
-    """Score a recorded reading against ``target_text``."""
+def evaluate(target_text: str, audio_path: str,
+             reference_audio: str | None = None) -> dict:
+    """Score a recorded reading against ``target_text``.
+
+    ``reference_audio`` (optional) is a recording of the same sentence — usually
+    the Edge ``zh-HK`` reference voice — used for a like-for-like pitch
+    comparison. Without it the LSHK tone templates are used instead.
+    """
     segs = _get_asr().transcribe(audio_path)
     spoken = "".join(s.get("cantonese", "") for s in segs).strip()
 
@@ -120,17 +135,34 @@ def evaluate(target_text: str, audio_path: str) -> dict:
     pause_ratio = (pause / duration) if duration > 0 else 0.0
     fluency = max(0.0, min(1.0, 1.0 - pause_ratio / 0.5))
 
-    # rhythm: syllables per second within a natural Cantonese band (2.5-7.5)
+    # rhythm: syllables per second within a natural Cantonese band (2.0-7.5)
     rate = (len(spoken_chars) / duration) if duration > 0 else 0.0
     if rate <= 0:
         rhythm = 0.0
-    elif 2.5 <= rate <= 7.5:
+    elif 2.0 <= rate <= 7.5:
         rhythm = 1.0
     else:
-        rhythm = max(0.0, 1.0 - abs(rate - 5.0) / 5.0)
+        rhythm = max(0.0, 1.0 - abs(rate - 4.5) / 4.5)
 
-    score = round(100 * (0.4 * char_acc + 0.4 * tone_acc
-                         + 0.1 * rhythm + 0.1 * fluency))
+    # pitch (F0): does the tone modulation rise/fall/level at the right
+    # relative frequency? Speaker-normalised, so a different voice type cannot
+    # be penalised for a different absolute register.
+    pitch = None
+    try:
+        from . import voice_graph
+
+        pitch = voice_graph.pitch_accuracy(
+            target_text, audio_path, reference_audio=reference_audio)
+    except Exception:
+        pitch = None
+    pitch_score = pitch.get("score") if pitch else None
+
+    parts = [("char", char_acc, 0.35), ("tone", tone_acc, 0.25),
+             ("rhythm", rhythm, 0.10), ("fluency", fluency, 0.10)]
+    if pitch_score is not None:
+        parts.append(("pitch", pitch_score / 100.0, 0.20))
+    total_w = sum(w for _, _, w in parts)
+    score = round(100 * sum(v * w for _, v, w in parts) / total_w)
 
     differences = []
     sm = difflib.SequenceMatcher(None, target_norm, spoken_norm)
@@ -144,6 +176,13 @@ def evaluate(target_text: str, audio_path: str) -> dict:
         "spoken": spoken or "(nothing recognised)",
         "char_accuracy": round(char_acc * 100),
         "tone_accuracy": round(tone_acc * 100),
+        "pitch_accuracy": pitch_score,
+        "pitch_mode": pitch.get("mode") if pitch else None,
+        "pitch_unit": pitch.get("unit") if pitch else None,
+        "pitch_syllables": pitch.get("syllables") if pitch else [],
+        "learner_f0_hz": pitch.get("learner_hz") if pitch else None,
+        "reference_f0_hz": pitch.get("reference_hz") if pitch else None,
+        "register_shift_st": pitch.get("register_shift_st") if pitch else None,
         "rhythm": round(rhythm * 100),
         "fluency": round(fluency * 100),
         "score": score,
