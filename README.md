@@ -374,7 +374,10 @@ shown. A **🎤 Pronunciation test** sub-tab scores your reading: hear the refer
 record yourself, and get **character accuracy + tone accuracy + pitch (F0) +
 rhythm + fluency + overall score** (local Whisper ASR, LSHK Jyutping tones
 compared only on characters that align, and speaker-normalised pitch contours
-compared in semitones so a different voice type is not penalised). A **📈 Tone
+compared in semitones so a different voice type is not penalised). **Tone
+minimal pairs** (識 `sik1`/食 `sik6`, 買 `maai5`/賣 `maai6`, 史 `si2`/時 `si4`)
+load a practice sentence in one click; `python
+tests/test_pronunciation_pairs.py` re-checks the readings and scores. A **📈 Tone
 graph** sub-tab
 is a **pitch-monitor dashboard**: live Hz readout, learner-vs-reference contour
 aligned by syllable, and a relative-deviation meter, in *speaker-normalised

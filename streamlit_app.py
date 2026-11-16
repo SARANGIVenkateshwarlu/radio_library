@@ -1122,6 +1122,18 @@ with tab_voice:
         target = t1.text_area("Target sentence 目標句子", value=presets[0],
                               height=100, key="pt_text")
 
+        pairs = pronunciation.minimal_pairs()
+        p1, p2 = st.columns([3, 1])
+        pair_idx = p1.selectbox(
+            "Tone minimal pairs 聲調對立練習", range(len(pairs)),
+            format_func=lambda i: pairs[i]["label"], key="pt_pair")
+        selected_pair = pairs[pair_idx]
+        p1.caption(f"`{selected_pair['jyutping']}` — "
+                   f"{selected_pair['english']}")
+        p2.button("Use pair 用對立句", key="pt_use_pair",
+                  on_click=lambda s=selected_pair["sentence"]:
+                  st.session_state.update({"pt_text": s}))
+
         vc = st.selectbox("Reference voice 參考聲音", list(cantonevoice.VOICES),
                           format_func=lambda v: cantonevoice.VOICES[v], key="pt_voice")
         ref_c1, ref_c2 = st.columns(2)

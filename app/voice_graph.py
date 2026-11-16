@@ -78,6 +78,16 @@ def extract_f0(x: np.ndarray, sr: int = 16000, frame=0.04, hop=0.01,
     return np.array(times), np.array(f0)
 
 
+def speech_span(audio_path: str, threshold: float = 0.05) -> tuple[float, float]:
+    """First/last non-silent time (RMS envelope) — the actual speaking span."""
+    x = _decode(audio_path)
+    t, env = _envelope(x)
+    idx = np.where(env > threshold)[0]
+    if idx.size < 2:
+        return 0.0, float(t[-1]) if t.size else 0.0
+    return float(t[idx[0]]), float(t[idx[-1]])
+
+
 def _levels(f0: np.ndarray) -> np.ndarray:
     """Map Hz -> 1..5 relative pitch, calibrated to the speaker's range."""
     voiced = f0[np.isfinite(f0)]
@@ -442,13 +452,15 @@ def pitch_accuracy(target_text: str, learner_audio: str,
         sampled.append((lp, rp, m))
 
     # template mode: remove the sentence-wide offset (calibration / natural
-    # declination), so only the *relative* tone shape is judged
+    # declination), so only the *relative* tone shape is judged (needs >= 2
+    # syllables for the register comparison to be meaningful)
     l_off = r_off = 0.0
     if not use_ref:
         lmeans = [float(lp[m].mean()) for lp, _rp, m in sampled if m.sum() >= 3]
         rmeans = [float(rp[m].mean()) for _lp, rp, m in sampled if m.sum() >= 3]
-        l_off = float(np.mean(lmeans)) if lmeans else 0.0
-        r_off = float(np.mean(rmeans)) if rmeans else 0.0
+        if len(lmeans) >= 2:
+            l_off = float(np.mean(lmeans))
+            r_off = float(np.mean(rmeans))
 
     rows, scores = [], []
     for i, s in enumerate(syl):
@@ -495,6 +507,8 @@ def pitch_accuracy(target_text: str, learner_audio: str,
             "tone": s["tone"], "tone_name": TONE_NAMES.get(s["tone"], ""),
             "expected": f"{ea:.1f} → {eb:.1f}" if ea is not None else "—",
             "measured": f"{ua:.1f} → {ub:.1f}" if ua is not None else "—",
+            "expected_start": ea, "expected_end": eb,
+            "measured_start": ua, "measured_end": ub,
             "measured_dir": measured_dir, "expected_dir": expected_dir,
             "deviation": round(dev, 2) if dev is not None else None,
             "accuracy": round(score) if score is not None else None,

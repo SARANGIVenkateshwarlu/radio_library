@@ -34,6 +34,27 @@ _KEEP = re.compile(r"[\u3400-\u9fff0-9A-Za-z]")
 _CJK = re.compile(r"[\u3400-\u9fff]")
 _TONE = re.compile(r"([1-6])$")
 
+# Tone minimal pairs for focused practice. Readings are **derived from the
+# dictionary at runtime** (`minimal_pairs()`), never hard-coded, per the
+# hardbound HK-Cantonese Jyutping rule.
+MINIMAL_PAIRS = [
+    {
+        "words": [("識", "to know"), ("食", "to eat")],
+        "sentence": "我識食",
+        "english": "I know good food (I know how to eat)",
+    },
+    {
+        "words": [("買", "to buy"), ("賣", "to sell")],
+        "sentence": "我買你賣",
+        "english": "I buy, you sell",
+    },
+    {
+        "words": [("史", "history"), ("時", "time")],
+        "sentence": "我時時讀歷史",
+        "english": "I study history all the time",
+    },
+]
+
 _asr = None
 
 
@@ -58,6 +79,27 @@ def _get_asr():
 
         _asr = asr.get_asr(mock=False)
     return _asr
+
+
+def minimal_pairs() -> list[dict]:
+    """Minimal-pair practice sets with **dictionary-derived** LSHK Jyutping.
+
+    Each entry: ``label``, ``sentence``, ``english``, ``jyutping`` (sentence
+    reading) and ``words`` (char / jyutping / tone / meaning).
+    """
+    out = []
+    for p in MINIMAL_PAIRS:
+        words = [{"char": ch, "jyutping": to_jyutping(ch),
+                  "tone": _char_tone(ch), "meaning": meaning}
+                 for ch, meaning in p["words"]]
+        out.append({
+            **p,
+            "words": words,
+            "jyutping": to_jyutping(p["sentence"]),
+            "label": "  vs  ".join(
+                f"{w['char']} {w['jyutping']} ({w['meaning']})" for w in words),
+        })
+    return out
 
 
 def transcribe(audio_path: str) -> str:
@@ -135,8 +177,18 @@ def evaluate(target_text: str, audio_path: str,
     pause_ratio = (pause / duration) if duration > 0 else 0.0
     fluency = max(0.0, min(1.0, 1.0 - pause_ratio / 0.5))
 
-    # rhythm: syllables per second within a natural Cantonese band (2.0-7.5)
-    rate = (len(spoken_chars) / duration) if duration > 0 else 0.0
+    # rhythm: syllables per second **while speaking** (the non-silent span, so
+    # waiting before/after the recording is not counted — that is fluency's job)
+    speech_dur = duration
+    try:
+        from . import voice_graph
+
+        a0, b0 = voice_graph.speech_span(audio_path)
+        if b0 - a0 > 0.2:
+            speech_dur = b0 - a0
+    except Exception:
+        pass
+    rate = (len(spoken_chars) / speech_dur) if speech_dur > 0 else 0.0
     if rate <= 0:
         rhythm = 0.0
     elif 2.0 <= rate <= 7.5:

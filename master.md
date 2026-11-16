@@ -452,6 +452,12 @@ comparison, architecture, data strategy, training, evaluation, deployment,
   **fluency** (pause ratio between ASR segments) and a weighted overall score,
   with character-difference and per-syllable pitch tables. Logic in
   `app/pronunciation.py` + `app/voice_graph.py`.
+- **Tone minimal pairs** — one-click practice sets: 識 `sik1` (to know) vs 食
+  `sik6` (to eat), 買 `maai5` (to buy) vs 賣 `maai6` (to sell), 史 `si2`
+  (history) vs 時 `si4` (time), each with a natural sentence (我識食 / 我買你賣
+  / 我時時讀歷史). Readings are **dictionary-derived at runtime**; run
+  `python tests/test_pronunciation_pairs.py` to re-check the readings, the
+  scores on a correct take, and the within-sentence tone contrast.
 - **📈 Tone graph (pitch-monitor dashboard)** — record a sentence and see a
   **live frequency readout**, a **learner-vs-reference contour aligned by
   syllable**, and a **relative-deviation meter** (learner − reference). Two
